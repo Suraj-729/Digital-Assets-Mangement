@@ -4,7 +4,7 @@ import StepBasicProfile from "./StepBasicProfile";
 import StepSecurityAudit from "./StepSecurityAudit";
 import StepTechnologyStack from "./StepTechnologyStack";
 import StepInfrastructure from "./StepInfrastructure";
-
+import "../css/mvpStyle.css";
 const steps = [
   "Basic Profile",
   "Security Audit",

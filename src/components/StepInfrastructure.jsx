@@ -1,5 +1,6 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
+import "../css/mvpStyle.css";
 const StepInfrastructure = ({
   formData = {},
   onChange,
@@ -118,8 +119,8 @@ const StepInfrastructure = ({
                 {gitUrls.map((url, idx) => (
                   <div key={idx}>
                     {url}{" "}
-                    <a
-                      href="#"
+                    <Link
+                      
                       className="text-danger"
                       onClick={e => {
                         e.preventDefault();
@@ -127,7 +128,7 @@ const StepInfrastructure = ({
                       }}
                     >
                       Delete
-                    </a>
+                    </Link>
                   </div>
                 ))}
               </div>

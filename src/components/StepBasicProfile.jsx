@@ -1,5 +1,5 @@
 import React from "react";
-
+import "../css/mvpStyle.css";
 const StepBasicProfile = ({ formData = {}, onChange, onNext }) => (
   <fieldset>
     {/* <h3>Basic Profile</h3> */}

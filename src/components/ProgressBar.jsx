@@ -1,5 +1,5 @@
 import React from "react";
-
+import "../css/mvpStyle.css";
 const ProgressBar = ({ steps, currentStep }) => (
   <ul id="progressbar" className="list-unstyled d-flex justify-content-between">
     {steps.map((step, idx) => (
