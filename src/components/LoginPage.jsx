@@ -6,26 +6,27 @@ const LoginPage = ({ onLogin }) => {
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      // Adjust the payload keys to match your backend: assetsId and password
-      const response = await api.get("users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // if using cookies/sessions
-        body: JSON.stringify({ assetsId: username, password }),
-      });
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.error || "Login failed");
-        return;
-      }
-      if (onLogin) onLogin({ username, password });
-    } catch (err) {
-      setError("Network error");
+  e.preventDefault();
+  setError("");
+  try {
+    const response = await api.post(
+      "users/login",
+      { assetsId: username, password },
+      { withCredentials: true }
+    );
+
+    if (response.status !== 200) {
+      setError(response.data.error || "Login failed");
+      return;
     }
-  };
+
+    if (onLogin) onLogin({ username, password });
+  } catch (err) {
+    console.error(err);
+    setError(err.response?.data?.error || "Network error");
+  }
+};
+
 
   return (
     <div className="form-container login-page">
