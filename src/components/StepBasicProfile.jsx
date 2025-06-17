@@ -1,40 +1,40 @@
 import React from "react";
 import "../css/mvpStyle.css";
-import axios from "axios";
+// import axios from "axios";
 
 const StepBasicProfile = ({ formData = {}, onChange, onNext }) => {
-  const handleNext=async () => {
-    const payload = {
-      BP: {
-        name: formData.projectName,
-        prismid: formData.prismId,
-        deptname: formData.departmentName,
-        url: formData.url,
-        public_ip: formData.publicIp,
-        nodalofficerNIC: {
-          Name: formData.nicOfficerName,
-          Emp_code: formData.nicOfficerEmpCode,
-          Mob: formData.nicOfficerMob,
-          Email: formData.nicOfficerEmail,
-        },
-        nodalofficerDept: {
-          Name: formData.deptOfficerName,
-          Designation: formData.deptOfficerDesignation,
-          Mob: formData.deptOfficerMob,
-          Email: formData.deptOfficerEmail,
-        },
-      }
-    };
+  // const handleNext=async () => {
+  //   const payload = {
+  //     BP: {
+  //       name: formData.projectName,
+  //       prismid: formData.prismId,
+  //       deptname: formData.departmentName,
+  //       url: formData.url,
+  //       public_ip: formData.publicIp,
+  //       nodalofficerNIC: {
+  //         Name: formData.nicOfficerName,
+  //         Emp_code: formData.nicOfficerEmpCode,
+  //         Mob: formData.nicOfficerMob,
+  //         Email: formData.nicOfficerEmail,
+  //       },
+  //       nodalofficerDept: {
+  //         Name: formData.deptOfficerName,
+  //         Designation: formData.deptOfficerDesignation,
+  //         Mob: formData.deptOfficerMob,
+  //         Email: formData.deptOfficerEmail,
+  //       },
+  //     }
+  //   };
 
-    try {
-      const res = await axios.post("http://localhost:5000/assets/createAsset", payload);
-      console.log("Asset Created:", res.data);
-      onNext(); // go to next step
-    } catch (err) {
-      console.error("Error submitting asset:", err);
-    }
-    onNext();
-  };
+  //   try {
+  //     const res = await axios.post("http://localhost:5000/assets/createAsset", payload);
+  //     console.log("Asset Created:", res.data);
+  //     onNext(); // go to next step
+  //   } catch (err) {
+  //     console.error("Error submitting asset:", err);
+  //   }
+  //   onNext();
+  // };
 
   return (
 
@@ -259,8 +259,8 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext }) => {
       name="next"
       className="next action-button btn btn-success"
       value="Next"
-      // onClick={onNext}
-      onClick={handleNext}
+      onClick={onNext}
+      // onClick={handleNext}
     />
   </fieldset>
 );

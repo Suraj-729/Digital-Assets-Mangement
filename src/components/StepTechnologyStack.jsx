@@ -1,5 +1,5 @@
+// StepTechnologyStack.js
 import React, { useState } from "react";
-import axios from "axios";
 import "../css/mvpStyle.css";
 
 const StepTechnologyStack = ({
@@ -7,182 +7,348 @@ const StepTechnologyStack = ({
   onChange,
   onNext,
   onPrevious,
-  updateFormData, // new prop to update the full formData with TS section
+  usedTech,
+  setUsedTech,
+  usedDb,
+  setUsedDb,
+  usedOs,
+  setUsedOs,
+  usedOsVersion,
+  setUsedOsVersion,
+  usedRepo,
+  setUsedRepo,
 }) => {
-  const [usedTech, setUsedTech] = useState([]);
-  const [usedDb, setUsedDb] = useState([]);
-  const [usedOs, setUsedOs] = useState([]);
-  const [usedOsVersion, setUsedOsVersion] = useState([]);
-  const [usedRepo, setUsedRepo] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: ""
+  });
 
-  const addToList = (value, list, setter) => {
-    if (value && !list.includes(value)) {
-      setter([...list, value]);
-    }
-  };
-
-  const handleAddRepo = () => {
-    const repoUrl = formData.repoUrl?.trim();
-    if (repoUrl) {
-      addToList(repoUrl, usedRepo, setUsedRepo);
-    }
-  };
-
-  const handleNext = async () => {
+  const isValidUrl = (url) => {
     try {
-      const TS = {
-        frontEnd: usedTech,
-        framework: formData.framework,
-        database: usedDb,
-        os: usedOs,
-        osVersion: usedOsVersion,
-        repoUrls: usedRepo,
-      };
-  
-      // Create FormData for multipart/form-data submission
-      const formDataToSend = new FormData();
-  
-      // Append TS section as stringified JSON
-      formDataToSend.append("TS", JSON.stringify(TS));
-  
-      // 🔒 If certificate upload is involved, also do:
-      // formDataToSend.append("certificate", formData.certificate); // if you have it
-  
-      console.log("Sending TS to backend:", TS); // Debug log
-  
-      await axios.post("http://localhost:5000/assets/createAsset", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-  
-      alert("Technology Stack submitted successfully!");
-      onNext();
-    } catch (error) {
-      console.error("Error submitting tech stack:", error);
-      alert("Submission failed. See console.");
+      new URL(url);
+      return true;
+    } catch {
+      return false;
     }
+  };
+
+  const addToStack = (field, value, setter) => {
+    if (!value) {
+      setErrors(prev => ({ ...prev, [field]: "Please select a value first" }));
+      return;
+    }
+
+    if (field === "repoUrl" && !isValidUrl(value)) {
+      setErrors(prev => ({ ...prev, repoUrl: "Please enter a valid URL" }));
+      return;
+    }
+
+    if (setter === setUsedRepo && usedRepo.includes(value)) {
+      setNotification({
+        show: true,
+        message: "This repository is already added",
+        type: "error"
+      });
+      setTimeout(() => setNotification({ show: false }), 3000);
+      return;
+    }
+
+    setter(prev => [...prev, value]);
+
+    setNotification({
+      show: true,
+      message: `Added ${value} to ${field}`,
+      type: "success"
+    });
+    setTimeout(() => setNotification({ show: false }), 3000);
+
+    setErrors(prev => ({ ...prev, [field]: "" }));
+  };
+
+  const removeFromStack = (field, value, setter) => {
+    setter(prev => prev.filter(item => item !== value));
+  };
+
+  const handleAddRepository = () => {
+    const repoUrl = formData.repoUrl?.trim();
+    if (!repoUrl) {
+      setErrors(prev => ({ ...prev, repoUrl: "Please enter a repository URL" }));
+      return;
+    }
+    addToStack("repoUrl", repoUrl, setUsedRepo);
+  };
+
+  const handleNextStep = () => {
+    // Validate required fields
+    const errors = {};
+    let isValid = true;
+
+    if (usedTech.length === 0) {
+      errors.frontEnd = "Please add at least one front-end technology";
+      isValid = false;
+    }
+
+    if (usedDb.length === 0) {
+      errors.database = "Please add at least one database";
+      isValid = false;
+    }
+
+    if (usedOs.length === 0) {
+      errors.os = "Please add at least one operating system";
+      isValid = false;
+    }
+
+    if (!isValid) {
+      setErrors(errors);
+      return;
+    }
+
+    // All validations passed, proceed to next step
     onNext();
   };
-  
+
+  const renderStackBadges = (items, setter) => {
+    return items.map(item => (
+      <span key={item} className="badge bg-primary me-2 mb-2 p-2">
+        {item}
+        <button 
+          type="button" 
+          className="btn-close btn-close-white ms-2" 
+          onClick={() => removeFromStack(item, setter)}
+          aria-label={`Remove ${item}`}
+        />
+      </span>
+    ));
+  };
 
   return (
-    <fieldset>
-      <div className="form-section">
+    <fieldset className="technology-stack-form">
+      <legend className="form-legend">Technology Stack</legend>
+      
+      {notification.show && (
+        <div className={`alert alert-${notification.type}`}>
+          {notification.message}
+        </div>
+      )}
 
-        {/* Front End */}
-        <div className="row mb-3 align-items-center">
-          <label className="col-md-2 col-form-label text-center">Front End:</label>
-          <div className="col-md-3">
-            <select className="form-select" name="frontEnd" value={formData.frontEnd || "Java"} onChange={onChange}>
-              <option value="Java">Java</option>
-              <option value=".Net 4.5 & below">.Net 4.5 & below</option>
-              <option value=".Net Core">.Net Core</option>
-              <option value="Node JS">Node JS</option>
-              <option value="PHP">PHP</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
-          <div className="col-md-2">
-            <button className="btn btn-primary w-100" type="button" onClick={() => addToList(formData.frontEnd, usedTech, setUsedTech)}>
-              ADD
-            </button>
-          </div>
-          <div className="col-md-5 text-center">
-            <span className="info-label">Technology used: - {usedTech.join(", ")}</span>
+      <div className="form-section">
+        {/* Front End Technologies */}
+        <div className="form-group row mb-4">
+          <label className="col-md-3 col-form-label">Front End Technology</label>
+          <div className="col-md-6">
+            <div className="input-group">
+              <select 
+                className={`form-select ${errors.frontEnd ? "is-invalid" : ""}`}
+                name="frontEnd" 
+                value={formData.frontEnd || ""}
+                onChange={onChange}
+              >
+                <option value="">Select a front-end technology</option>
+                <option value="Java">Java</option>
+                <option value=".Net 4.5 & below">.Net 4.5 & below</option>
+                <option value=".Net Core">.Net Core</option>
+                <option value="Node JS">Node JS</option>
+                <option value="PHP">PHP</option>
+                <option value="Others">Others</option>
+              </select>
+              <button 
+                className="btn btn-primary" 
+                type="button"
+                onClick={() => addToStack("frontEnd", formData.frontEnd, setUsedTech)}
+              >
+                Add
+              </button>
+            </div>
+            {errors.frontEnd && (
+              <div className="invalid-feedback">{errors.frontEnd}</div>
+            )}
+            <div className="mt-2">
+              {renderStackBadges(usedTech, setUsedTech)}
+            </div>
           </div>
         </div>
 
         {/* Framework */}
-        <div className="row mb-3 align-items-center">
-          <label className="col-md-2 col-form-label text-center">Framework:</label>
-          <div className="col-md-5">
-            <input type="text" className="form-control" name="framework" placeholder="If multiple, comma-separated" value={formData.framework || ""} onChange={onChange} />
+        <div className="form-group row mb-4">
+          <label className="col-md-3 col-form-label">Framework(s)</label>
+          <div className="col-md-6">
+            <input
+              type="text"
+              className="form-control"
+              name="framework"
+              placeholder="Enter framework names (comma separated for multiple)"
+              value={formData.framework || ""}
+              onChange={onChange}
+            />
           </div>
         </div>
 
-        {/* Database */}
-        <div className="row mb-3 align-items-center">
-          <label className="col-md-2 col-form-label text-center">Database:</label>
-          <div className="col-md-3">
-            <select className="form-select" name="database" value={formData.database || "MongoDB"} onChange={onChange}>
-              <option value="MongoDB">MongoDB</option>
-              <option value="SQL Server">SQL Server</option>
-              <option value="Redis">Redis</option>
-              <option value="Post-gre SQL">Post-gre SQL</option>
-              <option value="Cassandra">Cassandra</option>
-              <option value="MySQL">MySQL</option>
-              <option value="Oracle">Oracle</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div className="col-md-2">
-            <button className="btn btn-primary w-100" type="button" onClick={() => addToList(formData.database, usedDb, setUsedDb)}>
-              ADD
-            </button>
-          </div>
-          <div className="col-md-5 text-center">
-            <span className="info-label">Databases used: - {usedDb.join(", ")}</span>
+        {/* Databases */}
+        <div className="form-group row mb-4">
+          <label className="col-md-3 col-form-label">Database</label>
+          <div className="col-md-6">
+            <div className="input-group">
+              <select 
+                className={`form-select ${errors.database ? "is-invalid" : ""}`}
+                name="database" 
+                value={formData.database || ""}
+                onChange={onChange}
+              >
+                <option value="">Select a database</option>
+                <option value="MongoDB">MongoDB</option>
+                <option value="SQL Server">SQL Server</option>
+                <option value="Redis">Redis</option>
+                <option value="Post-gre SQL">PostgreSQL</option>
+                <option value="Cassandra">Cassandra</option>
+                <option value="MySQL">MySQL</option>
+                <option value="Oracle">Oracle</option>
+                <option value="Other">Other</option>
+              </select>
+              <button 
+                className="btn btn-primary" 
+                type="button"
+                onClick={() => addToStack("database", formData.database, setUsedDb)}
+              >
+                Add
+              </button>
+            </div>
+            {errors.database && (
+              <div className="invalid-feedback">{errors.database}</div>
+            )}
+            <div className="mt-2">
+              {renderStackBadges(usedDb, setUsedDb)}
+            </div>
           </div>
         </div>
 
-        {/* OS */}
-        <div className="row mb-3 align-items-center">
-          <label className="col-md-2 col-form-label text-center">OS:</label>
-          <div className="col-md-3">
-            <select className="form-select" name="os" value={formData.os || "Linux"} onChange={onChange}>
-              <option value="Linux">Linux</option>
-              <option value="Windows">Windows</option>
-            </select>
-          </div>
-          <div className="col-md-2">
-            <button className="btn btn-primary w-100" type="button" onClick={() => addToList(formData.os, usedOs, setUsedOs)}>
-              ADD
-            </button>
-          </div>
-          <div className="col-md-5 text-center">
-            <span className="info-label">OS used: - {usedOs.join(", ")}</span>
+        {/* Operating System */}
+        <div className="form-group row mb-4">
+          <label className="col-md-3 col-form-label">Operating System</label>
+          <div className="col-md-6">
+            <div className="input-group">
+              <select 
+                className={`form-select ${errors.os ? "is-invalid" : ""}`}
+                name="os" 
+                value={formData.os || ""}
+                onChange={onChange}
+              >
+                <option value="">Select an OS</option>
+                <option value="Linux">Linux</option>
+                <option value="Windows">Windows</option>
+              </select>
+              <button 
+                className="btn btn-primary" 
+                type="button"
+                onClick={() => addToStack("os", formData.os, setUsedOs)}
+              >
+                Add
+              </button>
+            </div>
+            {errors.os && (
+              <div className="invalid-feedback">{errors.os}</div>
+            )}
+            <div className="mt-2">
+              {renderStackBadges(usedOs, setUsedOs)}
+            </div>
           </div>
         </div>
 
         {/* OS Version */}
-        <div className="row mb-3 align-items-center">
-          <label className="col-md-2 col-form-label text-center">OS Version:</label>
-          <div className="col-md-3">
-            <select className="form-select" name="osVersion" value={formData.osVersion || "Version 1"} onChange={onChange}>
-              <option value="Version 1">Version 1</option>
-              <option value="Version 2">Version 2</option>
-            </select>
-          </div>
-          <div className="col-md-2">
-            <button className="btn btn-primary w-100" type="button" onClick={() => addToList(formData.osVersion, usedOsVersion, setUsedOsVersion)}>
-              ADD
-            </button>
-          </div>
-          <div className="col-md-5 text-center">
-            <span className="info-label">OS Versions: - {usedOsVersion.join(", ")}</span>
+        <div className="form-group row mb-4">
+          <label className="col-md-3 col-form-label">OS Version</label>
+          <div className="col-md-6">
+            <div className="input-group">
+              <select 
+                className="form-select"
+                name="osVersion" 
+                value={formData.osVersion || ""}
+                onChange={onChange}
+              >
+                <option value="">Select version</option>
+                <option value="Version 1">Version 1</option>
+                <option value="Version 2">Version 2</option>
+              </select>
+              <button 
+                className="btn btn-primary" 
+                type="button"
+                onClick={() => addToStack("osVersion", formData.osVersion, setUsedOsVersion)}
+              >
+                Add
+              </button>
+            </div>
+            <div className="mt-2">
+              {renderStackBadges(usedOsVersion, setUsedOsVersion)}
+            </div>
           </div>
         </div>
 
-        {/* Repo URL */}
-        <div className="row mb-3 align-items-center">
-          <label className="col-md-2 col-form-label text-center">Source Code Repo URL:</label>
-          <div className="col-md-3">
-            <input type="text" className="form-control" name="repoUrl" placeholder="Repo URL" value={formData.repoUrl || ""} onChange={onChange} />
-          </div>
-          <div className="col-md-2">
-            <button className="btn btn-primary w-100" type="button" onClick={handleAddRepo}>
-              ADD
-            </button>
-          </div>
-          <div className="col-md-5 text-center">
-            <span className="info-label">Repo URLs: - {usedRepo.join(", ")}</span>
+        {/* Repository URLs */}
+        <div className="form-group row mb-4">
+          <label className="col-md-3 col-form-label">Source Code Repository</label>
+          <div className="col-md-6">
+            <div className="input-group">
+              <input
+                type="text"
+                className={`form-control ${errors.repoUrl ? "is-invalid" : ""}`}
+                name="repoUrl"
+                placeholder="https://github.com/your-repo"
+                value={formData.repoUrl || ""}
+                onChange={onChange}
+              />
+              <button 
+                className="btn btn-primary" 
+                type="button"
+                onClick={handleAddRepository}
+              >
+                Add
+              </button>
+            </div>
+            {errors.repoUrl && (
+              <div className="invalid-feedback">{errors.repoUrl}</div>
+            )}
+            <div className="mt-2">
+              {usedRepo.map(repo => (
+                <div key={repo} className="d-flex align-items-center mb-2">
+                  <a 
+                    href={repo} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-truncate me-2"
+                    style={{ maxWidth: "300px" }}
+                  >
+                    {repo}
+                  </a>
+                  <button 
+                    type="button" 
+                    className="btn-close" 
+                    onClick={() => removeFromStack(repo, setUsedRepo)}
+                    aria-label="Remove repository"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      <input type="button" className="previous action-button-previous btn btn-primary" value="Previous" onClick={onPrevious} />
-      <input type="button" className="next action-button btn btn-success" value="Next" onClick={handleNext} />
+      <div className="form-navigation d-flex justify-content-between mt-5">
+        <button 
+          type="button" 
+          className="btn btn-outline-primary" 
+          onClick={onPrevious}
+        >
+          Previous
+        </button>
+        <button 
+          type="button" 
+          className="btn btn-success" 
+          onClick={handleNextStep}
+        >
+          Next
+        </button>
+      </div>
     </fieldset>
   );
 };

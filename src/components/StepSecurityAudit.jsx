@@ -1,45 +1,39 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
 import "../css/mvpStyle.css";
 
-const StepSecurityAudit = ({ onNext, onPrevious }) => {
-  const [formData, setFormData] = useState({
-    auditDate: "",
-    expireDate: "",
-    nextExpireDate: "",
-    auditType: "",
-    agency: "",
-    sslLabScore: "",
-    certificate: null,
-  });
-
-  const [auditRecords, setAuditRecords] = useState([]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  
-  
-
+const StepSecurityAudit = ({
+  formData,
+  onChange,
+  auditRecords,
+  setAuditRecords,
+  onNext,
+  onPrevious,
+}) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData((prev) => ({ ...prev, certificate: file }));
+    onChange({ target: { name: "certificate", value: file, files: [file] } });
   };
-
   const handleAddRecord = () => {
     const newRecord = {
       auditDate: formData.auditDate,
       expireDate: formData.expireDate,
       nextExpireDate: formData.nextExpireDate,
-      auditType: formData.auditType,
-      agency: formData.agency,
+      typeOfAudit: formData.auditType, // Changed to match backend
+      auditingAgency: formData.agency, // Changed to match backend
       sslLabScore: formData.sslLabScore,
       certificate: formData.certificate?.name || "Uploaded",
     };
-    setAuditRecords([...auditRecords, newRecord]);
-  };
 
+    setAuditRecords([...auditRecords, newRecord]);
+
+    // Clear form fields
+    onChange({ target: { name: "auditDate", value: "" } });
+    onChange({ target: { name: "expireDate", value: "" } });
+    onChange({ target: { name: "nextExpireDate", value: "" } });
+    onChange({ target: { name: "auditType", value: "" } });
+    onChange({ target: { name: "agency", value: "" } });
+    onChange({ target: { name: "sslLabScore", value: "" } });
+  };
   const handleView = (index) => {
     alert("Certificate: " + auditRecords[index].certificate);
   };
@@ -49,48 +43,6 @@ const StepSecurityAudit = ({ onNext, onPrevious }) => {
     updated.splice(index, 1);
     setAuditRecords(updated);
   };
-
-  const handleNext = async () => {
-    try {
-      const formDataToSend = new FormData();
-  
-      const SA = {
-        auditDate: formData.auditDate,
-        expireDate: formData.expireDate,
-        nextExpireDate: formData.nextExpireDate,
-        typeofaudit: formData.auditType,
-        auditingagency: formData.agency,
-        sslLabScore: formData.sslLabScore,
-        securityAudit: auditRecords.map((rec, index) => ({
-          "Sl no": index + 1,
-          Type: rec.auditType,
-          Agency: rec.agency,
-          auditDate: rec.auditDate,
-        })),
-      };
-  
-// ✅ Add a dummy or actual name field
-// formDataToSend.append("name", "Sample Asset Name"); // 👈 Replace with actual value when integrating full form
-formDataToSend.append("SA", JSON.stringify(SA));
-      if (formData.certificate) {
-        formDataToSend.append("certificate", formData.certificate);
-      }
-  
-      await axios.post("http://localhost:5000/assets/createAsset", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-  
-      alert("Submitted successfully!");
-      onNext();
-    } catch (error) {
-      console.error("Error submitting Security Audit section:", error);
-      alert("Failed to submit. Check console for details.");
-    }
-    onNext();
-  };
-  
 
   return (
     <fieldset>
@@ -102,8 +54,8 @@ formDataToSend.append("SA", JSON.stringify(SA));
               type="date"
               className="form-control"
               name="auditDate"
-              value={formData.auditDate}
-              onChange={handleChange}
+              value={formData.auditDate || ""}
+              onChange={onChange}
             />
           </div>
 
@@ -113,8 +65,8 @@ formDataToSend.append("SA", JSON.stringify(SA));
               type="date"
               className="form-control"
               name="expireDate"
-              value={formData.expireDate}
-              onChange={handleChange}
+              value={formData.expireDate || ""}
+              onChange={onChange}
             />
           </div>
 
@@ -123,9 +75,10 @@ formDataToSend.append("SA", JSON.stringify(SA));
             <select
               className="form-select"
               name="auditType"
-              value={formData.auditType}
-              onChange={handleChange}
+              value={formData.typeOfAudit || ""}
+              onChange={onChange}
             >
+              <option value="">Select</option>
               <option value="Internal">Internal</option>
               <option value="Third party">Third party</option>
             </select>
@@ -136,9 +89,10 @@ formDataToSend.append("SA", JSON.stringify(SA));
             <select
               className="form-select"
               name="agency"
-              value={formData.agency}
-              onChange={handleChange}
+              value={formData.agency || ""}
+              onChange={onChange}
             >
+              <option value="">Select</option>
               <option value="Agency 1">Agency 1</option>
               <option value="Agency 2">Agency 2</option>
             </select>
@@ -159,9 +113,10 @@ formDataToSend.append("SA", JSON.stringify(SA));
             <select
               className="form-select"
               name="sslLabScore"
-              value={formData.sslLabScore}
-              onChange={handleChange}
+              value={formData.sslLabScore || ""}
+              onChange={onChange}
             >
+              <option value="">Select</option>
               <option value="A+">A+</option>
               <option value="A">A</option>
               <option value="B">B</option>
@@ -174,14 +129,18 @@ formDataToSend.append("SA", JSON.stringify(SA));
               type="date"
               className="form-control"
               name="nextExpireDate"
-              value={formData.nextExpireDate}
-              onChange={handleChange}
+              value={formData.nextExpireDate || ""}
+              onChange={onChange}
             />
           </div>
         </div>
 
         <div className="mt-4 text-center">
-          <button className="btn btn-primary" type="button" onClick={handleAddRecord}>
+          <button
+            className="btn btn-primary"
+            type="button"
+            onClick={handleAddRecord}
+          >
             ADD RECORD
           </button>
         </div>
@@ -204,16 +163,22 @@ formDataToSend.append("SA", JSON.stringify(SA));
               auditRecords.map((record, idx) => (
                 <tr key={idx}>
                   <td>{idx + 1}</td>
-                  <td>{record.auditType}</td>
-                  <td>{record.agency}</td>
+                  <td>{record.typeOfAudit}</td> {/* Updated */}
+                  <td>{record.auditingAgency}</td> {/* Updated */}
                   <td>{record.auditDate}</td>
                   <td>
-                    <button className="icon-btn text-primary" onClick={() => handleView(idx)}>
+                    <button
+                      className="icon-btn text-primary"
+                      onClick={() => handleView(idx)}
+                    >
                       <i className="fa-regular fa-file-lines"></i>
                     </button>
                   </td>
                   <td>
-                    <button className="icon-btn text-danger" onClick={() => handleDelete(idx)}>
+                    <button
+                      className="icon-btn text-danger"
+                      onClick={() => handleDelete(idx)}
+                    >
                       <i className="fa-regular fa-trash-can"></i>
                     </button>
                   </td>
@@ -240,7 +205,7 @@ formDataToSend.append("SA", JSON.stringify(SA));
         type="button"
         className="next action-button btn btn-success"
         value="Next"
-        onClick={handleNext}
+        onClick={onNext}
       />
     </fieldset>
   );
