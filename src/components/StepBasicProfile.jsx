@@ -108,6 +108,7 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext }) => {
             </div>
           </div>
         </div>
+        
       </div>
       <div className="row mb-4">
         <div className="col-md-6">
@@ -121,6 +122,22 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext }) => {
                 className="form-control"
                 name="publicIp"
                 value={formData.publicIp || ""}
+                onChange={onChange}
+              />
+            </div>
+          </div>
+        </div>
+         <div className="col-md-6">
+          <div className="row align-items-center text-right">
+            <div className="col-sm-4 text-center">
+              <label className="form-label">HOD</label>
+            </div>
+            <div className="col-sm-8">
+              <input
+                type="text"
+                className="form-control"
+                name="HOD"
+                value={formData.HOD || ""}
                 onChange={onChange}
               />
             </div>

@@ -1,22 +1,27 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./css/bootstrap/dist/css/bootstrap.min.css";
-import "./css/mvpStyle.css"
-import MultiStepForm from "./components/MultiStepForm";
 import LoginPage from "./components/LoginPage";
+import Dashboard from "./components/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import RegisterPage from "./components/Register";
+import "./css/bootstrap/dist/css/bootstrap.min.css";
+import "./css/bootstrap-icons/font/bootstrap-icons.css"
 
 function App() {
   return (
-    <BrowserRouter >
+    <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
-        {/* <Route path="/Agency" element={<BillionEye />} /> */}
-        <Route path="/mvp" element={<MultiStepForm />} />
-        <Route path="/damLogin" element={<LoginPage/>} />
-
+        <Route path="/damLogin" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
 }
-
 export default App;
