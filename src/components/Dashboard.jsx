@@ -56,47 +56,46 @@ const Dashboard = () => {
   //     setLoading(false);
   //   }
   // };
-//   const handleProjectNameClick = async (projectName) => {
-//   try {
-//     setLoading(true);
-//     const response = await api.get(
-//       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-//     );
+  //   const handleProjectNameClick = async (projectName) => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await api.get(
+  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
+  //     );
 
-//     if (response.status >= 200 && response.status < 300) {
-//       setSelectedProject(response.data); // Store the project details
-//       setFormToShow("projectDetails");
-//     } else {
-//       throw new Error(`Request failed with status ${response.status}`);
-//     }
-//   } catch (err) {
-//     setError(err.message);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+  //     if (response.status >= 200 && response.status < 300) {
+  //       setSelectedProject(response.data); // Store the project details
+  //       setFormToShow("projectDetails");
+  //     } else {
+  //       throw new Error(`Request failed with status ${response.status}`);
+  //     }
+  //   } catch (err) {
+  //     setError(err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
+  const handleProjectNameClick = async (projectName) => {
+    try {
+      setLoading(true);
+      const response = await api.get(
+        `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
+      );
 
-const handleProjectNameClick = async (projectName) => {
-  try {
-    setLoading(true);
-    const response = await api.get(
-      `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-    );
-
-    if (response.status >= 200 && response.status < 300) {
-      console.log("Project details response:", response.data); // Add this line
-      setSelectedProject(response.data);
-      setFormToShow("projectDetails");
-    } else {
-      throw new Error(`Request failed with status ${response.status}`);
+      if (response.status >= 200 && response.status < 300) {
+        console.log("Project details response:", response.data); // Add this line
+        setSelectedProject(response.data);
+        setFormToShow("projectDetails");
+      } else {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
   // Calculate dashboard stats from the projects data
   const totalProjects = projects.length;
   const activeProjects = projects.filter((project) => {
@@ -170,8 +169,7 @@ const handleProjectNameClick = async (projectName) => {
     );
   }
 
-
-   if (formToShow === "projectDetails" && !selectedProject) {
+  if (formToShow === "projectDetails" && !selectedProject) {
     return (
       <div className="alert alert-warning m-4" role="alert">
         No project data available. Please try selecting a project again.
@@ -199,7 +197,7 @@ const handleProjectNameClick = async (projectName) => {
               <h3 className="mb-3">Project Details</h3>
               <ProjectTabs project={selectedProject} />
             </section>
-          )  : (
+          ) : (
             <>
               <div className="pagetitle">
                 <h1>Dashboard</h1>
@@ -303,45 +301,53 @@ const handleProjectNameClick = async (projectName) => {
                               </tr>
                             </thead>
                             <tbody>
-  {filteredProjects.map((project, index) => {
-    const key = project.assetsId || `${project.projectName}-${index}`;
-    return (
-      <tr key={key}>
-        <td>{project.assetsId || "N/A"}</td>
-        <td>{project.prismId || "N/A"}</td>
-        <td>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              handleProjectNameClick(project.projectName);
-            }}
-            style={{
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            {project.projectName || "N/A"}
-          </a>
-        </td>
-        <td>{project.HOD || "N/A"}</td>
-        <td>{project.deptName || "N/A"}</td>
-        <td>
-          <span className={`badge ${getAuditStatusBadge(project.expireDate)}`}>
-            {project.expireDate
-              ? new Date(project.expireDate) > new Date()
-                ? "Valid"
-                : "Expired"
-              : "N/A"}
-          </span>
-        </td>
-        <td>{formatDate(project.expireDate)}</td>
-        <td>{formatDate(project.tlsNextExpiry)}</td>
-      </tr>
-    );
-  })}
-</tbody>
-
+                              {filteredProjects.map((project, index) => {
+                                const key =
+                                  project.assetsId ||
+                                  `${project.projectName}-${index}`;
+                                return (
+                                  <tr key={key}>
+                                    <td>{project.assetsId || "N/A"}</td>
+                                    <td>{project.prismId || "N/A"}</td>
+                                    <td>
+                                      <a
+                                        href="#"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          handleProjectNameClick(
+                                            project.projectName
+                                          );
+                                        }}
+                                        style={{
+                                          color: "inherit",
+                                          textDecoration: "none",
+                                        }}
+                                      >
+                                        {project.projectName || "N/A"}
+                                      </a>
+                                    </td>
+                                    <td>{project.HOD || "N/A"}</td>
+                                    <td>{project.deptName || "N/A"}</td>
+                                    <td>
+                                      <span
+                                        className={`badge ${getAuditStatusBadge(
+                                          project.expireDate
+                                        )}`}
+                                      >
+                                        {project.expireDate
+                                          ? new Date(project.expireDate) >
+                                            new Date()
+                                            ? "Valid"
+                                            : "Expired"
+                                          : "N/A"}
+                                      </span>
+                                    </td>
+                                    <td>{formatDate(project.expireDate)}</td>
+                                    <td>{formatDate(project.tlsNextExpiry)}</td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
                           </table>
                         </div>
                       </div>
