@@ -97,6 +97,7 @@ const MultiStepForm = () => {
 
       // Build sectioned data
       const BP = {
+        assetsId:formData.assetsId,
         name: formData.projectName,
         prismId: formData.prismId,
         deptname: formData.departmentName,
