@@ -13,13 +13,14 @@ const StepSecurityAudit = ({
     const file = e.target.files[0];
     onChange({ target: { name: "certificate", value: file, files: [file] } });
   };
+
   const handleAddRecord = () => {
     const newRecord = {
       auditDate: formData.auditDate,
       expireDate: formData.expireDate,
       nextExpireDate: formData.nextExpireDate,
-      typeOfAudit: formData.auditType, // Changed to match backend
-      auditingAgency: formData.agency, // Changed to match backend
+      typeOfAudit: formData.auditType, // Use auditType consistently
+      auditingAgency: formData.agency,
       sslLabScore: formData.sslLabScore,
       certificate: formData.certificate?.name || "Uploaded",
     };
@@ -33,7 +34,9 @@ const StepSecurityAudit = ({
     onChange({ target: { name: "auditType", value: "" } });
     onChange({ target: { name: "agency", value: "" } });
     onChange({ target: { name: "sslLabScore", value: "" } });
+    onChange({ target: { name: "certificate", value: null } });
   };
+
   const handleView = (index) => {
     alert("Certificate: " + auditRecords[index].certificate);
   };
@@ -75,7 +78,7 @@ const StepSecurityAudit = ({
             <select
               className="form-select"
               name="auditType"
-              value={formData.typeOfAudit || ""}
+              value={formData.auditType || ""}
               onChange={onChange}
             >
               <option value="">Select</option>
@@ -163,8 +166,8 @@ const StepSecurityAudit = ({
               auditRecords.map((record, idx) => (
                 <tr key={idx}>
                   <td>{idx + 1}</td>
-                  <td>{record.typeOfAudit}</td> {/* Updated */}
-                  <td>{record.auditingAgency}</td> {/* Updated */}
+                  <td>{record.typeOfAudit}</td>
+                  <td>{record.auditingAgency}</td>
                   <td>{record.auditDate}</td>
                   <td>
                     <button
