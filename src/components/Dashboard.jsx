@@ -36,45 +36,7 @@ const Dashboard = () => {
     fetchProjects();
   }, []);
 
-  // const handleProjectNameClick = async (projectName) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.get(
-  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-  //     );
 
-  //     if (response.status >= 200 && response.status < 300) {
-  //       // Store the project details in state or context if needed
-  //       // Then navigate to projectDetails view
-  //       setFormToShow("projectDetails");
-  //     } else {
-  //       throw new Error(`Request failed with status ${response.status}`);
-  //     }
-  //   } catch (err) {
-  //     setError(err.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  //   const handleProjectNameClick = async (projectName) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.get(
-  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-  //     );
-
-  //     if (response.status >= 200 && response.status < 300) {
-  //       setSelectedProject(response.data); // Store the project details
-  //       setFormToShow("projectDetails");
-  //     } else {
-  //       throw new Error(`Request failed with status ${response.status}`);
-  //     }
-  //   } catch (err) {
-  //     setError(err.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleProjectNameClick = async (projectName) => {
     try {
