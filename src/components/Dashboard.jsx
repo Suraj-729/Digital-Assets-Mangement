@@ -16,13 +16,19 @@ const Dashboard = () => {
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
+    // Get employeeId and employeeType from localStorage
+    const employeeId = localStorage.getItem("employeeId");
+    const employeeType = localStorage.getItem("employeeType");
+
     const fetchProjects = async () => {
       try {
-        const response = await api.get("/dashboard/dataSio");
+        setLoading(true);
+        // Build the URL with employeeId and employeeType
+        const url = `/dashboard/by-type/${employeeId}?employeeType=${employeeType}`;
+        const response = await api.get(url);
 
-        // Axios success status is in response.status (200-299)
         if (response.status >= 200 && response.status < 300) {
-          setProjects(response.data); // Data is automatically in response.data
+          setProjects(response.data);
         } else {
           throw new Error(`Request failed with status ${response.status}`);
         }
@@ -35,46 +41,6 @@ const Dashboard = () => {
 
     fetchProjects();
   }, []);
-
-  // const handleProjectNameClick = async (projectName) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.get(
-  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-  //     );
-
-  //     if (response.status >= 200 && response.status < 300) {
-  //       // Store the project details in state or context if needed
-  //       // Then navigate to projectDetails view
-  //       setFormToShow("projectDetails");
-  //     } else {
-  //       throw new Error(`Request failed with status ${response.status}`);
-  //     }
-  //   } catch (err) {
-  //     setError(err.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  //   const handleProjectNameClick = async (projectName) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.get(
-  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-  //     );
-
-  //     if (response.status >= 200 && response.status < 300) {
-  //       setSelectedProject(response.data); // Store the project details
-  //       setFormToShow("projectDetails");
-  //     } else {
-  //       throw new Error(`Request failed with status ${response.status}`);
-  //     }
-  //   } catch (err) {
-  //     setError(err.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleProjectNameClick = async (projectName) => {
     try {
@@ -96,6 +62,7 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+
   // Calculate dashboard stats from the projects data
   const totalProjects = projects.length;
   const activeProjects = projects.filter((project) => {
@@ -295,16 +262,40 @@ const Dashboard = () => {
                                 <th>Project Name</th>
                                 <th>HOD</th>
                                 <th>Department</th>
+                                <th>Status</th>
                                 <th>Audit Status</th>
                                 <th>Audit Expiry</th>
+                                <th>SSL/TLS</th>
                                 <th>SSL/TLS expiry date</th>
                               </tr>
                             </thead>
                             <tbody>
                               {filteredProjects.map((project, index) => {
-                                const key =
-                                  project.assetsId ||
-                                  `${project.projectName}-${index}`;
+                                const key = project.assetsId || `${project.projectName}-${index}`;
+                                // Badge helpers
+                                const statusBadge = (status) => {
+                                  if (status === "Valid") return "badge bg-warning text-dark";
+                                  if (status === "Expired") return "badge bg-danger";
+                                  return "badge bg-secondary";
+                                };
+                                const auditBadge = (auditStatus) => {
+                                  if (auditStatus && auditStatus !== "N/A") return "badge bg-success";
+                                  return "badge bg-secondary";
+                                };
+                                const sslBadge = (sslStatus) => {
+                                  if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
+                                  return "badge bg-secondary";
+                                };
+                                const formatDate = (dateString) => {
+                                  if (!dateString) return "N/A";
+                                  const date = new Date(dateString);
+                                  return `${date.getDate()} / ${date.toLocaleString("en-GB", { month: "long" })} / ${date.getFullYear()}`;
+                                };
+                                // Status logic
+                                let statusValue = "N/A";
+                                if (project.expireDate) {
+                                  statusValue = new Date(project.expireDate) > new Date() ? "Valid" : "Expired";
+                                }
                                 return (
                                   <tr key={key}>
                                     <td>{project.assetsId || "N/A"}</td>
@@ -314,9 +305,7 @@ const Dashboard = () => {
                                         href="#"
                                         onClick={(e) => {
                                           e.preventDefault();
-                                          handleProjectNameClick(
-                                            project.projectName
-                                          );
+                                          handleProjectNameClick(project.projectName);
                                         }}
                                         style={{
                                           color: "inherit",
@@ -329,20 +318,35 @@ const Dashboard = () => {
                                     <td>{project.HOD || "N/A"}</td>
                                     <td>{project.deptName || "N/A"}</td>
                                     <td>
-                                      <span
-                                        className={`badge ${getAuditStatusBadge(
-                                          project.expireDate
-                                        )}`}
-                                      >
-                                        {project.expireDate
-                                          ? new Date(project.expireDate) >
-                                            new Date()
-                                            ? "Valid"
-                                            : "Expired"
-                                          : "N/A"}
+                                      <span className={statusBadge(statusValue)}>
+                                        {statusValue}
                                       </span>
                                     </td>
-                                    <td>{formatDate(project.expireDate)}</td>
+                                    <td>
+                                      <span className={auditBadge(project.auditStatus)}>
+                                        {project.auditStatus || "N/A"}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <span className={
+                                        project.auditExpiry
+                                          ? (() => {
+                                              const expiry = new Date(project.auditExpiry);
+                                              const now = new Date();
+                                              if (expiry < now) return "badge bg-danger";
+                                              if ((expiry - now) / (1000 * 60 * 60 * 24) < 30) return "badge bg-warning text-dark";
+                                              return "badge bg-success";
+                                            })()
+                                          : "badge bg-secondary"
+                                      }>
+                                        {project.auditExpiry ? formatDate(project.auditExpiry) : "N/A"}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <span className={sslBadge(project.sslStatus)}>
+                                        {project.sslStatus || "N/A"}
+                                      </span>
+                                    </td>
                                     <td>{formatDate(project.tlsNextExpiry)}</td>
                                   </tr>
                                 );

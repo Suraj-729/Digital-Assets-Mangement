@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 const SecurityAudit = ({ securityAudits }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState("");
+
   console.log("Security Audits Data:", securityAudits);
 
   // Normalize to array
@@ -33,114 +36,111 @@ const SecurityAudit = ({ securityAudits }) => {
         });
   };
 
-  return (
-    // <div >
-    //   <table>
-    //     <thead>
-    //       <tr>
-    //         <th>Sl No</th>
-    //         <th>Audit Date</th>
-    //         <th>Expire Date</th>
-    //         <th>Type of Audit</th>
-    //         <th>Agency</th>
-    //         <th>Certificate</th>
-    //         <th>SSL Lab Score</th>
-    //         <th>TLS Next Expiry</th>
-    //       </tr>
-    //     </thead>
-    //     <tbody>
-    //       {auditsArray.map((audit, index) => {
-    //         const key = audit["Sl no"] ?? `${audit.typeOfAudit}-${index}`;
-    //         return (
-    //           <tr key={key}>
-    //             <td>{audit["Sl no"] || index + 1}</td>
-    //             <td>{formatDate(audit.auditDate)}</td>
-    //             <td>{formatDate(audit.expireDate)}</td>
-    //             <td>{audit.typeOfAudit || "N/A"}</td>
-    //             <td>{audit.auditingAgency || "N/A"}</td>
-    //             <td>
-    //               {audit.certificate ? (
-    //                 <a
-    //                   href={`/certificates/${audit.certificate}`}
-    //                   target="_blank"
-    //                   rel="noopener noreferrer"
-    //                 >
-    //                   <i className="bi bi-file-earmark-pdf"></i>
-    //                 </a>
-    //               ) : (
-    //                 "N/A"
-    //               )}
-    //             </td>
-    //             <td>{audit.sslLabScore || "N/A"}</td>
-    //             <td>{formatDate(audit.tlsNextExpiry)}</td>
-    //           </tr>
-    //         );
-    //       })}
-    //     </tbody>
-    //   </table>
-    // </div>
-    <div className="container-fluid p-3">
-  <div className="card shadow-sm border-0">
-    {/* <div className="card-header bg-primary text-white"> */}
-      {/* <h5 className="mb-0">Security Audit Details</h5> */}
-    {/* </div> */}
-    <div className="card-body table-responsive">
-      <table className="table table-bordered table-hover text-center align-middle">
-        <thead className="table-light">
-          <tr>
-            <th>Sl No</th>
-            <th>Audit Date</th>
-            <th>Expire Date</th>
-            <th>Type of Audit</th>
-            <th>Agency</th>
-            <th>Certificate</th>
-            <th>SSL Lab Score</th>
-            <th>TLS Next Expiry</th>
-          </tr>
-        </thead>
-        <tbody>
-          {auditsArray.length > 0 ? (
-            auditsArray.map((audit, index) => {
-              const key = audit["Sl no"] ?? `${audit.typeOfAudit}-${index}`;
-              return (
-                <tr key={key}>
-                  <td>{audit["Sl no"] || index + 1}</td>
-                  <td>{formatDate(audit.auditDate)}</td>
-                  <td>{formatDate(audit.expireDate)}</td>
-                  <td>{audit.typeOfAudit || "N/A"}</td>
-                  <td>{audit.auditingAgency || "N/A"}</td>
-                  <td>
-                    {audit.certificate ? (
-                      <a
-                        href={`/certificates/${audit.certificate}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-danger"
-                      >
-                        <i className="bi bi-file-earmark-pdf fs-5"></i>
-                      </a>
-                    ) : (
-                      "N/A"
-                    )}
-                  </td>
-                  <td>{audit.sslLabScore || "N/A"}</td>
-                  <td>{formatDate(audit.tlsNextExpiry)}</td>
-                </tr>
-              );
-            })
-          ) : (
-            <tr>
-              <td colSpan="8" className="text-muted">
-                No security audit records found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+  const handleCertificateClick = (certificate) => {
+    setPdfUrl(`/certificates/${certificate}`);
+    setShowModal(true);
+  };
 
+  const closeModal = () => {
+    setShowModal(false);
+    setPdfUrl("");
+  };
+
+  return (
+    <div className="container-fluid p-3">
+      <div className="card shadow-sm border-0">
+        <div className="card-body table-responsive">
+          <table className="table table-bordered table-hover text-center align-middle">
+            <thead className="table-light">
+              <tr>
+                <th>Sl No</th>
+                <th>Audit Date</th>
+                <th>Expire Date</th>
+                <th>Type of Audit</th>
+                <th>Agency</th>
+                <th>Certificate</th>
+                <th>SSL Lab Score</th>
+                <th>TLS Next Expiry</th>
+              </tr>
+            </thead>
+            <tbody>
+              {auditsArray.length > 0 ? (
+                auditsArray.map((audit, index) => {
+                  const key = audit["Sl no"] ?? `${audit.typeOfAudit}-${index}`;
+                  return (
+                    <tr key={key}>
+                      <td>{audit["Sl no"] || index + 1}</td>
+                      <td>{formatDate(audit.auditDate)}</td>
+                      <td>{formatDate(audit.expireDate)}</td>
+                      <td>{audit.typeOfAudit || "N/A"}</td>
+                      <td>{audit.auditingAgency || "N/A"}</td>
+                      <td>
+                        {audit.certificate ? (
+                          <button
+                            type="button"
+                            className="btn btn-link text-danger p-0"
+                            onClick={() => handleCertificateClick(audit.certificate)}
+                            title="View Certificate"
+                          >
+                            <i className="bi bi-file-earmark-pdf fs-5"></i>
+                          </button>
+                        ) : (
+                          "N/A"
+                        )}
+                      </td>
+                      <td>{audit.sslLabScore || "N/A"}</td>
+                      <td>{formatDate(audit.tlsNextExpiry)}</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="8" className="text-muted">
+                    No security audit records found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Modal for PDF view */}
+      {showModal && (
+        <div
+          className="modal fade show"
+          style={{
+            display: "block",
+            background: "rgba(0,0,0,0.5)"
+          }}
+          tabIndex="-1"
+          role="dialog"
+        >
+          <div className="modal-dialog modal-xl" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Certificate PDF</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={closeModal}
+                ></button>
+              </div>
+              <div className="modal-body" style={{ height: "80vh" }}>
+                <iframe
+                  src={pdfUrl}
+                  title="Certificate PDF"
+                  width="100%"
+                  height="100%"
+                  style={{ border: "none", minHeight: "70vh" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
