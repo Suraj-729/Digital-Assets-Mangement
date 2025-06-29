@@ -29,9 +29,17 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
+    // Get employeeId and employeeType from localStorage
+    const employeeId = localStorage.getItem("employeeId");
+    const employeeType = localStorage.getItem("employeeType");
+
     const fetchProjects = async () => {
       try {
-        const response = await api.get("/dashboard/dataSio");
+        setLoading(true);
+        // Build the URL with employeeId and employeeType
+        const url = `/dashboard/by-type/${employeeId}?employeeType=${employeeType}`;
+        const response = await api.get(url);
+
         if (response.status >= 200 && response.status < 300) {
           setProjects(response.data);
         } else {
@@ -55,6 +63,7 @@ const Dashboard = () => {
       );
 
       if (response.status >= 200 && response.status < 300) {
+        console.log("Project details response:", response.data);
         setSelectedProject(response.data);
         setFormToShow("projectDetails");
       } else {
@@ -114,23 +123,22 @@ const Dashboard = () => {
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    return `${date.getDate()} / ${date.toLocaleString("en-GB", { month: "long" })} / ${date.getFullYear()}`;
   };
 
-  // Determine audit status badge
-  const getAuditStatusBadge = (expireDate) => {
-    if (!expireDate) return "bg-secondary";
-    const today = new Date();
-    const expiry = new Date(expireDate);
-    const daysDiff = Math.floor((expiry - today) / (1000 * 60 * 60 * 24));
-
-    if (daysDiff < 0) return "bg-danger";
-    if (daysDiff < 30) return "bg-warning";
-    return "bg-success";
+  // Badge helpers
+  const statusBadge = (status) => {
+    if (status === "Valid") return "badge bg-warning text-dark";
+    if (status === "Expired") return "badge bg-danger";
+    return "badge bg-secondary";
+  };
+  const auditBadge = (auditStatus) => {
+    if (auditStatus && auditStatus !== "N/A") return "badge bg-success";
+    return "badge bg-secondary";
+  };
+  const sslBadge = (sslStatus) => {
+    if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
+    return "badge bg-secondary";
   };
 
   if (loading) {
@@ -318,14 +326,21 @@ const Dashboard = () => {
                                 <th>Project Name</th>
                                 <th>HOD</th>
                                 <th>Department</th>
+                                <th>Status</th>
                                 <th>Audit Status</th>
                                 <th>Audit Expiry</th>
+                                <th>SSL/TLS</th>
                                 <th>SSL/TLS expiry date</th>
                               </tr>
                             </thead>
                             <tbody>
                               {filteredProjects.map((project, index) => {
                                 const key = project.assetsId || `${project.projectName}-${index}`;
+                                // Status logic
+                                let statusValue = "N/A";
+                                if (project.expireDate) {
+                                  statusValue = new Date(project.expireDate) > new Date() ? "Valid" : "Expired";
+                                }
                                 return (
                                   <tr key={key}>
                                     <td>{project.assetsId || "N/A"}</td>
@@ -348,15 +363,35 @@ const Dashboard = () => {
                                     <td>{project.HOD || "N/A"}</td>
                                     <td>{project.deptName || "N/A"}</td>
                                     <td>
-                                      <span className={`badge ${getAuditStatusBadge(project.expireDate)}`}>
-                                        {project.expireDate
-                                          ? new Date(project.expireDate) > new Date()
-                                            ? "Valid"
-                                            : "Expired"
-                                          : "N/A"}
+                                      <span className={statusBadge(statusValue)}>
+                                        {statusValue}
                                       </span>
                                     </td>
-                                    <td>{formatDate(project.expireDate)}</td>
+                                    <td>
+                                      <span className={auditBadge(project.auditStatus)}>
+                                        {project.auditStatus || "N/A"}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <span className={
+                                        project.auditExpiry
+                                          ? (() => {
+                                              const expiry = new Date(project.auditExpiry);
+                                              const now = new Date();
+                                              if (expiry < now) return "badge bg-danger";
+                                              if ((expiry - now) / (1000 * 60 * 60 * 24) < 30) return "badge bg-warning text-dark";
+                                              return "badge bg-success";
+                                            })()
+                                          : "badge bg-secondary"
+                                      }>
+                                        {project.auditExpiry ? formatDate(project.auditExpiry) : "N/A"}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <span className={sslBadge(project.sslStatus)}>
+                                        {project.sslStatus || "N/A"}
+                                      </span>
+                                    </td>
                                     <td>{formatDate(project.tlsNextExpiry)}</td>
                                   </tr>
                                 );

@@ -1,75 +1,69 @@
+
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import BasicProfile from "./BasicProfile";
 import SecurityAudit from "./SecurityAudit";
 import TechnologyAndInfrastructure from "./InfraStructure";
 
+const TAB_CONFIG = [
+  { id: "basic", label: "Basic Profile", icon: "BasicProfile.png" },
+  { id: "security", label: "Security Audit", icon: "security-audit.png" },
+  { id: "tech", label: "Technology Stack", icon: "TechnologyStack.png" },
+  { id: "infra", label: "Infrastructure", icon: "infrastructure.png" },
+];
+
 const ProjectTabs = ({ project }) => {
   const [activeTab, setActiveTab] = useState("basic");
 
   return (
-    <>
-      <ul className="nav nav-tabs nav-tabs-bordered">
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "basic" && "active"}`}
-            onClick={() => setActiveTab("basic")}
-          >
-            <img src="assets/img/icons/BasicProfile.png" alt="Basic Profile" />{" "}
-            Basic Profile
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "security" && "active"}`}
-            onClick={() => setActiveTab("security")}
-          >
-            <img
-              src="assets/img/icons/security-audit.png"
-              alt="Security Audit"
-            />{" "}
-            Security Audit
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "tech" && "active"}`}
-            onClick={() => setActiveTab("tech")}
-          >
-            <img
-              src="assets/img/icons/TechnologyStack.png"
-              alt="Technology Stack"
-            />{" "}
-            Technology Stack
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "infra" && "active"}`}
-            onClick={() => setActiveTab("infra")}
-          >
-            <img
-              src="assets/img/icons/infrastructure.png"
-              alt="Infrastructure"
-            />{" "}
-            Infrastructure
-          </button>
-        </li>
+    <div className="project-tabs-container">
+      <ul className="nav nav-tabs nav-tabs-bordered" role="tablist">
+        {TAB_CONFIG.map((tab) => (
+          <li className="nav-item" key={tab.id} role="presentation">
+            <button
+              className={`nav-link ${activeTab === tab.id ? "active" : ""}`}
+              onClick={() => setActiveTab(tab.id)}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              aria-controls={`${tab.id}-tab`}
+            >
+              <img
+                 src={`images/icons/${tab.icon}`}
+                
+                alt={tab.label}
+                style={{ marginRight: "5px" }}
+                width="20"
+                height="20"
+              />
+              {tab.label}
+            </button>
+          </li>
+        ))}
       </ul>
 
-      <div className="tab-content pt-2">
-        {activeTab === "basic" && <BasicProfile project={project} />}
+      <div className="tab-content pt-3">
+        {activeTab === "basic" && (
+          <div id="basic-tab" role="tabpanel" aria-labelledby="basic-tab">
+            <BasicProfile project={project} />
+          </div>
+        )}
         {activeTab === "security" && (
-          <SecurityAudit securityAudits={project?.SA?.securityAudit || []} />
+          <div id="security-tab" role="tabpanel" aria-labelledby="security-tab">
+            <SecurityAudit securityAudits={project?.SA?.securityAudit || []} />
+          </div>
         )}
         {activeTab === "tech" && (
-          <TechnologyAndInfrastructure project={project} showTech />
+          <div id="tech-tab" role="tabpanel" aria-labelledby="tech-tab">
+            <TechnologyAndInfrastructure project={project} showTech />
+          </div>
         )}
         {activeTab === "infra" && (
-          <TechnologyAndInfrastructure project={project} showInfra />
+          <div id="infra-tab" role="tabpanel" aria-labelledby="infra-tab">
+            <TechnologyAndInfrastructure project={project} showInfra />
+          </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
@@ -98,19 +92,51 @@ ProjectTabs.propTypes = {
     SA: PropTypes.shape({
       securityAudit: PropTypes.arrayOf(
         PropTypes.shape({
-          "Sl no": PropTypes.number,
+          "Sl no": PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
           typeOfAudit: PropTypes.string,
           auditingAgency: PropTypes.string,
-          auditDate: PropTypes.instanceOf(Date),
-          expireDate: PropTypes.instanceOf(Date),
-          tlsNextExpiry: PropTypes.instanceOf(Date),
+          auditDate: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({ $date: PropTypes.string }),
+          ]),
+          expireDate: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({ $date: PropTypes.string }),
+          ]),
+          tlsNextExpiry: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({ $date: PropTypes.string }),
+          ]),
           sslLabScore: PropTypes.string,
           certificate: PropTypes.string,
         })
       ),
     }),
-    TS: PropTypes.object,
-    Infra: PropTypes.object,
+    TS: PropTypes.shape({
+      frontEnd: PropTypes.arrayOf(PropTypes.string),
+      framework: PropTypes.arrayOf(PropTypes.string),
+      database: PropTypes.arrayOf(PropTypes.string),
+      os: PropTypes.arrayOf(PropTypes.string),
+      osVersion: PropTypes.string,
+      sourceCodeRepoUrl: PropTypes.string,
+    }),
+    Infra: PropTypes.shape({
+      typeOfServer: PropTypes.string,
+      location: PropTypes.string,
+      deployment: PropTypes.string,
+      dataCentre: PropTypes.string,
+      gitUrls: PropTypes.arrayOf(PropTypes.string),
+      vaRecords: PropTypes.arrayOf(
+        PropTypes.shape({
+          ipAddress: PropTypes.string,
+          purposeOfUse: PropTypes.string,
+          vaScore: PropTypes.string,
+          dateOfVA: PropTypes.string,
+          vaReport: PropTypes.string,
+        })
+      ),
+      additionalInfra: PropTypes.array,
+    }),
   }).isRequired,
 };
 

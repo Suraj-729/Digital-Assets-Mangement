@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import api from "../Api";
 import "../css/mvpStyle.css";
@@ -7,7 +9,9 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState({
     userId: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    employeeId: "",
+    employeeType: ""
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -36,12 +40,19 @@ const RegisterPage = () => {
       return;
     }
 
+    if (!formData.employeeId || !formData.employeeType) {
+      setError("Employee ID and Employee Type are required");
+      return;
+    }
+
     console.log("Attempting to register user:", formData.userId);
 
     try {
       const response = await api.post("/users/register", {
         userId: formData.userId,
-        password: formData.password
+        password: formData.password,
+        employeeId: formData.employeeId,
+        employeeType: formData.employeeType
       });
       
       console.log("Registration successful:", response.data);
@@ -82,6 +93,28 @@ const RegisterPage = () => {
             onChange={handleChange}
             required
           />
+          <input
+            type="text"
+            name="employeeId"
+            placeholder="Employee ID"
+            className="form-control"
+            value={formData.employeeId}
+            onChange={handleChange}
+            required
+          />
+          <select
+            name="employeeType"
+            className="form-control"
+            value={formData.employeeType}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Employee Type</option>
+            <option value="Admin">Admin</option>
+            <option value="Regular">Project Head</option>
+            <option value="Regular">Project Manger</option>
+            {/* Add more types as needed */}
+          </select>
           <input
             type="password"
             name="password"
