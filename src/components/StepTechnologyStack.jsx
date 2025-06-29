@@ -67,6 +67,7 @@ const StepTechnologyStack = ({
     setErrors(prev => ({ ...prev, [field]: "" }));
   };
 
+  // Updated: Always expect (field, value, setter)
   const removeFromStack = (field, value, setter) => {
     setter(prev => prev.filter(item => item !== value));
   };
@@ -109,14 +110,15 @@ const StepTechnologyStack = ({
     onNext();
   };
 
-  const renderStackBadges = (items, setter) => {
+  // Updated: Pass field name to removeFromStack
+  const renderStackBadges = (items, field, setter) => {
     return items.map(item => (
       <span key={item} className="badge bg-primary me-2 mb-2 p-2">
         {item}
         <button 
           type="button" 
           className="btn-close btn-close-white ms-2" 
-          onClick={() => removeFromStack(item, setter)}
+          onClick={() => removeFromStack(field, item, setter)}
           aria-label={`Remove ${item}`}
         />
       </span>
@@ -165,7 +167,7 @@ const StepTechnologyStack = ({
               <div className="invalid-feedback">{errors.frontEnd}</div>
             )}
             <div className="mt-2">
-              {renderStackBadges(usedTech, setUsedTech)}
+              {renderStackBadges(usedTech, "frontEnd", setUsedTech)}
             </div>
           </div>
         </div>
@@ -218,7 +220,7 @@ const StepTechnologyStack = ({
               <div className="invalid-feedback">{errors.database}</div>
             )}
             <div className="mt-2">
-              {renderStackBadges(usedDb, setUsedDb)}
+              {renderStackBadges(usedDb, "database", setUsedDb)}
             </div>
           </div>
         </div>
@@ -250,7 +252,7 @@ const StepTechnologyStack = ({
               <div className="invalid-feedback">{errors.os}</div>
             )}
             <div className="mt-2">
-              {renderStackBadges(usedOs, setUsedOs)}
+              {renderStackBadges(usedOs, "os", setUsedOs)}
             </div>
           </div>
         </div>
@@ -279,7 +281,7 @@ const StepTechnologyStack = ({
               </button>
             </div>
             <div className="mt-2">
-              {renderStackBadges(usedOsVersion, setUsedOsVersion)}
+              {renderStackBadges(usedOsVersion, "osVersion", setUsedOsVersion)}
             </div>
           </div>
         </div>
@@ -323,7 +325,7 @@ const StepTechnologyStack = ({
                   <button 
                     type="button" 
                     className="btn-close" 
-                    onClick={() => removeFromStack(repo, setUsedRepo)}
+                    onClick={() => removeFromStack("repoUrl", repo, setUsedRepo)}
                     aria-label="Remove repository"
                   />
                 </div>
@@ -333,24 +335,23 @@ const StepTechnologyStack = ({
         </div>
       </div>
 
-      <div className="form-navigation d-flex justify-content-between mt-5">
-        <button 
-          type="button" 
-          className="btn btn-outline-primary" 
+       <div className="form-navigation d-flex justify-content-center mt-5">
+        <input
+          type="button"
+          className="previous action-button-previous btn btn-primary me-2"
+          value="Previous"
           onClick={onPrevious}
-        >
-          Previous
-        </button>
-        <button 
-          type="button" 
-          className="btn btn-success" 
+        />
+        <input
+          type="button"
+          className="next action-button btn btn-success"
+          value="Next"
           onClick={handleNextStep}
-        >
-          Next
-        </button>
+        />
       </div>
     </fieldset>
   );
 };
+
 
 export default StepTechnologyStack;

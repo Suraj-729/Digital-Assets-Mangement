@@ -15,6 +15,19 @@ const Dashboard = () => {
   const [filter, setFilter] = useState("all");
   const [selectedProject, setSelectedProject] = useState(null);
 
+  // For department/datacenter/prismId filter
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedDatacenter, setSelectedDatacenter] = useState("");
+  const [selectedPrismId, setSelectedPrismId] = useState("");
+
+  // Get unique departments, datacenters, and prismIds from projects
+  const departments = Array.from(
+    new Set(projects.map((p) => p.deptName).filter(Boolean))
+  );
+  const datacenters = Array.from(
+    new Set(projects.map((p) => p.datacenter).filter(Boolean))
+  );
+
   useEffect(() => {
     // Get employeeId and employeeType from localStorage
     const employeeId = localStorage.getItem("employeeId");
@@ -50,7 +63,7 @@ const Dashboard = () => {
       );
 
       if (response.status >= 200 && response.status < 300) {
-        console.log("Project details response:", response.data); // Add this line
+        console.log("Project details response:", response.data);
         setSelectedProject(response.data);
         setFormToShow("projectDetails");
       } else {
@@ -86,33 +99,46 @@ const Dashboard = () => {
           const expireDate = new Date(project.expireDate);
           return expireDate > new Date();
         })
-      : projects.filter((project) => {
+      : filter === "inactive"
+      ? projects.filter((project) => {
           if (!project.expireDate) return true;
           const expireDate = new Date(project.expireDate);
           return expireDate <= new Date();
-        });
+        })
+      : filter === "departmentwise"
+      ? projects.filter(
+          (project) => selectedDepartment && project.deptName === selectedDepartment
+        )
+      : filter === "datacenter"
+      ? projects.filter(
+          (project) => selectedDatacenter && project.datacenter === selectedDatacenter
+        )
+      : filter === "prismid"
+      ? projects.filter(
+          (project) => selectedPrismId && project.prismId === selectedPrismId
+        )
+      : projects;
 
   // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    return `${date.getDate()} / ${date.toLocaleString("en-GB", { month: "long" })} / ${date.getFullYear()}`;
   };
 
-  // Determine audit status badge
-  const getAuditStatusBadge = (expireDate) => {
-    if (!expireDate) return "bg-secondary";
-    const today = new Date();
-    const expiry = new Date(expireDate);
-    const daysDiff = Math.floor((expiry - today) / (1000 * 60 * 60 * 24));
-
-    if (daysDiff < 0) return "bg-danger";
-    if (daysDiff < 30) return "bg-warning";
-    return "bg-success";
+  // Badge helpers
+  const statusBadge = (status) => {
+    if (status === "Valid") return "badge bg-warning text-dark";
+    if (status === "Expired") return "badge bg-danger";
+    return "badge bg-secondary";
+  };
+  const auditBadge = (auditStatus) => {
+    if (auditStatus && auditStatus !== "N/A") return "badge bg-success";
+    return "badge bg-secondary";
+  };
+  const sslBadge = (sslStatus) => {
+    if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
+    return "badge bg-secondary";
   };
 
   if (loading) {
@@ -233,7 +259,7 @@ const Dashboard = () => {
                     >
                       <div className="card-body pt-3">
                         <div className="d-flex justify-content-between mb-3">
-                          <div className="filter-by-con">
+                          <div className="filter-by-con d-flex gap-2 align-items-center">
                             <select
                               className="form-select"
                               value={filter}
@@ -241,10 +267,48 @@ const Dashboard = () => {
                             >
                               <option value="all">All Projects</option>
                               <option value="active">Active Projects</option>
-                              <option value="inactive">
-                                Inactive Projects
-                              </option>
+                              <option value="inactive">Inactive Projects</option>
+                              <option value="departmentwise">Departmentwise</option>
+                              {/* <option value="datacenter">Datacenter</option> */}
+                              <option value="prismid">Prism ID</option>
                             </select>
+                            {filter === "departmentwise" && (
+                              <select
+                                className="form-select"
+                                value={selectedDepartment}
+                                onChange={(e) => setSelectedDepartment(e.target.value)}
+                              >
+                                <option value="">Select Department</option>
+                                {departments.map((dept) => (
+                                  <option key={dept} value={dept}>
+                                    {dept}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                            {filter === "datacenter" && (
+                              <select
+                                className="form-select"
+                                value={selectedDatacenter}
+                                onChange={(e) => setSelectedDatacenter(e.target.value)}
+                              >
+                                <option value="">Select Datacenter</option>
+                                {datacenters.map((dc) => (
+                                  <option key={dc} value={dc}>
+                                    {dc}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                            {filter === "prismid" && (
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter Prism ID"
+                                value={selectedPrismId}
+                                onChange={(e) => setSelectedPrismId(e.target.value)}
+                              />
+                            )}
                           </div>
                           <div>
                             <button className="btn btn-primary">
@@ -272,25 +336,6 @@ const Dashboard = () => {
                             <tbody>
                               {filteredProjects.map((project, index) => {
                                 const key = project.assetsId || `${project.projectName}-${index}`;
-                                // Badge helpers
-                                const statusBadge = (status) => {
-                                  if (status === "Valid") return "badge bg-warning text-dark";
-                                  if (status === "Expired") return "badge bg-danger";
-                                  return "badge bg-secondary";
-                                };
-                                const auditBadge = (auditStatus) => {
-                                  if (auditStatus && auditStatus !== "N/A") return "badge bg-success";
-                                  return "badge bg-secondary";
-                                };
-                                const sslBadge = (sslStatus) => {
-                                  if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
-                                  return "badge bg-secondary";
-                                };
-                                const formatDate = (dateString) => {
-                                  if (!dateString) return "N/A";
-                                  const date = new Date(dateString);
-                                  return `${date.getDate()} / ${date.toLocaleString("en-GB", { month: "long" })} / ${date.getFullYear()}`;
-                                };
                                 // Status logic
                                 let statusValue = "N/A";
                                 if (project.expireDate) {
