@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../css/mvpStyle.css";
 
 const StepSecurityAudit = ({
@@ -9,6 +9,9 @@ const StepSecurityAudit = ({
   onNext,
   onPrevious,
 }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     onChange({ target: { name: "certificate", value: file, files: [file] } });
@@ -19,10 +22,10 @@ const StepSecurityAudit = ({
       auditDate: formData.auditDate,
       expireDate: formData.expireDate,
       nextExpireDate: formData.nextExpireDate,
-      typeOfAudit: formData.auditType, // Use auditType consistently
+       // Use auditType consistently
       auditingAgency: formData.agency,
       sslLabScore: formData.sslLabScore,
-      certificate: formData.certificate?.name || "Uploaded",
+      certificate: formData.certificate,
     };
 
     setAuditRecords([...auditRecords, newRecord]);
@@ -38,7 +41,22 @@ const StepSecurityAudit = ({
   };
 
   const handleView = (index) => {
-    alert("Certificate: " + auditRecords[index].certificate);
+    const file = auditRecords[index].certificate;
+    if (file && file.type === "application/pdf") {
+      const fileURL = URL.createObjectURL(file);
+      setPdfUrl(fileURL);
+      setShowModal(true);
+    } else {
+      alert("No PDF certificate uploaded.");
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    if (pdfUrl) {
+      URL.revokeObjectURL(pdfUrl);
+      setPdfUrl(null);
+    }
   };
 
   const handleDelete = (index) => {
@@ -174,7 +192,7 @@ const StepSecurityAudit = ({
                       className="icon-btn text-primary"
                       onClick={() => handleView(idx)}
                     >
-                      <i className="fa-regular fa-file-lines"></i>
+                      <i className="bi bi-eye"></i>
                     </button>
                   </td>
                   <td>
@@ -182,7 +200,7 @@ const StepSecurityAudit = ({
                       className="icon-btn text-danger"
                       onClick={() => handleDelete(idx)}
                     >
-                      <i className="fa-regular fa-trash-can"></i>
+                      <i className="bi bi-trash"></i>
                     </button>
                   </td>
                 </tr>
@@ -197,6 +215,69 @@ const StepSecurityAudit = ({
           </tbody>
         </table>
       </div>
+
+      {/* Modal for PDF preview */}
+      {showModal && (
+        <div>
+          {/* Overlay */}
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              background: "rgba(0,0,0,0.7)",
+              zIndex: 1040,
+            }}
+          />
+          {/* Modal */}
+          <div
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 1050,
+              width: "90vw",
+              maxWidth: "1000px",
+              height: "90vh",
+              display: "flex",
+              flexDirection: "column",
+              background: "#fff",
+              borderRadius: "8px",
+              boxShadow: "0 4px 32px rgba(0,0,0,0.3)",
+            }}
+          >
+            <div
+              style={{
+                padding: "1rem",
+                borderBottom: "1px solid #eee",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <h5 style={{ margin: 0 }}>PDF Preview</h5>
+              <button
+                type="button"
+                className="btn-close"
+                aria-label="Close"
+                onClick={handleCloseModal}
+              ></button>
+            </div>
+            <div style={{ flex: 1, overflow: "hidden" }}>
+              <iframe
+                src={pdfUrl}
+                title="PDF Preview"
+                width="100%"
+                height="100%"
+                style={{ border: "none", minHeight: "100%" }}
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
 
       <input
         type="button"

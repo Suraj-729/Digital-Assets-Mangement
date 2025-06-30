@@ -7,7 +7,10 @@ const LoginPage = ({ onLogin }) => {
   const [loginId, setLoginId] = useState(""); // Changed from userId
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [changePasswordMsg, setChangePasswordMsg] = useState("");
 
   const navigate = useNavigate();
 
@@ -41,6 +44,25 @@ const LoginPage = ({ onLogin }) => {
     }
   };
 
+  const handleChangePassword = async (e) => {
+  e.preventDefault();
+  setChangePasswordMsg("");
+  try {
+    const response = await api.put("/users/change-password", {
+      loginId,
+      currentPassword,
+      newPassword
+    });
+    setChangePasswordMsg(response.data.message || "Password changed successfully.");
+    setCurrentPassword("");
+    setNewPassword("");
+  } catch (err) {
+    setChangePasswordMsg(
+      err.response?.data?.error || "Failed to change password."
+    );
+  }
+};
+
   return (
     <div className="form-container login-page">
       <div className="login-form">
@@ -64,12 +86,49 @@ const LoginPage = ({ onLogin }) => {
           />
           {error && <div className="error-message">{error}</div>}
           <div className="forgot-password">
-            <p>Forgot Password?</p>
+            <button
+              type="button"
+              className="link-btn"
+              onClick={() => setShowChangePassword((v) => !v)}
+              style={{ background: "none", border: "none", color: "#007bff", cursor: "pointer", padding: 0 }}
+            >
+              Change Password?
+            </button>
           </div>
           <button type="submit" className="login-btn">
             Login
           </button>
         </form>
+
+        {showChangePassword && (
+          <form className="change-password-form" onSubmit={handleChangePassword} style={{ marginTop: 20 }}>
+            <h4>Change Password</h4>
+            <input
+              type="password"
+              placeholder="Current Password"
+              className="form-control"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="New Password"
+              className="form-control"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+            <button type="submit" className="login-btn" style={{ marginTop: 10 }}>
+              Update Password
+            </button>
+            {changePasswordMsg && (
+              <div className="error-message" style={{ marginTop: 10 }}>
+                {changePasswordMsg}
+              </div>
+            )}
+          </form>
+        )}
       </div>
     </div>
   );

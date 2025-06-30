@@ -26,7 +26,7 @@
 // }
 // export default App;
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route , Navigate } from "react-router-dom";
 import LoginPage from "./components/LoginPage";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -38,6 +38,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/damLogin" />} />
         <Route path="/damLogin" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route

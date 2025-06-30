@@ -55,6 +55,7 @@ const Dashboard = () => {
     fetchProjects();
   }, []);
 
+
   const handleProjectNameClick = async (projectName) => {
     try {
       setLoading(true);
@@ -89,6 +90,21 @@ const Dashboard = () => {
     return expireDate <= new Date();
   }).length;
 
+  // Filter projects based on selected filter
+  // const filteredProjects =
+  //   filter === "all"
+  //     ? projects
+  //     : filter === "active"
+  //     ? projects.filter((project) => {
+  //         if (!project.expireDate) return false;
+  //         const expireDate = new Date(project.expireDate);
+  //         return expireDate > new Date();
+  //       })
+  //     : projects.filter((project) => {
+  //         if (!project.expireDate) return true;
+  //         const expireDate = new Date(project.expireDate);
+  //         return expireDate <= new Date();
+  //       });
   // Filter projects based on selected filter
   const filteredProjects =
     filter === "all"
@@ -310,14 +326,17 @@ const Dashboard = () => {
                               />
                             )}
                           </div>
-                          <div>
+                          {/* <div>
                             <button className="btn btn-primary">
                               <i className="bi bi-download"></i> Export
                             </button>
-                          </div>
+                          </div> */}
                         </div>
 
-                        <div className="table-vertical-scroll">
+                        <div
+                          className="table-vertical-scroll"
+                          style={{ marginTop: "50px" }}
+                        >
                           <table className="table table-borderless datatable">
                             <thead>
                               <tr>
@@ -339,7 +358,10 @@ const Dashboard = () => {
                                 // Status logic
                                 let statusValue = "N/A";
                                 if (project.expireDate) {
-                                  statusValue = new Date(project.expireDate) > new Date() ? "Valid" : "Expired";
+                                  statusValue =
+                                    new Date(project.expireDate) > new Date()
+                                      ? "Valid"
+                                      : "Expired";
                                 }
                                 return (
                                   <tr key={key}>
@@ -350,7 +372,9 @@ const Dashboard = () => {
                                         href="#"
                                         onClick={(e) => {
                                           e.preventDefault();
-                                          handleProjectNameClick(project.projectName);
+                                          handleProjectNameClick(
+                                            project.projectName
+                                          );
                                         }}
                                         style={{
                                           color: "inherit",
@@ -363,32 +387,52 @@ const Dashboard = () => {
                                     <td>{project.HOD || "N/A"}</td>
                                     <td>{project.deptName || "N/A"}</td>
                                     <td>
-                                      <span className={statusBadge(statusValue)}>
+                                      <span
+                                        className={statusBadge(statusValue)}
+                                      >
                                         {statusValue}
                                       </span>
                                     </td>
                                     <td>
-                                      <span className={auditBadge(project.auditStatus)}>
+                                      <span
+                                        className={auditBadge(
+                                          project.auditStatus
+                                        )}
+                                      >
                                         {project.auditStatus || "N/A"}
                                       </span>
                                     </td>
                                     <td>
-                                      <span className={
-                                        project.auditExpiry
-                                          ? (() => {
-                                              const expiry = new Date(project.auditExpiry);
-                                              const now = new Date();
-                                              if (expiry < now) return "badge bg-danger";
-                                              if ((expiry - now) / (1000 * 60 * 60 * 24) < 30) return "badge bg-warning text-dark";
-                                              return "badge bg-success";
-                                            })()
-                                          : "badge bg-secondary"
-                                      }>
-                                        {project.auditExpiry ? formatDate(project.auditExpiry) : "N/A"}
+                                      <span
+                                        className={
+                                          project.auditExpiry
+                                            ? (() => {
+                                                const expiry = new Date(
+                                                  project.auditExpiry
+                                                );
+                                                const now = new Date();
+                                                if (expiry < now)
+                                                  return "badge bg-danger";
+                                                if (
+                                                  (expiry - now) /
+                                                    (1000 * 60 * 60 * 24) <
+                                                  30
+                                                )
+                                                  return "badge bg-warning text-dark";
+                                                return "badge bg-success";
+                                              })()
+                                            : "badge bg-secondary"
+                                        }
+                                      >
+                                        {project.auditExpiry
+                                          ? formatDate(project.auditExpiry)
+                                          : "N/A"}
                                       </span>
                                     </td>
                                     <td>
-                                      <span className={sslBadge(project.sslStatus)}>
+                                      <span
+                                        className={sslBadge(project.sslStatus)}
+                                      >
                                         {project.sslStatus || "N/A"}
                                       </span>
                                     </td>

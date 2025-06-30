@@ -22,7 +22,7 @@ const StepTechnologyStack = ({
   const [notification, setNotification] = useState({
     show: false,
     message: "",
-    type: ""
+    type: "",
   });
 
   const isValidUrl = (url) => {
@@ -36,12 +36,15 @@ const StepTechnologyStack = ({
 
   const addToStack = (field, value, setter) => {
     if (!value) {
-      setErrors(prev => ({ ...prev, [field]: "Please select a value first" }));
+      setErrors((prev) => ({
+        ...prev,
+        [field]: "Please select a value first",
+      }));
       return;
     }
 
     if (field === "repoUrl" && !isValidUrl(value)) {
-      setErrors(prev => ({ ...prev, repoUrl: "Please enter a valid URL" }));
+      setErrors((prev) => ({ ...prev, repoUrl: "Please enter a valid URL" }));
       return;
     }
 
@@ -49,33 +52,51 @@ const StepTechnologyStack = ({
       setNotification({
         show: true,
         message: "This repository is already added",
-        type: "error"
+        type: "error",
       });
       setTimeout(() => setNotification({ show: false }), 3000);
       return;
     }
 
-    setter(prev => [...prev, value]);
+    setter((prev) => [...prev, value]);
 
     setNotification({
       show: true,
       message: `Added ${value} to ${field}`,
-      type: "success"
+      type: "success",
     });
     setTimeout(() => setNotification({ show: false }), 3000);
 
-    setErrors(prev => ({ ...prev, [field]: "" }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  // Updated: Always expect (field, value, setter)
+  // Always expect (field, value, setter)
   const removeFromStack = (field, value, setter) => {
-    setter(prev => prev.filter(item => item !== value));
+    setter((prev) => prev.filter((item) => item !== value));
+  };
+
+  // Pass field name to removeFromStack
+  const renderStackBadges = (items, field, setter) => {
+    return items.map((item) => (
+      <span key={item} className="badge bg-primary me-2 mb-2 p-2">
+        {item}
+        <button
+          type="button"
+          className="btn-close btn-close-white ms-2"
+          onClick={() => removeFromStack(field, item, setter)}
+          aria-label={`Remove ${item}`}
+        />
+      </span>
+    ));
   };
 
   const handleAddRepository = () => {
     const repoUrl = formData.repoUrl?.trim();
     if (!repoUrl) {
-      setErrors(prev => ({ ...prev, repoUrl: "Please enter a repository URL" }));
+      setErrors((prev) => ({
+        ...prev,
+        repoUrl: "Please enter a repository URL",
+      }));
       return;
     }
     addToStack("repoUrl", repoUrl, setUsedRepo);
@@ -110,25 +131,10 @@ const StepTechnologyStack = ({
     onNext();
   };
 
-  // Updated: Pass field name to removeFromStack
-  const renderStackBadges = (items, field, setter) => {
-    return items.map(item => (
-      <span key={item} className="badge bg-primary me-2 mb-2 p-2">
-        {item}
-        <button 
-          type="button" 
-          className="btn-close btn-close-white ms-2" 
-          onClick={() => removeFromStack(field, item, setter)}
-          aria-label={`Remove ${item}`}
-        />
-      </span>
-    ));
-  };
-
   return (
     <fieldset className="technology-stack-form">
       <legend className="form-legend">Technology Stack</legend>
-      
+
       {notification.show && (
         <div className={`alert alert-${notification.type}`}>
           {notification.message}
@@ -138,12 +144,14 @@ const StepTechnologyStack = ({
       <div className="form-section">
         {/* Front End Technologies */}
         <div className="form-group row mb-4">
-          <label className="col-md-3 col-form-label">Front End Technology</label>
+          <label className="col-md-3 col-form-label">
+            Front End Technology
+          </label>
           <div className="col-md-6">
             <div className="input-group">
-              <select 
+              <select
                 className={`form-select ${errors.frontEnd ? "is-invalid" : ""}`}
-                name="frontEnd" 
+                name="frontEnd"
                 value={formData.frontEnd || ""}
                 onChange={onChange}
               >
@@ -155,10 +163,12 @@ const StepTechnologyStack = ({
                 <option value="PHP">PHP</option>
                 <option value="Others">Others</option>
               </select>
-              <button 
-                className="btn btn-primary" 
+              <button
+                className="btn btn-primary"
                 type="button"
-                onClick={() => addToStack("frontEnd", formData.frontEnd, setUsedTech)}
+                onClick={() =>
+                  addToStack("frontEnd", formData.frontEnd, setUsedTech)
+                }
               >
                 Add
               </button>
@@ -192,9 +202,9 @@ const StepTechnologyStack = ({
           <label className="col-md-3 col-form-label">Database</label>
           <div className="col-md-6">
             <div className="input-group">
-              <select 
+              <select
                 className={`form-select ${errors.database ? "is-invalid" : ""}`}
-                name="database" 
+                name="database"
                 value={formData.database || ""}
                 onChange={onChange}
               >
@@ -208,10 +218,12 @@ const StepTechnologyStack = ({
                 <option value="Oracle">Oracle</option>
                 <option value="Other">Other</option>
               </select>
-              <button 
-                className="btn btn-primary" 
+              <button
+                className="btn btn-primary"
                 type="button"
-                onClick={() => addToStack("database", formData.database, setUsedDb)}
+                onClick={() =>
+                  addToStack("database", formData.database, setUsedDb)
+                }
               >
                 Add
               </button>
@@ -230,9 +242,9 @@ const StepTechnologyStack = ({
           <label className="col-md-3 col-form-label">Operating System</label>
           <div className="col-md-6">
             <div className="input-group">
-              <select 
+              <select
                 className={`form-select ${errors.os ? "is-invalid" : ""}`}
-                name="os" 
+                name="os"
                 value={formData.os || ""}
                 onChange={onChange}
               >
@@ -240,8 +252,8 @@ const StepTechnologyStack = ({
                 <option value="Linux">Linux</option>
                 <option value="Windows">Windows</option>
               </select>
-              <button 
-                className="btn btn-primary" 
+              <button
+                className="btn btn-primary"
                 type="button"
                 onClick={() => addToStack("os", formData.os, setUsedOs)}
               >
@@ -262,9 +274,9 @@ const StepTechnologyStack = ({
           <label className="col-md-3 col-form-label">OS Version</label>
           <div className="col-md-6">
             <div className="input-group">
-              <select 
+              <select
                 className="form-select"
-                name="osVersion" 
+                name="osVersion"
                 value={formData.osVersion || ""}
                 onChange={onChange}
               >
@@ -272,10 +284,12 @@ const StepTechnologyStack = ({
                 <option value="Version 1">Version 1</option>
                 <option value="Version 2">Version 2</option>
               </select>
-              <button 
-                className="btn btn-primary" 
+              <button
+                className="btn btn-primary"
                 type="button"
-                onClick={() => addToStack("osVersion", formData.osVersion, setUsedOsVersion)}
+                onClick={() =>
+                  addToStack("osVersion", formData.osVersion, setUsedOsVersion)
+                }
               >
                 Add
               </button>
@@ -288,7 +302,9 @@ const StepTechnologyStack = ({
 
         {/* Repository URLs */}
         <div className="form-group row mb-4">
-          <label className="col-md-3 col-form-label">Source Code Repository</label>
+          <label className="col-md-3 col-form-label">
+            Source Code Repository
+          </label>
           <div className="col-md-6">
             <div className="input-group">
               <input
@@ -299,8 +315,8 @@ const StepTechnologyStack = ({
                 value={formData.repoUrl || ""}
                 onChange={onChange}
               />
-              <button 
-                className="btn btn-primary" 
+              <button
+                className="btn btn-primary"
                 type="button"
                 onClick={handleAddRepository}
               >
@@ -311,22 +327,22 @@ const StepTechnologyStack = ({
               <div className="invalid-feedback">{errors.repoUrl}</div>
             )}
             <div className="mt-2">
-              {usedRepo.map(repo => (
+              {usedRepo.map((repo) => (
                 <div key={repo} className="d-flex align-items-center mb-2">
-                  <a 
-                    href={repo} 
-                    target="_blank" 
+                  <a
+                    href={repo}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-truncate me-2"
                     style={{ maxWidth: "300px" }}
                   >
                     {repo}
                   </a>
-                  <button 
-                    type="button" 
-                    className="btn-close" 
-                    onClick={() => removeFromStack("repoUrl", repo, setUsedRepo)}
-                    aria-label="Remove repository"
+                  <button
+                    type="button"
+                    className="btn-close btn-close-white ms-2"
+                    onClick={() => removeFromStack(repo, setUsedRepo)}
+                    aria-label={`Remove ${repo}`}
                   />
                 </div>
               ))}
@@ -335,23 +351,24 @@ const StepTechnologyStack = ({
         </div>
       </div>
 
-       <div className="form-navigation d-flex justify-content-center mt-5">
-        <input
+      <div className="form-navigation d-flex justify-content-between mt-5">
+        <button
           type="button"
-          className="previous action-button-previous btn btn-primary me-2"
-          value="Previous"
+          className="btn btn-outline-primary"
           onClick={onPrevious}
-        />
-        <input
+        >
+          Previous
+        </button>
+        <button
           type="button"
-          className="next action-button btn btn-success"
-          value="Next"
+          className="btn btn-success"
           onClick={handleNextStep}
-        />
+        >
+          Next
+        </button>
       </div>
     </fieldset>
   );
 };
-
 
 export default StepTechnologyStack;
