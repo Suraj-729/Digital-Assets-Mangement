@@ -28,7 +28,7 @@ const ProjectTabs = ({ project }) => {
               aria-controls={`${tab.id}-tab`}
             >
               <img
-                 src={`images/icons/${tab.icon}`}
+                 src={`/images/icons/${tab.icon}`}
                 
                 alt={tab.label}
                 style={{ marginRight: "5px" }}

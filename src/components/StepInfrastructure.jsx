@@ -274,7 +274,7 @@ const StepInfrastructure = ({
                 type="button"
                 onClick={() => onDeleteVa(idx)}
               >
-                <i className="fa-regular fa-trash-can"></i>
+                <i className="bi bi-trash"></i>
               </button>
               {record.vaReport && (
                 <a 

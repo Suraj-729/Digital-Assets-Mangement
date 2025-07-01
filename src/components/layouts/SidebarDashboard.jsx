@@ -88,8 +88,8 @@ const Sidebar = ({ setFormToShow  }) => {
                     setFormToShow("projectDetails");
                   }}
                 >
-                  <i className="bi bi-circle"></i>
-                  <span>ProjectDetails</span>
+                  {/* <i className="bi bi-circle"></i>
+                  <span>ProjectDetails</span> */}
                 </Link>
               </li>
             </ul>

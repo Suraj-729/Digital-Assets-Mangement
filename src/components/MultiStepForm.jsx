@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProgressBar from "./ProgressBar";
 import StepBasicProfile from "./StepBasicProfile";
 import StepSecurityAudit from "./StepSecurityAudit";
@@ -14,13 +14,13 @@ const steps = [
   "Infrastructure",
 ];
 
-const MultiStepForm = () => {
+const MultiStepForm = ({ editData, onEditComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({});
   const [gitUrls, setGitUrls] = useState([]);
   const [vaRecords, setVaRecords] = useState([]);
   const [auditRecords, setAuditRecords] = useState([]);
-  
+
   // Technology Stack state
   const [usedTech, setUsedTech] = useState([]);
   const [usedDb, setUsedDb] = useState([]);
@@ -28,6 +28,128 @@ const MultiStepForm = () => {
   const [usedOsVersion, setUsedOsVersion] = useState([]);
   const [usedRepo, setUsedRepo] = useState([]);
 
+  const [formState, setFormState] = useState(editData || {});
+
+  // useEffect(() => {
+  //   if (editData) {
+  //     const bp = editData.BP || editData;
+  //     const nodalNIC = bp.nodalofficerNIC || bp.nodalOfficerNIC || {};
+  //     const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
+
+  //     setFormData({
+  //       // Basic Profile
+  //       assetsId: editData.assetsId || bp.assetsId || "",
+  //       projectName: editData.projectName || bp.name || "",
+  //       prismId: bp.prismid || bp.prismId || "",
+  //       departmentName: bp.deptName || bp.departmentName || "",
+  //       url: bp.url || "",
+  //       publicIp: bp.publicIp || bp.public_ip || "",
+  //       HOD: bp.HOD || "",
+  //       // Nodal Officer from NIC
+  //       nicOfficerName: nodalNIC.name || "",
+  //       nicOfficerEmpCode: nodalNIC.empCode || "",
+  //       nicOfficerMob: nodalNIC.mobile || "",
+  //       nicOfficerEmail: nodalNIC.email || "",
+  //       // Nodal Officer from Department
+  //       deptOfficerName: nodalDept.name || "",
+  //       deptOfficerDesignation: nodalDept.designation || "",
+  //       deptOfficerMob: nodalDept.mobile || "",
+  //       deptOfficerEmail: nodalDept.email || "",
+  //       // Security Audit (single fields if any)
+  //       certificate: editData.SA?.securityAudit?.[0]?.certificate || "",
+  //       // Technology Stack
+  //       framework: editData.TS?.framework || "",
+  //       // Infrastructure
+  //       typeOfServer: editData.Infra?.typeOfServer || "",
+  //       dataCentre: editData.Infra?.dataCentre || "",
+  //       deployment: editData.Infra?.deployment || "",
+  //       location: editData.Infra?.location || "",
+  //       // VA fields (for adding new VA record)
+  //       ipAddress: "",
+  //       purposeOfUse: "",
+  //       vaScore: "",
+  //       dateOfVA: "",
+  //       vaReport: null,
+  //       // Git URL (for adding new git url)
+  //       gitUrl: "",
+  //     });
+  //     setUsedTech(editData.TS?.frontEnd || []);
+  //     setUsedDb(editData.TS?.database || []);
+  //     setUsedOs(editData.TS?.os || []);
+  //     setUsedOsVersion(editData.TS?.osVersion || []);
+  //     setUsedRepo(editData.TS?.repoUrls || []);
+  //     setGitUrls(editData.Infra?.gitUrls || []);
+  //     setVaRecords(editData.Infra?.vaRecords || []);
+  //     setAuditRecords(editData.SA?.securityAudit || []);
+  //   }
+  // }, [editData]);
+
+  useEffect(() => {
+    if (editData) {
+      const bp = editData.BP || editData;
+      const nodalNIC = bp.nodalofficerNIC || bp.nodalOfficerNIC || {};
+      const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
+      const firstAudit = editData.SA?.securityAudit?.[0] || {};
+
+      setFormData({
+        // Basic Profile
+        assetsId: editData.assetsId || bp.assetsId || "",
+        projectName: editData.projectName || bp.name || "",
+        prismId: bp.prismid || bp.prismId || "",
+        departmentName: bp.deptName || bp.departmentName || "",
+        url: bp.url || "",
+        publicIp: bp.publicIp || bp.public_ip || "",
+        HOD: bp.HOD || "",
+        // Nodal Officer from NIC
+        nicOfficerName: nodalNIC.name || "",
+        nicOfficerEmpCode: nodalNIC.empCode || "",
+        nicOfficerMob: nodalNIC.mobile || "",
+        nicOfficerEmail: nodalNIC.email || "",
+        // Nodal Officer from Department
+        deptOfficerName: nodalDept.name || "",
+        deptOfficerDesignation: nodalDept.designation || "",
+        deptOfficerMob: nodalDept.mobile || "",
+        deptOfficerEmail: nodalDept.email || "",
+        // Security Audit (first record fields)
+        typeOfAudit: firstAudit.typeOfAudit || "",
+        auditingAgency: firstAudit.auditingAgency || "",
+        auditDate: firstAudit.auditDate
+          ? firstAudit.auditDate.slice(0, 10)
+          : "",
+        expireDate: firstAudit.expireDate
+          ? firstAudit.expireDate.slice(0, 10)
+          : "",
+        tlsNextExpiry: firstAudit.tlsNextExpiry
+          ? firstAudit.tlsNextExpiry.slice(0, 10)
+          : "",
+        sslLabScore: firstAudit.sslLabScore || "",
+        certificate: firstAudit.certificate || "",
+        // Technology Stack
+        framework: editData.TS?.framework || "",
+        // Infrastructure
+        typeOfServer: editData.Infra?.typeOfServer || "",
+        dataCentre: editData.Infra?.dataCentre || "",
+        deployment: editData.Infra?.deployment || "",
+        location: editData.Infra?.location || "",
+        // VA fields (for adding new VA record)
+        ipAddress: "",
+        purposeOfUse: "",
+        vaScore: "",
+        dateOfVA: "",
+        vaReport: null,
+        // Git URL (for adding new git url)
+        gitUrl: "",
+      });
+      setUsedTech(editData.TS?.frontend ?? editData.TS?.frontEnd ?? []);
+      setUsedDb(editData.TS?.database || []);
+      setUsedOs(editData.TS?.os || []);
+      setUsedOsVersion(editData.TS?.osVersion || []);
+      setUsedRepo(editData.TS?.repoUrls || []);
+      setGitUrls(editData.Infra?.gitUrls || []);
+      setVaRecords(editData.Infra?.vaRecords || []);
+      setAuditRecords(editData.SA?.securityAudit || []);
+    }
+  }, [editData]);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     const newValue = files ? files[0] : value;
@@ -97,7 +219,7 @@ const MultiStepForm = () => {
 
       // Build sectioned data
       const BP = {
-        assetsId:formData.assetsId,
+        assetsId: formData.assetsId,
         name: formData.projectName,
         prismId: formData.prismId,
         deptname: formData.departmentName,
@@ -125,7 +247,9 @@ const MultiStepForm = () => {
           auditingAgency: record.auditingAgency,
           auditDate: record.auditDate ? new Date(record.auditDate) : null,
           expireDate: record.expireDate ? new Date(record.expireDate) : null,
-          tlsNextExpiry: record.nextExpireDate ? new Date(record.nextExpireDate) : null,
+          tlsNextExpiry: record.nextExpireDate
+            ? new Date(record.nextExpireDate)
+            : null,
           sslLabScore: record.sslLabScore,
           certificate: record.certificate,
         })),
@@ -159,23 +283,34 @@ const MultiStepForm = () => {
       form.append("SA", JSON.stringify(SA));
       form.append("TS", JSON.stringify(TS));
       form.append("Infra", JSON.stringify(Infra));
-
       if (formData.certificate) {
         form.append("certificate", formData.certificate);
       }
 
-      const response = await api.post("/assets/createAsset", form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      alert("Asset successfully created!");
-      console.log(response.data);
+      if (editData && editData.projectName) {
+        // EDIT: update by project name
+        await api.put(
+          `/assets/update/by-project-name/${encodeURIComponent(
+            editData.projectName
+          )}`,
+          form,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        alert("Asset successfully updated!");
+      } else {
+        // CREATE: new asset
+        await api.post("/assets/createAsset", form, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        alert("Asset successfully created!");
+      }
     } catch (err) {
       console.error("Submission error:", err);
-      alert("Error creating asset. Check console for details.");
+      alert("Error submitting asset. Check console for details.");
     }
   };
-
   const renderStep = () => {
     switch (currentStep) {
       case 0:
@@ -238,7 +373,7 @@ const MultiStepForm = () => {
   };
 
   return (
-    <div className="form-container mt-5">
+    <div className="form-container ">
       <form id="msform" onSubmit={handleSubmit}>
         <ProgressBar steps={steps} currentStep={currentStep} />
         {renderStep()}

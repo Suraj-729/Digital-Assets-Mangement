@@ -19,7 +19,7 @@ const Dashboard = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedDatacenter, setSelectedDatacenter] = useState("");
   const [selectedPrismId, setSelectedPrismId] = useState("");
-
+  const [editProjectData, setEditProjectData] = useState(null);
   // Get unique departments, datacenters, and prismIds from projects
   const departments = Array.from(
     new Set(projects.map((p) => p.deptName).filter(Boolean))
@@ -55,7 +55,6 @@ const Dashboard = () => {
     fetchProjects();
   }, []);
 
-
   const handleProjectNameClick = async (projectName) => {
     try {
       setLoading(true);
@@ -76,6 +75,29 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+  const handleEditProject = async (projectName) => {
+  try {
+    setLoading(true);
+    console.log("Fetching project details for edit:", projectName);
+    const response = await api.get(
+      `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
+    );
+    console.log("API response for edit:", response);
+    if (response.status >= 200 && response.status < 300) {
+      console.log("Project data fetched for edit:", response.data);
+      setEditProjectData(response.data); // <-- This stores all previous data
+      setFormToShow("addProject");       // <-- This opens the form for editing
+    } else {
+      console.error(`Request failed with status ${response.status}`);
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+  } catch (err) {
+    console.error("Error fetching project for edit:", err);
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Calculate dashboard stats from the projects data
   const totalProjects = projects.length;
@@ -123,11 +145,13 @@ const Dashboard = () => {
         })
       : filter === "departmentwise"
       ? projects.filter(
-          (project) => selectedDepartment && project.deptName === selectedDepartment
+          (project) =>
+            selectedDepartment && project.deptName === selectedDepartment
         )
       : filter === "datacenter"
       ? projects.filter(
-          (project) => selectedDatacenter && project.datacenter === selectedDatacenter
+          (project) =>
+            selectedDatacenter && project.datacenter === selectedDatacenter
         )
       : filter === "prismid"
       ? projects.filter(
@@ -139,7 +163,9 @@ const Dashboard = () => {
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
-    return `${date.getDate()} / ${date.toLocaleString("en-GB", { month: "long" })} / ${date.getFullYear()}`;
+    return `${date.getDate()} / ${date.toLocaleString("en-GB", {
+      month: "long",
+    })} / ${date.getFullYear()}`;
   };
 
   // Badge helpers
@@ -198,8 +224,13 @@ const Dashboard = () => {
         <main id="main" className="main w-100 p-3">
           {formToShow === "addProject" ? (
             <section className="mt-4">
-              <h3 className="mb-3">Add Projects</h3>
-              <MultiStepForm />
+              <h3 className="mb-3">
+                {editProjectData ? "Edit Project" : "Add Projects"}
+              </h3>
+              <MultiStepForm
+                editData={editProjectData}
+                onEditComplete={() => setEditProjectData(null)}
+              />
             </section>
           ) : formToShow === "projectDetails" ? (
             <section className="mt-4">
@@ -283,8 +314,12 @@ const Dashboard = () => {
                             >
                               <option value="all">All Projects</option>
                               <option value="active">Active Projects</option>
-                              <option value="inactive">Inactive Projects</option>
-                              <option value="departmentwise">Departmentwise</option>
+                              <option value="inactive">
+                                Inactive Projects
+                              </option>
+                              <option value="departmentwise">
+                                Departmentwise
+                              </option>
                               {/* <option value="datacenter">Datacenter</option> */}
                               <option value="prismid">Prism ID</option>
                             </select>
@@ -292,7 +327,9 @@ const Dashboard = () => {
                               <select
                                 className="form-select"
                                 value={selectedDepartment}
-                                onChange={(e) => setSelectedDepartment(e.target.value)}
+                                onChange={(e) =>
+                                  setSelectedDepartment(e.target.value)
+                                }
                               >
                                 <option value="">Select Department</option>
                                 {departments.map((dept) => (
@@ -306,7 +343,9 @@ const Dashboard = () => {
                               <select
                                 className="form-select"
                                 value={selectedDatacenter}
-                                onChange={(e) => setSelectedDatacenter(e.target.value)}
+                                onChange={(e) =>
+                                  setSelectedDatacenter(e.target.value)
+                                }
                               >
                                 <option value="">Select Datacenter</option>
                                 {datacenters.map((dc) => (
@@ -322,7 +361,9 @@ const Dashboard = () => {
                                 className="form-control"
                                 placeholder="Enter Prism ID"
                                 value={selectedPrismId}
-                                onChange={(e) => setSelectedPrismId(e.target.value)}
+                                onChange={(e) =>
+                                  setSelectedPrismId(e.target.value)
+                                }
                               />
                             )}
                           </div>
@@ -343,18 +384,21 @@ const Dashboard = () => {
                                 <th>Assets ID</th>
                                 <th>Prism ID</th>
                                 <th>Project Name</th>
-                                <th>HOD</th>
+                                <th>HOD Name</th>
                                 <th>Department</th>
                                 <th>Status</th>
                                 <th>Audit Status</th>
-                                <th>Audit Expiry</th>
-                                <th>SSL/TLS</th>
-                                <th>SSL/TLS expiry date</th>
+                                <th>Audit Expiry Date</th>
+                                <th>SSL/TLS Status</th>
+                                <th>SSL/TLS Expiry Date</th>
+                                <th>Edit</th>
                               </tr>
                             </thead>
                             <tbody>
                               {filteredProjects.map((project, index) => {
-                                const key = project.assetsId || `${project.projectName}-${index}`;
+                                const key =
+                                  project.assetsId ||
+                                  `${project.projectName}-${index}`;
                                 // Status logic
                                 let statusValue = "N/A";
                                 if (project.expireDate) {
@@ -366,8 +410,10 @@ const Dashboard = () => {
                                 return (
                                   <tr key={key}>
                                     <td>{project.assetsId || "N/A"}</td>
-                                    <td>{project.prismId || "N/A"}</td>
-                                    <td>
+                                    <td style={{ color: "#007bff" }}>
+                                      {project.prismId || "N/A"}
+                                    </td>
+                                    <td style={{ color: "#007bff" }}>
                                       <a
                                         href="#"
                                         onClick={(e) => {
@@ -437,6 +483,16 @@ const Dashboard = () => {
                                       </span>
                                     </td>
                                     <td>{formatDate(project.tlsNextExpiry)}</td>
+                                    <td>
+                                      <button
+                                        className="btn btn-sm btn-outline-primary"
+                                        onClick={() =>
+                                          handleEditProject(project.projectName)
+                                        }
+                                      >
+                                        Edit
+                                      </button>
+                                    </td>
                                   </tr>
                                 );
                               })}
