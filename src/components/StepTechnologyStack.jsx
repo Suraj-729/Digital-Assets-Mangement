@@ -351,7 +351,7 @@ const StepTechnologyStack = ({
         </div>
       </div>
 
-      <div className="form-navigation d-flex justify-content-between mt-5">
+      {/* <div className="form-navigation d-flex justify-content-between mt-5">
         <button
           type="button"
           className="btn btn-outline-primary"
@@ -366,7 +366,52 @@ const StepTechnologyStack = ({
         >
           Next
         </button>
-      </div>
+      </div> */}
+      <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "20px",
+    marginTop: "30px", // Space below the form
+  }}
+>
+  <button
+    type="button"
+    className="btn btn-outline-primary"
+    onClick={onPrevious}
+    style={{
+      width: "100px",
+      fontWeight: "bold",
+      color: "white",
+      border: "0 none",
+      borderRadius: "10px",
+      cursor: "pointer",
+      padding: "10px 5px",
+      background: "#a8dced",
+    }}
+  >
+    Previous
+  </button>
+
+  <button
+    type="button"
+    className="btn btn-success"
+    onClick={handleNextStep}
+    style={{
+      width: "100px",
+      fontWeight: "bold",
+      color: "white",
+      border: "0 none",
+      borderRadius: "10px",
+      cursor: "pointer",
+      padding: "10px 5px",
+      background: "#0099cc",
+    }}
+  >
+    Next
+  </button>
+</div>
     </fieldset>
   );
 };
