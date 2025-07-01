@@ -973,7 +973,7 @@ h6 {
   background-color:#f7f7ff;
   color: #000;            
   font-weight: 600;           
-  font-size: 19px;          
+  font-size: 22px;          
   vertical-align: middle;
   white-space: nowrap;
   padding-top: 35px;
@@ -1011,15 +1011,38 @@ h6 {
   max-width: 60px;
 }
 
-.dashboard .recent-sales .table tbody td:nth-child(1),
-.dashboard .recent-sales .table tbody td:nth-child(2) {
+.dashboard .recent-sales .table tbody td:nth-child(1){
+
   font-weight: bold;
+  font-size: 20px;
+  
+}
+.dashboard .recent-sales .table tbody td:nth-child(2),
+.dashboard .recent-sales .table tbody td:nth-child(2) a {
+  font-size: 20px;
+  color: #000 !important;
 }
 .dashboard .recent-sales .table tbody td:nth-child(3) {
   color: #007bff;
+  font-size: 21px;
+}
+.dashboard .recent-sales .table tbody td:nth-child(4) {
+  font-size: 21px;
+}
+.dashboard .recent-sales .table tbody td:nth-child(5) {
+  font-size: 21px;
 }
 .dashboard .recent-sales .table tbody td:nth-child(6) {
    font-size: 22px;
+}
+.dashboard .recent-sales .table tbody td:nth-child(10) {
+   font-size: 22px;
+}
+.dashboard .recent-sales .table tbody td:nth-child(11) button {
+  min-width: 80px;
+  min-height: 40px;
+  font-size: 18px;
+  padding: 8px 20px;
 }
 .dashboard .recent-sales .table tbody td:nth-child(7),
 .dashboard .recent-sales .table tbody td:nth-child(8),
@@ -1030,12 +1053,12 @@ h6 {
 }
 
 .dashboard .recent-sales .table .badge {
-  min-width: 70px;              /* Set a minimum width for all badges */
+  min-width: 50px;              /* Set a minimum width for all badges */
   display: inline-block;        /* Allow width/height to apply */
   text-align: center;           /* Center text inside badge */
   padding: 10px 0;              /* Consistent vertical padding */
   font-size: 18px;              /* Consistent font size */
-  border-radius: 8px;           /* Optional: rounded corners */
+  border-radius: 10px;           /* Optional: rounded corners */
 }
 
 
@@ -1366,6 +1389,7 @@ h6 {
 }
 
 #msform fieldset {
+  
   /* background: white; */
   border: 0 none;
   /* box-shadow: 0 0 15px 1px rgb(0 0 0 / 8%); */
@@ -1462,9 +1486,11 @@ h6 {
   margin-top: 20px;
 }
 
+
 #msform .action-button:hover,
 #msform .action-button:focus {
   box-shadow: 0 0 0 2px white, 0 0 0 3px #0099cc;
+  /* background-color: #000; */
 }
 
 #msform .action-button-previous {
@@ -1479,6 +1505,33 @@ h6 {
   background: #a8dced;
   margin-top: 20px;
 }
+/* .btn.btn-success {
+   width: 100px;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+  background: #0099cc;
+  margin-top: 20px;
+}
+.btn.btn-outline-primary  {
+  width: 100px;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+  background: #a8dced;
+  margin-top: 20px;
+} */
+
+
+
 
 #msform .action-button-previous:hover,
 #msform .action-button-previous:focus {

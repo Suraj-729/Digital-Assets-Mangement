@@ -91,7 +91,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   useEffect(() => {
     if (editData) {
       const bp = editData.BP || editData;
-      const nodalNIC = bp.nodalofficerNIC || bp.nodalOfficerNIC || {};
+      const nodalNIC = bp.nodalOfficerNIC || bp.nodalOfficerNIC || {};
       const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
       const firstAudit = editData.SA?.securityAudit?.[0] || {};
 

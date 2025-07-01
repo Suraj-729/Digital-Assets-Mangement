@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import BasicProfile from "./BasicProfile";
@@ -28,8 +27,7 @@ const ProjectTabs = ({ project }) => {
               aria-controls={`${tab.id}-tab`}
             >
               <img
-                 src={`/images/icons/${tab.icon}`}
-                
+                src={`/images/icons/${tab.icon}`}
                 alt={tab.label}
                 style={{ marginRight: "5px" }}
                 width="20"
@@ -41,7 +39,16 @@ const ProjectTabs = ({ project }) => {
         ))}
       </ul>
 
-      <div className="tab-content pt-3">
+      <div
+        className="tab-content pt-3"
+        style={{
+          background: "#fff",
+          borderRadius: "12px",
+          boxShadow: "0 2px 12px 0 rgba(0,0,0,0.04)",
+          padding: "32px 24px",
+          marginTop: "16px"
+        }}
+      >
         {activeTab === "basic" && (
           <div id="basic-tab" role="tabpanel" aria-labelledby="basic-tab">
             <BasicProfile project={project} />
