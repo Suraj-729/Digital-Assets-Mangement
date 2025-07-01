@@ -390,8 +390,11 @@ const Dashboard = () => {
                                 <th>Audit Status</th>
                                 <th>Audit Expiry Date</th>
                                 <th>SSL/TLS Status</th>
-                                <th>SSL/TLS Expiry Date</th>
+
+                               <th>SSL/TLS Expiry Date</th>
                                 <th>Edit</th>
+
+                                
                               </tr>
                             </thead>
                             <tbody>
