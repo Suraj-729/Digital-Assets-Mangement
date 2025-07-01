@@ -19,6 +19,8 @@ const StepTechnologyStack = ({
   setUsedRepo,
 }) => {
   const [errors, setErrors] = useState({});
+  const [usedFrameworks, setUsedFrameworks] = useState([]);
+
   const [notification, setNotification] = useState({
     show: false,
     message: "",
@@ -183,7 +185,7 @@ const StepTechnologyStack = ({
         </div>
 
         {/* Framework */}
-        <div className="form-group row mb-4">
+        {/* <div className="form-group row mb-4">
           <label className="col-md-3 col-form-label">Framework(s)</label>
           <div className="col-md-6">
             <input
@@ -195,7 +197,37 @@ const StepTechnologyStack = ({
               onChange={onChange}
             />
           </div>
-        </div>
+        </div> */}
+        {/* Framework(s) */}
+<div className="form-group row mb-4">
+  <label className="col-md-3 col-form-label">Framework(s)</label>
+  <div className="col-md-6">
+    <div className="input-group">
+      <input
+        type="text"
+        className={`form-control ${errors.framework ? "is-invalid" : ""}`}
+        name="framework"
+        placeholder="Enter framework name"
+        value={formData.framework || ""}
+        onChange={onChange}
+      />
+      <button
+        className="btn btn-primary"
+        type="button"
+        onClick={() => addToStack("framework", formData.framework, setUsedFrameworks)}
+      >
+        Add
+      </button>
+    </div>
+    {errors.framework && (
+      <div className="invalid-feedback">{errors.framework}</div>
+    )}
+    <div className="mt-2">
+      {renderStackBadges(usedFrameworks, "framework", setUsedFrameworks)}
+    </div>
+  </div>
+</div>
+
 
         {/* Databases */}
         <div className="form-group row mb-4">

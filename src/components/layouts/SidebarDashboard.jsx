@@ -12,7 +12,7 @@ const Sidebar = ({ setFormToShow  }) => {
       <ul className="sidebar-nav" id="sidebar-nav">
         {/* Dashboard */}
         <li className="nav-item">
-          <Link className="nav-link" to="/">
+          <Link className="nav-link" to="/dashboard">
             <i className="bi bi-grid"></i>
             <span>Dashboard</span>
           </Link>

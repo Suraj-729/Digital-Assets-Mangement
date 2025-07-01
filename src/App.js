@@ -30,6 +30,7 @@ import { BrowserRouter, Routes, Route , Navigate } from "react-router-dom";
 import LoginPage from "./components/LoginPage";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ChangePasswordPage from "./components/ChangePassword";
 import RegisterPage from "./components/Register";
 import "./css/bootstrap/dist/css/bootstrap.min.css";
 import "./css/bootstrap-icons/font/bootstrap-icons.css"
@@ -57,6 +58,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+         <Route path="/change-password" element={<ChangePasswordPage />} />
       </Routes>
     </BrowserRouter>
   );
