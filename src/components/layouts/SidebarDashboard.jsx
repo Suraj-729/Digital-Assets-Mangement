@@ -1,51 +1,67 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../css/mvpStyle.css";
 
-const Sidebar = ({ setFormToShow  }) => {
+const Sidebar = ({ setFormToShow }) => {
   const [groupHeadsOpen, setGroupHeadsOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
- 
+  const navigate = useNavigate();
+
+  // Get employeeType and trim whitespace
+  const employeeType = (localStorage.getItem("employeeType") || "").trim();
 
   return (
     <aside id="sidebar" className="sidebar">
       <ul className="sidebar-nav" id="sidebar-nav">
         {/* Dashboard */}
         <li className="nav-item">
-          <Link className="nav-link" to="/dashboard">
+          <a
+            className="nav-link"
+            role="button"
+            onClick={() => {
+              const employeeType = localStorage.getItem("employeeType");
+              if (employeeType) {
+                navigate(`/damLogin/${employeeType}`);
+              } else {
+                navigate("/");
+              }
+            }}
+          >
             <i className="bi bi-grid"></i>
             <span>Dashboard</span>
-          </Link>
+          </a>
         </li>
 
-        {/* Group Heads Dropdown */}
-        <li className="nav-item">
-          <div
-            className={`nav-link ${groupHeadsOpen ? "" : "collapsed"}`}
-            onClick={() => setGroupHeadsOpen(!groupHeadsOpen)}
-            style={{ cursor: "pointer" }}
-          >
-            <i className="bi bi-person"></i>
-            <span>Group Heads</span>
-            <i className="bi bi-chevron-down ms-auto"></i>
-          </div>
-          {groupHeadsOpen && (
-            <ul className="nav-content show" style={{ paddingLeft: "20px" }}>
-              <li>
-                <Link to="#">
-                  <i className="bi bi-circle"></i>
-                  <span>Add Group Heads</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="#">
-                  <i className="bi bi-circle"></i>
-                  <span>View / Manage GH</span>
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
+        {/* Group Heads Dropdown - Only show if employeeType is ADMIN */}
+        {employeeType === "Admin" && (
+          <li className="nav-item">
+            <div
+              className={`nav-link ${groupHeadsOpen ? "" : "collapsed"}`}
+              onClick={() => setGroupHeadsOpen(!groupHeadsOpen)}
+              style={{ cursor: "pointer" }}
+            >
+              <i className="bi bi-person"></i>
+              <span>Group Heads</span>
+              <i className="bi bi-chevron-down ms-auto"></i>
+            </div>
+            {groupHeadsOpen && (
+              <ul className="nav-content show" style={{ paddingLeft: "20px" }}>
+                <li>
+                  <Link to="#">
+                    <i className="bi bi-circle"></i>
+                    <span>Add Group Heads</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="#">
+                    <i className="bi bi-circle"></i>
+                    <span>View / Manage GH</span>
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </li>
+        )}
 
         {/* Projects Dropdown */}
         <li className="nav-item">
@@ -65,7 +81,7 @@ const Sidebar = ({ setFormToShow  }) => {
                   to="#"
                   className="nav-link"
                   onClick={(e) => {
-                    e.preventDefault(); // Prevents page jump
+                    e.preventDefault();
                     setFormToShow("addProject");
                   }}
                 >
@@ -99,7 +115,5 @@ const Sidebar = ({ setFormToShow  }) => {
     </aside>
   );
 };
-
-
 
 export default Sidebar;

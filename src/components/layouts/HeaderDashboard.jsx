@@ -230,7 +230,7 @@ const Header = () => {
             <i className="bi bi-search"></i>
           </button>
         </form>
-      </div>
+      </div> */}
 
       <nav className="header-nav ms-auto">
         <ul className="d-flex align-items-center">
