@@ -92,7 +92,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     if (editData) {
       const bp = editData.BP || editData;
       const nodalNIC = bp.nodalofficerNIC || bp.nodalOfficerNIC || {};
-      const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
+const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
       const firstAudit = editData.SA?.securityAudit?.[0] || {};
 
       setFormData({
@@ -216,10 +216,13 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
     try {
       const form = new FormData();
+      const employeeId = localStorage.getItem("employeeId");
+      // Build sectioned data
       const BP = {
         assetsId: formData.assetsId,
         name: formData.projectName,
         prismId: formData.prismId,
+        employeeId, // <-- Add this line
         deptname: formData.departmentName,
         url: formData.url,
         public_ip: formData.publicIp,

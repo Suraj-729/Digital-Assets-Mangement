@@ -1,55 +1,210 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+// import React, { useState, useEffect, useRef } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import "../../css/mvpStyle.css";
+// import api from "../../Api"; // Make sure you have an api.js for axios/fetch
+
+// const Header = () => {
+//   const navigate = useNavigate();
+//   const [notifications, setNotifications] = useState([]);
+//   const [userName, setUserName] = useState(localStorage.getItem("userName") || "User Name");
+//   const [designation, setDesignation] = useState(localStorage.getItem("designation") || "Designation");
+//   const [profileOpen, setProfileOpen] = useState(false);
+//   const profileRef = useRef(null);
+
+//   // Fetch notifications from backend (mocked here)
+//   useEffect(() => {
+//     // Replace with your actual API call if available
+//     async function fetchNotifications() {
+//       // const res = await api.get("/notifications");
+//       // setNotifications(res.data);
+//       setNotifications([
+//         { id: 1, type: "warning", title: "Lorem Ipsum", message: "Quae dolorem earum veritatis oditseno", time: "30 min. ago" },
+//         { id: 2, type: "danger", title: "Atque rerum nesciunt", message: "Quae dolorem earum veritatis oditseno", time: "1 hr. ago" },
+//         { id: 3, type: "success", title: "Sit rerum fuga", message: "Quae dolorem earum veritatis oditseno", time: "2 hrs. ago" },
+//         { id: 4, type: "primary", title: "Dicta reprehenderit", message: "Quae dolorem earum veritatis oditseno", time: "4 hrs. ago" },
+//       ]);
+//     }
+//     fetchNotifications();
+//   }, []);
+
+//   // Close dropdown when clicking outside
+//   useEffect(() => {
+//     function handleClickOutside(event) {
+//       if (profileRef.current && !profileRef.current.contains(event.target)) {
+//         setProfileOpen(false);
+//       }
+//     }
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, []);
+
+//   const handleSignOut = async () => {
+//     try {
+//       await api.post("/users/logout");
+//       localStorage.clear();
+//       navigate("/damLogin");
+//     } catch (err) {
+//       alert("Logout failed");
+//     }
+//   };
+
+//   const handleProfile = () => navigate("/profile");
+//   const handleAccountSettings = () => navigate("/account-settings");
+
+//   return (
+//     <header id="header" className="header fixed-top d-flex align-items-center">
+//       <div className="d-flex align-items-center justify-content-between">
+//         <Link to="/" className="logo d-flex align-items-center">
+//           <img src="../../../images/logo.png" alt="Logo" />
+//         </Link>
+//         <i className="bi bi-list toggle-sidebar-btn"></i>
+//       </div>
+
+//       <div className="search-bar">
+//         <form className="search-form d-flex align-items-center" method="POST" action="#">
+//           <input type="text" name="query" placeholder="Search" title="Enter search keyword" />
+//           <button type="submit" title="Search">
+//             <i className="bi bi-search"></i>
+//           </button>
+//         </form>
+//       </div>
+
+//       <nav className="header-nav ms-auto">
+//         <ul className="d-flex align-items-center">
+
+//           <li className="nav-item d-block d-lg-none">
+//             <Link className="nav-link nav-icon search-bar-toggle" to="#">
+//               <i className="bi bi-search"></i>
+//             </Link>
+//           </li>
+
+//           {/* Notifications Dropdown */}
+//           <li className="nav-item dropdown">
+//             <Link className="nav-link nav-icon" to="#" data-bs-toggle="dropdown">
+//               <i className="bi bi-bell"></i>
+//               <span className="badge bg-primary badge-number">{notifications.length}</span>
+//             </Link>
+//             <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+//               <li className="dropdown-header">
+//                 You have {notifications.length} new notifications
+//                 <Link to="#"><span className="badge rounded-pill bg-primary p-2 ms-2">View all</span></Link>
+//               </li>
+//               <li><hr className="dropdown-divider" /></li>
+//               {notifications.map((n, idx) => (
+//                 <React.Fragment key={n.id}>
+//                   <li className="notification-item">
+//                     <i className={`bi bi-${n.type === "warning" ? "exclamation-circle text-warning" : n.type === "danger" ? "x-circle text-danger" : n.type === "success" ? "check-circle text-success" : "info-circle text-primary"}`}></i>
+//                     <div>
+//                       <h4>{n.title}</h4>
+//                       <p>{n.message}</p>
+//                       <p>{n.time}</p>
+//                     </div>
+//                   </li>
+//                   {idx < notifications.length - 1 && <li><hr className="dropdown-divider" /></li>}
+//                 </React.Fragment>
+//               ))}
+//               <li className="dropdown-footer">
+//                 <Link to="#">Show all notifications</Link>
+//               </li>
+//             </ul>
+//           </li>
+
+//           {/* Profile Dropdown (Manual, no Bootstrap) */}
+//           <li className="nav-item dropdown pe-3" ref={profileRef} style={{ position: "relative" }}>
+//             <button
+//               className="nav-link nav-profile d-flex align-items-center pe-0"
+//               style={{ background: "none", border: "none", padding: 0 }}
+//               onClick={() => setProfileOpen((open) => !open)}
+//             >
+//               <img src="../../../images/profile-img.jpg" alt="Profile" className="rounded-circle" />
+//               <span className="d-none d-md-block dropdown-toggle ps-2">{userName}</span>
+//             </button>
+//             {profileOpen && (
+//               <ul
+//                 className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile"
+//                 style={{
+//                   display: "block",
+//                   position: "absolute",
+//                   top: "100%",
+//                   right: 0,
+//                   minWidth: 200,
+//                   background: "#fff",
+//                   boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+//                   borderRadius: 8,
+//                   zIndex: 1000,
+//                   padding: 0,
+//                   margin: 0,
+//                   listStyle: "none"
+//                 }}
+//               >
+//                 <li className="dropdown-header" style={{ padding: "12px 16px" }}>
+//                   <h6 style={{ margin: 0 }}>NIC</h6>
+//                   <span>{designation}</span>
+//                 </li>
+//                 <li><hr className="dropdown-divider" /></li>
+//                 {/* <li>
+//                   <button className="dropdown-item d-flex align-items-center" onClick={handleProfile} style={{ background: "none", border: "none", width: "100%", textAlign: "left", padding: "8px 16px" }}>
+//                     <i className="bi bi-person"></i>
+//                     <span style={{ marginLeft: 8 }}>My Profile</span>
+//                   </button>
+//                 </li> */}
+//                 <li><hr className="dropdown-divider" /></li>
+//                 {/* <li>
+//                   <button className="dropdown-item d-flex align-items-center" onClick={handleAccountSettings} style={{ background: "none", border: "none", width: "100%", textAlign: "left", padding: "8px 16px" }}>
+//                     <i className="bi bi-gear"></i>
+//                     <span style={{ marginLeft: 8 }}>Account Settings</span>
+//                   </button>
+//                 </li> */}
+//                 <li><hr className="dropdown-divider" /></li>
+//                 {/* <li>
+//                   <button className="dropdown-item d-flex align-items-center" style={{ background: "none", border: "none", width: "100%", textAlign: "left", padding: "8px 16px" }}>
+//                     <i className="bi bi-question-circle"></i>
+//                     <span style={{ marginLeft: 8 }}>Need Help?</span>
+//                   </button>
+//                 </li> */}
+//                 <li><hr className="dropdown-divider" /></li>
+//                 <li>
+//                   <button className="dropdown-item d-flex align-items-center" onClick={handleSignOut} style={{ background: "none", border: "none", width: "100%", textAlign: "left", padding: "8px 16px" }}>
+//                     <i className="bi bi-box-arrow-right"></i>
+//                     <span style={{ marginLeft: 8 }}>Sign Out</span>
+//                   </button>
+//                 </li>
+//               </ul>
+//             )}
+//           </li>
+//         </ul>
+//       </nav>
+//     </header>
+//   );
+// };
+
+// export default Header;
+
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "../../css/mvpStyle.css";
-import api from "../../Api"; // Make sure you have an api.js for axios/fetch
+import api from "../../Api";
 
 const Header = () => {
-  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
-  const [userName, setUserName] = useState(localStorage.getItem("userName") || "User Name");
-  const [designation, setDesignation] = useState(localStorage.getItem("designation") || "Designation");
-  const [profileOpen, setProfileOpen] = useState(false);
-  const profileRef = useRef(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Fetch notifications from backend (mocked here)
   useEffect(() => {
-    // Replace with your actual API call if available
     async function fetchNotifications() {
-      // const res = await api.get("/notifications");
-      // setNotifications(res.data);
-      setNotifications([
-        { id: 1, type: "warning", title: "Lorem Ipsum", message: "Quae dolorem earum veritatis oditseno", time: "30 min. ago" },
-        { id: 2, type: "danger", title: "Atque rerum nesciunt", message: "Quae dolorem earum veritatis oditseno", time: "1 hr. ago" },
-        { id: 3, type: "success", title: "Sit rerum fuga", message: "Quae dolorem earum veritatis oditseno", time: "2 hrs. ago" },
-        { id: 4, type: "primary", title: "Dicta reprehenderit", message: "Quae dolorem earum veritatis oditseno", time: "4 hrs. ago" },
-      ]);
+      try {
+        const res = await api.get("/notifications/expiring-certificates", {
+          withCredentials: true
+        });
+        setNotifications(res.data.notifications || []);
+      } catch (error) {
+        console.error("Error fetching notifications", error);
+      }
     }
+
     fetchNotifications();
   }, []);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
-        setProfileOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleSignOut = async () => {
-    try {
-      await api.post("/users/logout");
-      localStorage.clear();
-      navigate("/damLogin");
-    } catch (err) {
-      alert("Logout failed");
-    }
-  };
-
-  const handleProfile = () => navigate("/profile");
-  const handleAccountSettings = () => navigate("/account-settings");
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   return (
     <header id="header" className="header fixed-top d-flex align-items-center">
@@ -61,8 +216,17 @@ const Header = () => {
       </div>
 
       <div className="search-bar">
-        <form className="search-form d-flex align-items-center" method="POST" action="#">
-          <input type="text" name="query" placeholder="Search" title="Enter search keyword" />
+        <form
+          className="search-form d-flex align-items-center"
+          method="POST"
+          action="#"
+        >
+          <input
+            type="text"
+            name="query"
+            placeholder="Search"
+            title="Enter search keyword"
+          />
           <button type="submit" title="Search">
             <i className="bi bi-search"></i>
           </button>
@@ -71,106 +235,160 @@ const Header = () => {
 
       <nav className="header-nav ms-auto">
         <ul className="d-flex align-items-center">
-
           <li className="nav-item d-block d-lg-none">
             <Link className="nav-link nav-icon search-bar-toggle" to="#">
               <i className="bi bi-search"></i>
             </Link>
           </li>
 
-          {/* Notifications Dropdown */}
+          {/* Notifications */}
           <li className="nav-item dropdown">
-            <Link className="nav-link nav-icon" to="#" data-bs-toggle="dropdown">
+            <Link
+              className="nav-link nav-icon"
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                toggleDropdown();
+              }}
+            >
               <i className="bi bi-bell"></i>
-              <span className="badge bg-primary badge-number">{notifications.length}</span>
+              {notifications.length > 0 && (
+                <span className="badge bg-primary badge-number">
+                  {notifications.length}
+                </span>
+              )}
             </Link>
-            <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-              <li className="dropdown-header">
-                You have {notifications.length} new notifications
-                <Link to="#"><span className="badge rounded-pill bg-primary p-2 ms-2">View all</span></Link>
-              </li>
-              <li><hr className="dropdown-divider" /></li>
-              {notifications.map((n, idx) => (
-                <React.Fragment key={n.id}>
-                  <li className="notification-item">
-                    <i className={`bi bi-${n.type === "warning" ? "exclamation-circle text-warning" : n.type === "danger" ? "x-circle text-danger" : n.type === "success" ? "check-circle text-success" : "info-circle text-primary"}`}></i>
+
+            {dropdownOpen && (
+              <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications show">
+                {/* Header with close button */}
+                <li className="dropdown-header d-flex justify-content-between align-items-center">
+                  <span>
+                    You have {notifications.length} new notification
+                    {notifications.length !== 1 ? "s" : ""}
+                  </span>
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Close
+                  </button>
+                </li>
+
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+
+                {notifications.map((note, idx) => (
+                  <li key={idx} className="notification-item">
+                    <i className="bi bi-exclamation-circle text-warning"></i>
                     <div>
-                      <h4>{n.title}</h4>
-                      <p>{n.message}</p>
-                      <p>{n.time}</p>
+                      <h4>{note.projectName}</h4>
+                      <p>{note.message}</p>
+                      <p>{note.daysLeft} days remaining</p>
                     </div>
                   </li>
-                  {idx < notifications.length - 1 && <li><hr className="dropdown-divider" /></li>}
-                </React.Fragment>
-              ))}
-              <li className="dropdown-footer">
-                <Link to="#">Show all notifications</Link>
-              </li>
-            </ul>
-          </li>
+                ))}
 
-          {/* Profile Dropdown (Manual, no Bootstrap) */}
-          <li className="nav-item dropdown pe-3" ref={profileRef} style={{ position: "relative" }}>
-            <button
-              className="nav-link nav-profile d-flex align-items-center pe-0"
-              style={{ background: "none", border: "none", padding: 0 }}
-              onClick={() => setProfileOpen((open) => !open)}
-            >
-              <img src="../../../images/profile-img.jpg" alt="Profile" className="rounded-circle" />
-              <span className="d-none d-md-block dropdown-toggle ps-2">{userName}</span>
-            </button>
-            {profileOpen && (
-              <ul
-                className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile"
-                style={{
-                  display: "block",
-                  position: "absolute",
-                  top: "100%",
-                  right: 0,
-                  minWidth: 200,
-                  background: "#fff",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                  borderRadius: 8,
-                  zIndex: 1000,
-                  padding: 0,
-                  margin: 0,
-                  listStyle: "none"
-                }}
-              >
-                <li className="dropdown-header" style={{ padding: "12px 16px" }}>
-                  <h6 style={{ margin: 0 }}>NIC</h6>
-                  <span>{designation}</span>
-                </li>
-                <li><hr className="dropdown-divider" /></li>
-                {/* <li>
-                  <button className="dropdown-item d-flex align-items-center" onClick={handleProfile} style={{ background: "none", border: "none", width: "100%", textAlign: "left", padding: "8px 16px" }}>
-                    <i className="bi bi-person"></i>
-                    <span style={{ marginLeft: 8 }}>My Profile</span>
-                  </button>
-                </li> */}
-                <li><hr className="dropdown-divider" /></li>
-                {/* <li>
-                  <button className="dropdown-item d-flex align-items-center" onClick={handleAccountSettings} style={{ background: "none", border: "none", width: "100%", textAlign: "left", padding: "8px 16px" }}>
-                    <i className="bi bi-gear"></i>
-                    <span style={{ marginLeft: 8 }}>Account Settings</span>
-                  </button>
-                </li> */}
-                <li><hr className="dropdown-divider" /></li>
-                {/* <li>
-                  <button className="dropdown-item d-flex align-items-center" style={{ background: "none", border: "none", width: "100%", textAlign: "left", padding: "8px 16px" }}>
-                    <i className="bi bi-question-circle"></i>
-                    <span style={{ marginLeft: 8 }}>Need Help?</span>
-                  </button>
-                </li> */}
-                <li><hr className="dropdown-divider" /></li>
                 <li>
-                  <button className="dropdown-item d-flex align-items-center" onClick={handleSignOut} style={{ background: "none", border: "none", width: "100%", textAlign: "left", padding: "8px 16px" }}>
-                    <i className="bi bi-box-arrow-right"></i>
-                    <span style={{ marginLeft: 8 }}>Sign Out</span>
+                  <hr className="dropdown-divider" />
+                </li>
+
+                {/* Footer with show all button */}
+                <li className="dropdown-footer text-center">
+                  <Link
+                    className="btn btn-sm btn-outline-primary me-2"
+                    to="/notifications"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Show all notifications
+                  </Link>
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Close
                   </button>
                 </li>
               </ul>
             )}
+          </li>
+
+          {/* Profile Dropdown */}
+          <li className="nav-item dropdown pe-3">
+            <Link
+              className="nav-link nav-profile d-flex align-items-center pe-0"
+              to="#"
+              data-bs-toggle="dropdown"
+            >
+              <img
+                src="../../../images/profile-img.jpg"
+                alt="Profile"
+                className="rounded-circle"
+              />
+              <span className="d-none d-md-block dropdown-toggle ps-2">
+                User Name
+              </span>
+            </Link>
+
+            <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+              <li className="dropdown-header">
+                <h6>User Name</h6>
+                <span>Designation</span>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+
+              <li>
+                <Link
+                  className="dropdown-item d-flex align-items-center"
+                  to="#"
+                >
+                  <i className="bi bi-person"></i>
+                  <span>My Profile</span>
+                </Link>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+
+              <li>
+                <Link
+                  className="dropdown-item d-flex align-items-center"
+                  to="#"
+                >
+                  <i className="bi bi-gear"></i>
+                  <span>Account Settings</span>
+                </Link>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+
+              <li>
+                <Link
+                  className="dropdown-item d-flex align-items-center"
+                  to="#"
+                >
+                  <i className="bi bi-question-circle"></i>
+                  <span>Need Help?</span>
+                </Link>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+
+              <li>
+                <Link
+                  className="dropdown-item d-flex align-items-center"
+                  to="#"
+                >
+                  <i className="bi bi-box-arrow-right"></i>
+                  <span>Sign Out</span>
+                </Link>
+              </li>
+            </ul>
           </li>
         </ul>
       </nav>
@@ -178,4 +396,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header;

@@ -13,7 +13,6 @@ const LoginPage = ({ onLogin }) => {
   const [newPassword, setNewPassword] = useState("");
   const [changePasswordMsg, setChangePasswordMsg] = useState("");;
 
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -45,25 +44,6 @@ const LoginPage = ({ onLogin }) => {
       setError(err.response?.data?.error || "Login failed. Please try again.");
     }
   };
-
-  const handleChangePassword = async (e) => {
-  e.preventDefault();
-  setChangePasswordMsg("");
-  try {
-    const response = await api.put("/users/change-password", {
-      loginId,
-      currentPassword,
-      newPassword
-    });
-    setChangePasswordMsg(response.data.message || "Password changed successfully.");
-    setCurrentPassword("");
-    setNewPassword("");
-  } catch (err) {
-    setChangePasswordMsg(
-      err.response?.data?.error || "Failed to change password."
-    );
-  }
-};
 
   return (
     <div className="form-container login-page">
@@ -105,8 +85,14 @@ const LoginPage = ({ onLogin }) => {
             <button
               type="button"
               className="link-btn"
-              onClick={() => setShowChangePassword((v) => !v)}
-              style={{ background: "none", border: "none", color: "#007bff", cursor: "pointer", padding: 0 }}
+              onClick={() => navigate("/change-password")}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#007bff",
+                cursor: "pointer",
+                padding: 0
+              }}
             >
               Change Password?
             </button>
@@ -115,36 +101,6 @@ const LoginPage = ({ onLogin }) => {
             Login
           </button>
         </form>
-
-        {showChangePassword && (
-          <form className="change-password-form" onSubmit={handleChangePassword} style={{ marginTop: 20 }}>
-            <h4>Change Password</h4>
-            <input
-              type="password"
-              placeholder="Current Password"
-              className="form-control"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="New Password"
-              className="form-control"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-            />
-            <button type="submit" className="login-btn" style={{ marginTop: 10 }}>
-              Update Password
-            </button>
-            {changePasswordMsg && (
-              <div className="error-message" style={{ marginTop: 10 }}>
-                {changePasswordMsg}
-              </div>
-            )}
-          </form>
-        )}
       </div>
 
       {/* Footer just below the white box */}
