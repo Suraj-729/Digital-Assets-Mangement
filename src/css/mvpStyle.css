@@ -733,6 +733,7 @@ h6 {
   background: #f6f9ff;
   padding: 10px 15px;
   border-radius: 4px;
+  font-size: 20px;
 }
 
 .sidebar-nav .nav-link i {
@@ -783,6 +784,7 @@ h6 {
   transition: 0.3;
   padding: 10px 0 10px 40px;
   transition: 0.3s;
+  font-size: 16px;
 }
 
 .sidebar-nav .nav-content a i {
@@ -969,13 +971,13 @@ h6 {
 .dashboard .recent-sales .table thead th {
   border: 0;
   background-color:#f7f7ff;
-  color: #2c384e;              /* Dark text for contrast */
-  font-weight: 600;            /* Bold header */
-  font-size: 16px;             /* Slightly larger font */
+  color: #000;            
+  font-weight: 600;           
+  font-size: 19px;          
   vertical-align: middle;
   white-space: nowrap;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  padding-top: 35px;
+  padding-bottom: 35px;
 }
 
 .dashboard .recent-sales .dataTable-top {
@@ -985,6 +987,7 @@ h6 {
 .dashboard .recent-sales .dataTable-bottom {
   padding: 10px 0 0 0;
 }
+
 
 /* Top Selling */
 .dashboard .top-selling {
@@ -1007,6 +1010,34 @@ h6 {
   border-radius: 5px;
   max-width: 60px;
 }
+
+.dashboard .recent-sales .table tbody td:nth-child(1),
+.dashboard .recent-sales .table tbody td:nth-child(2) {
+  font-weight: bold;
+}
+.dashboard .recent-sales .table tbody td:nth-child(3) {
+  color: #007bff;
+}
+.dashboard .recent-sales .table tbody td:nth-child(6) {
+   font-size: 22px;
+}
+.dashboard .recent-sales .table tbody td:nth-child(7),
+.dashboard .recent-sales .table tbody td:nth-child(8),
+.dashboard .recent-sales .table tbody td:nth-child(9) {
+  font-size: 22px;
+  text-align: center;           /* Center content horizontally */
+  vertical-align: middle;       /* Center content vertically */
+}
+
+.dashboard .recent-sales .table .badge {
+  min-width: 70px;              /* Set a minimum width for all badges */
+  display: inline-block;        /* Allow width/height to apply */
+  text-align: center;           /* Center text inside badge */
+  padding: 10px 0;              /* Consistent vertical padding */
+  font-size: 18px;              /* Consistent font size */
+  border-radius: 8px;           /* Optional: rounded corners */
+}
+
 
 /*--------------------------------------------------------------
 # Icons list page
@@ -1240,6 +1271,7 @@ h6 {
 
 .card.recent-sales.table-view-data .card-body {
   position: relative;
+  font-size: 18px;
 }
 
 .card.recent-sales.table-view-data .dataTable-search {
@@ -1344,6 +1376,7 @@ h6 {
   position: relative;
   margin-bottom: 30px;
   border-radius: 10px;
+  font-size: 19px;
 }
 
 #msform fieldset button.btn.btn-primary {
@@ -1436,14 +1469,15 @@ h6 {
 
 #msform .action-button-previous {
   width: 100px;
-  background: #0099cc57;
   font-weight: bold;
   color: white;
   border: 0 none;
   border-radius: 10px;
   cursor: pointer;
   padding: 10px 5px;
-  margin: 10px 5px 0;
+  margin: 10px 5px;
+  background: #a8dced;
+  margin-top: 20px;
 }
 
 #msform .action-button-previous:hover,
@@ -1499,6 +1533,7 @@ h6 {
   font-weight: 600;
   background: #444444;
   padding: 10px;
+  font-size: 20px;
 }
 
 #progressbar li:before {
@@ -1520,6 +1555,7 @@ h6 {
 #progressbar li.active {
   background: #0099cc;
   color: #fff;
+  
 }
 
 

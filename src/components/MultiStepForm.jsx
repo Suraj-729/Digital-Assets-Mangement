@@ -7,26 +7,30 @@ import StepInfrastructure from "./StepInfrastructure";
 import api from "../Api";
 import "../css/mvpStyle.css";
 
-const steps = [
-  "Basic Profile",
-  "Security Audit",
-  "Technology Stack",
-  "Infrastructure",
-];
+// ✅ Added: Import motion and AnimatePresence
+import { motion, AnimatePresence } from "framer-motion";
+
+const steps = ["Basic Profile", "Security Audit", "Technology Stack", "Infrastructure"];
 
 const MultiStepForm = ({ editData, onEditComplete }) => {
-  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({});
   const [gitUrls, setGitUrls] = useState([]);
   const [vaRecords, setVaRecords] = useState([]);
   const [auditRecords, setAuditRecords] = useState([]);
 
-  // Technology Stack state
   const [usedTech, setUsedTech] = useState([]);
   const [usedDb, setUsedDb] = useState([]);
   const [usedOs, setUsedOs] = useState([]);
   const [usedOsVersion, setUsedOsVersion] = useState([]);
   const [usedRepo, setUsedRepo] = useState([]);
+
+  // Add this line to fix the currentStep/setCurrentStep errors
+  const [currentStep, setCurrentStep] = useState(0);
+
+  // ...rest of
+
+
+
 
   const [formState, setFormState] = useState(editData || {});
 
@@ -162,6 +166,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
   const handleNext = () => setCurrentStep((prev) => prev + 1);
   const handlePrevious = () => setCurrentStep((prev) => prev - 1);
+  const handleStepClick = (stepIndex) => setCurrentStep(stepIndex);
 
   const onAddGitUrl = () => {
     if (formData.gitUrl) {
@@ -170,9 +175,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     }
   };
 
-  const onDeleteGitUrl = (idx) => {
-    setGitUrls(gitUrls.filter((_, i) => i !== idx));
-  };
+  const onDeleteGitUrl = (idx) => setGitUrls(gitUrls.filter((_, i) => i !== idx));
 
   const onVaFileChange = (e) => {
     setFormData((prev) => ({
@@ -197,7 +200,6 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
     setVaRecords([...vaRecords, newRecord]);
 
-    // Clear fields
     setFormData((prev) => ({
       ...prev,
       ipAddress: "",
@@ -207,17 +209,13 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     }));
   };
 
-  const onDeleteVa = (idx) => {
-    setVaRecords(vaRecords.filter((_, i) => i !== idx));
-  };
+  const onDeleteVa = (idx) => setVaRecords(vaRecords.filter((_, i) => i !== idx));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const form = new FormData();
-
-      // Build sectioned data
       const BP = {
         assetsId: formData.assetsId,
         name: formData.projectName,
@@ -375,8 +373,24 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   return (
     <div className="form-container ">
       <form id="msform" onSubmit={handleSubmit}>
-        <ProgressBar steps={steps} currentStep={currentStep} />
-        {renderStep()}
+        <ProgressBar
+          steps={steps}
+          currentStep={currentStep}
+          onStepClick={handleStepClick}
+        />
+
+        {/* ✅ Added: AnimatePresence and motion.div for pop-in animation */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, scale: 0.8, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -30 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            {renderStep()}
+          </motion.div>
+        </AnimatePresence>
       </form>
     </div>
   );

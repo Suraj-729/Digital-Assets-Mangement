@@ -4,13 +4,15 @@ import "../css/loginpage.css";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = ({ onLogin }) => {
-  const [loginId, setLoginId] = useState(""); // Changed from userId
+  const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [changePasswordMsg, setChangePasswordMsg] = useState("");
+  const [changePasswordMsg, setChangePasswordMsg] = useState("");;
+
 
   const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ const LoginPage = ({ onLogin }) => {
     try {
       const response = await api.post(
         "/users/login",
-        { loginId, password }, // Changed to loginId
+        { loginId, password },
         { withCredentials: true }
       );
       console.log("Login response:", response.data);
@@ -32,13 +34,13 @@ const LoginPage = ({ onLogin }) => {
       localStorage.setItem("employeeId", response.data.user.employeeId);
       localStorage.setItem("employeeType", response.data.user.employeeType);
       if (onLogin) onLogin(response.data.user);
-      // Redirect to /damLogin/employeeType
+
       navigate(`/damLogin/${response.data.user.employeeType}`);
     } catch (err) {
       console.error("Login error details:", {
         message: err.message,
         response: err.response?.data,
-        stack: err.stack
+        stack: err.stack,
       });
       setError(err.response?.data?.error || "Login failed. Please try again.");
     }
@@ -65,6 +67,20 @@ const LoginPage = ({ onLogin }) => {
 
   return (
     <div className="form-container login-page">
+      {/* Logo just above the white box */}
+      <img
+  src="/images/logo.png"
+  alt="AssetsIQ Logo"
+  style={{
+    width: "400px",
+    marginBottom: "80px",
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto"
+  }}
+/>
+
+      {/* Login Form Box */}
       <div className="login-form">
         <h2 className="text-center">Login</h2>
         <form onSubmit={handleSubmit}>
@@ -130,6 +146,28 @@ const LoginPage = ({ onLogin }) => {
           </form>
         )}
       </div>
+
+      {/* Footer just below the white box */}
+     <footer
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "8px",
+    marginTop: "35px",
+    fontSize: "25px",
+    color: "#000",
+  }}
+>
+  <img
+    src="/images/niclogo.png"
+    alt="Footer Logo"
+    style={{ height: "45px" }}
+  />
+  <span>© 2025 All Rights Reserved.</span>
+</footer>
+
+
     </div>
   );
 };
