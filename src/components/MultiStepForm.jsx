@@ -38,7 +38,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     if (editData) {
       const bp = editData.BP || editData;
       const nodalNIC = bp.nodalOfficerNIC || bp.nodalOfficerNIC || {};
-const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
+      const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
       const firstAudit = editData.SA?.securityAudit?.[0] || {};
 
       setFormData({
@@ -49,7 +49,7 @@ const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
         departmentName: bp.deptName || bp.departmentName || "",
         url: bp.url || "",
         publicIp: bp.publicIp || bp.public_ip || "",
-        HOD: bp.HOD || "",
+        HOD: bp.HOD || localStorage.getItem("HOD") || "", // <-- Use localStorage if not present
         // Nodal Officer from NIC
         nicOfficerName: nodalNIC.name || "",
         nicOfficerEmpCode: nodalNIC.empCode || "",
@@ -98,6 +98,12 @@ const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
       setGitUrls(editData.Infra?.gitUrls || []);
       setVaRecords(editData.Infra?.vaRecords || []);
       setAuditRecords(editData.SA?.securityAudit || []);
+    } else {
+      // If not editing, set HOD from localStorage by default
+      setFormData((prev) => ({
+        ...prev,
+        HOD: localStorage.getItem("HOD") || "",
+      }));
     }
   }, [editData]);
   const handleChange = (e) => {

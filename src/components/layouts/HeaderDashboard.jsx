@@ -2,11 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../css/mvpStyle.css";
 import api from "../../Api";
+import MultiStepForm from "../MultiStepForm"; // Adjust the import based on your file structure
 
 const Header = () => {
   const [notifications, setNotifications] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [formToShow, setFormToShow] = useState(null);
+  const [selectedProjectData, setSelectedProjectData] = useState(null);
   const profileRef = useRef(null);
   const navigate = useNavigate();
 
@@ -215,6 +218,14 @@ const Header = () => {
           </li>
         </ul>
       </nav>
+
+      {/* Example: In your main dashboard or wherever you render the form */}
+      {formToShow === "addProject" && (
+        <MultiStepForm key="add" />
+      )}
+      {formToShow === "projectDetails" && (
+        <MultiStepForm key="edit" editData={selectedProjectData} />
+      )}
     </header>
   );
 };

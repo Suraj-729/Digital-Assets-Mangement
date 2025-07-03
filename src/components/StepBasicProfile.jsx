@@ -3,6 +3,8 @@ import "../css/mvpStyle.css";
 // import axios from "axios";
 
 const StepBasicProfile = ({ formData = {}, onChange, onNext }) => {
+  // const [hod, setHod] = useState(localStorage.getItem("HOD") || "");
+
   // const handleNext=async () => {
   //   const payload = {
   //     BP: {
@@ -137,7 +139,11 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext }) => {
                 type="text"
                 className="form-control"
                 name="HOD"
-                value={formData.HOD || ""}
+                value={
+                  formData.HOD !== undefined && formData.HOD !== ""
+                    ? formData.HOD
+                    : localStorage.getItem("HOD") || ""
+                }
                 onChange={onChange}
               />
             </div>

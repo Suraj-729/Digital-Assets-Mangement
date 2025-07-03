@@ -1,6 +1,4 @@
 
-// src/pages/ChangePasswordPage.jsx
-
 import React, { useState } from "react";
 import api from "../Api";
 import "../css/loginpage.css";
@@ -86,3 +84,6 @@ const ChangePasswordPage = () => {
 };
 
 export default ChangePasswordPage;
+
+
+
