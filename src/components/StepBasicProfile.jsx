@@ -2,7 +2,7 @@ import React from "react";
 import "../css/mvpStyle.css";
 // import axios from "axios";
 
-const StepBasicProfile = ({ formData = {}, onChange, onNext }) => {
+const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => {
   // const [hod, setHod] = useState(localStorage.getItem("HOD") || "");
 
   // const handleNext=async () => {
@@ -145,6 +145,7 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext }) => {
                     : localStorage.getItem("HOD") || ""
                 }
                 onChange={onChange}
+                disabled={employeeType === "HOD"} // <-- Disable if employeeType is HOD
               />
             </div>
           </div>

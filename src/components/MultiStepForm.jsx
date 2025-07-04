@@ -272,6 +272,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
             formData={formData}
             onChange={handleChange}
             onNext={handleNext}
+            employeeType={localStorage.getItem("employeeType")}
           />
         );
       case 1:
