@@ -1,0 +1,12 @@
+.notification-item:hover {
+    background: #f8f9fa;
+    cursor: pointer;
+  }
+  .notification-item {
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+  }
+  /* .notification-item:hover {
+    background-color: #eef;
+  } */
+  

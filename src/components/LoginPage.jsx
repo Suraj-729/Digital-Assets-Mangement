@@ -8,11 +8,6 @@ const LoginPage = ({ onLogin }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const [showChangePassword, setShowChangePassword] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [changePasswordMsg, setChangePasswordMsg] = useState("");;
-
 
   const navigate = useNavigate();
 
@@ -33,6 +28,12 @@ const LoginPage = ({ onLogin }) => {
       localStorage.setItem("userId", response.data.user.userId);
       localStorage.setItem("employeeId", response.data.user.employeeId);
       localStorage.setItem("employeeType", response.data.user.employeeType);
+
+      // Store the actual HOD name if present, otherwise store an empty string
+      const hodValue = response.data.user.HOD && response.data.user.HOD !== "HOD" ? response.data.user.HOD : "";
+      localStorage.setItem("HOD", hodValue);
+      console.log("HOD set in localStorage:", localStorage.getItem("HOD"));
+
       if (onLogin) onLogin(response.data.user);
 
       navigate(`/damLogin/${response.data.user.employeeType}`);
@@ -45,25 +46,6 @@ const LoginPage = ({ onLogin }) => {
       setError(err.response?.data?.error || "Login failed. Please try again.");
     }
   };
-
-  const handleChangePassword = async (e) => {
-  e.preventDefault();
-  setChangePasswordMsg("");
-  try {
-    const response = await api.put("/users/change-password", {
-      loginId,
-      currentPassword,
-      newPassword
-    });
-    setChangePasswordMsg(response.data.message || "Password changed successfully.");
-    setCurrentPassword("");
-    setNewPassword("");
-  } catch (err) {
-    setChangePasswordMsg(
-      err.response?.data?.error || "Failed to change password."
-    );
-  }
-};
 
   return (
     <div className="form-container login-page">
@@ -105,8 +87,14 @@ const LoginPage = ({ onLogin }) => {
             <button
               type="button"
               className="link-btn"
-              onClick={() => setShowChangePassword((v) => !v)}
-              style={{ background: "none", border: "none", color: "#007bff", cursor: "pointer", padding: 0 }}
+              onClick={() => navigate("/change-password")}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#007bff",
+                cursor: "pointer",
+                padding: 0
+              }}
             >
               Change Password?
             </button>
@@ -115,36 +103,6 @@ const LoginPage = ({ onLogin }) => {
             Login
           </button>
         </form>
-
-        {showChangePassword && (
-          <form className="change-password-form" onSubmit={handleChangePassword} style={{ marginTop: 20 }}>
-            <h4>Change Password</h4>
-            <input
-              type="password"
-              placeholder="Current Password"
-              className="form-control"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="New Password"
-              className="form-control"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-            />
-            <button type="submit" className="login-btn" style={{ marginTop: 10 }}>
-              Update Password
-            </button>
-            {changePasswordMsg && (
-              <div className="error-message" style={{ marginTop: 10 }}>
-                {changePasswordMsg}
-              </div>
-            )}
-          </form>
-        )}
       </div>
 
       {/* Footer just below the white box */}

@@ -32,61 +32,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
 
 
-  const [formState, setFormState] = useState(editData || {});
-
-  // useEffect(() => {
-  //   if (editData) {
-  //     const bp = editData.BP || editData;
-  //     const nodalNIC = bp.nodalofficerNIC || bp.nodalOfficerNIC || {};
-  //     const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
-
-  //     setFormData({
-  //       // Basic Profile
-  //       assetsId: editData.assetsId || bp.assetsId || "",
-  //       projectName: editData.projectName || bp.name || "",
-  //       prismId: bp.prismid || bp.prismId || "",
-  //       departmentName: bp.deptName || bp.departmentName || "",
-  //       url: bp.url || "",
-  //       publicIp: bp.publicIp || bp.public_ip || "",
-  //       HOD: bp.HOD || "",
-  //       // Nodal Officer from NIC
-  //       nicOfficerName: nodalNIC.name || "",
-  //       nicOfficerEmpCode: nodalNIC.empCode || "",
-  //       nicOfficerMob: nodalNIC.mobile || "",
-  //       nicOfficerEmail: nodalNIC.email || "",
-  //       // Nodal Officer from Department
-  //       deptOfficerName: nodalDept.name || "",
-  //       deptOfficerDesignation: nodalDept.designation || "",
-  //       deptOfficerMob: nodalDept.mobile || "",
-  //       deptOfficerEmail: nodalDept.email || "",
-  //       // Security Audit (single fields if any)
-  //       certificate: editData.SA?.securityAudit?.[0]?.certificate || "",
-  //       // Technology Stack
-  //       framework: editData.TS?.framework || "",
-  //       // Infrastructure
-  //       typeOfServer: editData.Infra?.typeOfServer || "",
-  //       dataCentre: editData.Infra?.dataCentre || "",
-  //       deployment: editData.Infra?.deployment || "",
-  //       location: editData.Infra?.location || "",
-  //       // VA fields (for adding new VA record)
-  //       ipAddress: "",
-  //       purposeOfUse: "",
-  //       vaScore: "",
-  //       dateOfVA: "",
-  //       vaReport: null,
-  //       // Git URL (for adding new git url)
-  //       gitUrl: "",
-  //     });
-  //     setUsedTech(editData.TS?.frontEnd || []);
-  //     setUsedDb(editData.TS?.database || []);
-  //     setUsedOs(editData.TS?.os || []);
-  //     setUsedOsVersion(editData.TS?.osVersion || []);
-  //     setUsedRepo(editData.TS?.repoUrls || []);
-  //     setGitUrls(editData.Infra?.gitUrls || []);
-  //     setVaRecords(editData.Infra?.vaRecords || []);
-  //     setAuditRecords(editData.SA?.securityAudit || []);
-  //   }
-  // }, [editData]);
+  // const [formState, setFormState] = useState(editData || {});
 
   useEffect(() => {
     if (editData) {
@@ -103,7 +49,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         departmentName: bp.deptName || bp.departmentName || "",
         url: bp.url || "",
         publicIp: bp.publicIp || bp.public_ip || "",
-        HOD: bp.HOD || "",
+        HOD: bp.HOD || localStorage.getItem("HOD") || "", // <-- Use localStorage if not present
         // Nodal Officer from NIC
         nicOfficerName: nodalNIC.name || "",
         nicOfficerEmpCode: nodalNIC.empCode || "",
@@ -152,6 +98,12 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       setGitUrls(editData.Infra?.gitUrls || []);
       setVaRecords(editData.Infra?.vaRecords || []);
       setAuditRecords(editData.SA?.securityAudit || []);
+    } else {
+      // If not editing, set HOD from localStorage by default
+      setFormData((prev) => ({
+        ...prev,
+        HOD: localStorage.getItem("HOD") || "",
+      }));
     }
   }, [editData]);
   const handleChange = (e) => {
@@ -216,10 +168,13 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
     try {
       const form = new FormData();
+      const employeeId = localStorage.getItem("employeeId");
+      // Build sectioned data
       const BP = {
         assetsId: formData.assetsId,
         name: formData.projectName,
         prismId: formData.prismId,
+        employeeId, // <-- Add this line
         deptname: formData.departmentName,
         url: formData.url,
         public_ip: formData.publicIp,
@@ -317,6 +272,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
             formData={formData}
             onChange={handleChange}
             onNext={handleNext}
+            employeeType={localStorage.getItem("employeeType")}
           />
         );
       case 1:
