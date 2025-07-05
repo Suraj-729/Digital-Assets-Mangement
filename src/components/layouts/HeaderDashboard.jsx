@@ -31,10 +31,7 @@ const Header = ({ onSidebarToggle }) => {
   // Close profile dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target)
-      ) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
         setProfileDropdownOpen(false);
       }
     }
@@ -60,8 +57,7 @@ const Header = ({ onSidebarToggle }) => {
   };
 
   const toggleDropdown = () => setDropdownOpen((open) => !open);
-  const toggleProfileDropdown = () =>
-    setProfileDropdownOpen((open) => !open);
+  const toggleProfileDropdown = () => setProfileDropdownOpen((open) => !open);
 
   const toggleSidebar = () => {
     const newSidebarState = !isSidebarOpen;
@@ -156,11 +152,11 @@ const Header = ({ onSidebarToggle }) => {
               aria-haspopup="true"
               aria-expanded={profileDropdownOpen}
               tabIndex={0}
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 toggleProfileDropdown();
               }}
-              onKeyDown={e => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
                   toggleProfileDropdown();
@@ -173,7 +169,11 @@ const Header = ({ onSidebarToggle }) => {
                 className="rounded-circle"
               />
               <span className="d-none d-md-block dropdown-toggle ps-2">
-                NIC BBSR<i className="bi bi-caret-down-fill" style={{ fontSize: 12, marginLeft: 4 }}></i>
+                NIC BBSR
+                <i
+                 
+                  style={{ fontSize: 12, marginLeft: 4 }}
+                ></i>
               </span>
             </Link>
 
@@ -187,9 +187,6 @@ const Header = ({ onSidebarToggle }) => {
                 <li className="dropdown-header">
                   <h6>User Name</h6>
                   <span>Designation</span>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
@@ -217,9 +214,7 @@ const Header = ({ onSidebarToggle }) => {
       </nav>
 
       {/* Example: In your main dashboard or wherever you render the form */}
-      {formToShow === "addProject" && (
-        <MultiStepForm key="add" />
-      )}
+      {formToShow === "addProject" && <MultiStepForm key="add" />}
       {formToShow === "projectDetails" && (
         <MultiStepForm key="edit" editData={selectedProjectData} />
       )}

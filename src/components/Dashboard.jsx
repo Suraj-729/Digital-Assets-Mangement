@@ -311,6 +311,67 @@ const Dashboard = () => {
                       style={{ paddingTop: "20px" }}
                     >
                       <div className="card-body pt-3">
+                        {/* Filter Section */}
+                        <div className="row mb-4">
+                          <div className="col-md-3">
+                            <label htmlFor="departmentFilter" className="form-label">
+                              Department
+                            </label>
+                            <select
+                              id="departmentFilter"
+                              className="form-select"
+                              value={selectedDepartment}
+                              onChange={(e) => {
+                                setSelectedDepartment(e.target.value);
+                                setFilter("departmentwise");
+                              }}
+                            >
+                              <option value="">All</option>
+                              {departments.map((dept) => (
+                                <option key={dept} value={dept}>
+                                  {dept}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-md-3">
+                            <label htmlFor="prismIdFilter" className="form-label">
+                              Prism ID
+                            </label>
+                            <select
+                              id="prismIdFilter"
+                              className="form-select"
+                              value={selectedPrismId}
+                              onChange={(e) => {
+                                setSelectedPrismId(e.target.value);
+                                setFilter("prismid");
+                              }}
+                            >
+                              <option value="">All</option>
+                              {Array.from(
+                                new Set(
+                                  projects.map((p) => p.prismId).filter(Boolean)
+                                )
+                              ).map((prismId) => (
+                                <option key={prismId} value={prismId}>
+                                  {prismId}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-md-3 d-flex align-items-end">
+                            <button
+                              className="btn btn-secondary"
+                              onClick={() => {
+                                setSelectedDepartment("");
+                                setSelectedPrismId("");
+                                setFilter("all");
+                              }}
+                            >
+                              Reset Filters
+                            </button>
+                          </div>
+                        </div>
                         {filteredProjects.length === 0 ? (
                           <div
                             className="text-center"
