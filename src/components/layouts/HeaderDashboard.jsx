@@ -170,10 +170,9 @@ const Header = ({ onSidebarToggle }) => {
               />
               <span className="d-none d-md-block dropdown-toggle ps-2">
                 NIC BBSR
-                <i
-                 
-                  style={{ fontSize: 12, marginLeft: 4 }}
-                ></i>
+
+                {/* <i className="bi bi-caret-down-fill" style={{ fontSize: 12, marginLeft: 4 }}></i> */}
+
               </span>
             </Link>
 

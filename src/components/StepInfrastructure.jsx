@@ -28,9 +28,10 @@ const StepInfrastructure = ({
               <select
                 className="form-select"
                 name="typeOfServer"  // Changed to match backend
-                value={formData.typeOfServer || "Cloud"}
+                value={formData.typeOfServer || "select"}
                 onChange={onChange}
               >
+                 <option value="">Select</option>
                 <option value="Cloud">Cloud</option>
                 <option value="Co-location">Co-location</option>
               </select>
@@ -46,9 +47,10 @@ const StepInfrastructure = ({
               <select
                 className="form-select"
                 name="dataCentre"
-                value={formData.dataCentre || "NDC"}
+                value={formData.dataCentre || "select"}
                 onChange={onChange}
               >
+                <option value="">Select</option>
                 <option value="NDC">NDC</option>
                 <option value="SDC">SDC</option>
                 <option value="GCP">GCP</option>
@@ -67,9 +69,10 @@ const StepInfrastructure = ({
               <select
                 className="form-select"
                 name="deployment"
-                value={formData.deployment || "VM"}
+                value={formData.deployment || "select"}
                 onChange={onChange}
               >
+                <option value="">Select</option>
                 <option value="VM">VM</option>
                 <option value="Container as Service">Container as Service</option>
                 <option value="K8S as Service">K8S as Service</option>
@@ -91,9 +94,10 @@ const StepInfrastructure = ({
               <select
                 className="form-select"
                 name="location"
-                value={formData.location || "BBSR"}
+                value={formData.location || "Select"}
                 onChange={onChange}
               >
+                <option value="">Select</option>
                 <option value="BBSR">BBSR</option>
                 <option value="Delhi">Delhi</option>
               </select>
