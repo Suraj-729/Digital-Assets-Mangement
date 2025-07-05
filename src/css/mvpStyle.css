@@ -115,55 +115,62 @@ h6 {
 --------------------------------------------------------------*/
 /* Dropdown menus */
 .dropdown-menu {
-  border-radius: 4px;
-  padding: 10px 0;
-  -webkit-animation-name: dropdown-animate;
-  animation-name: dropdown-animate;
-  -webkit-animation-duration: 0.2s;
-  animation-duration: 0.2s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-  border: 0;
-  box-shadow: 0 5px 30px 0 rgba(82, 63, 105, 0.2);
-  
+  border-radius: 8px;
+  padding: 12px 0;
+  border: none;
+  min-width: 220px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  animation: dropdown-animate 0.2s ease forwards;
+  background-color: #fff;
 }
 
-.dropdown-menu .dropdown-header,
-.dropdown-menu .dropdown-footer {
-  text-align: center;
-  font-size: 15px;
-  padding: 10px 25px;
+/* Header: User Name + Designation */
+.dropdown-menu .dropdown-header {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-bottom: 1px solid #e6e6e6;
+  background-color: #fff;
 }
 
-.dropdown-menu .dropdown-footer a {
-  color: #444444;
-  text-decoration: underline;
+.dropdown-menu .dropdown-header .user-name {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2e2e2e;
+  margin-bottom: 4px;
 }
 
-.dropdown-menu .dropdown-footer a:hover {
-  text-decoration: none;
+.dropdown-menu .dropdown-header .designation {
+  font-size: 13px;
+  color: #999999;
 }
 
-.dropdown-menu .dropdown-divider {
-  color: #a5c5fe;
-  margin: 0;
-}
-
+/* Dropdown Items */
 .dropdown-menu .dropdown-item {
   font-size: 14px;
-  padding: 10px 15px;
-  transition: 0.3s;
+  padding: 12px 20px;
+  transition: 0.2s;
+  color: #333;
+  display: flex;
+  align-items: center;
 }
 
 .dropdown-menu .dropdown-item i {
   margin-right: 10px;
-  font-size: 18px;
-  line-height: 0;
+  font-size: 16px;
 }
 
 .dropdown-menu .dropdown-item:hover {
-  background-color: #f6f9ff;
+  background-color: #f5f8ff;
 }
+
+/* Optional Divider */
+.dropdown-menu .dropdown-divider {
+  margin: 0;
+  border-top: 1px solid #e6e6e6;
+}
+
 
 @media (min-width: 768px) {
   .dropdown-menu-arrow::before {
@@ -525,7 +532,7 @@ h6 {
 }
 
 .header-nav .nav-profile span {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -607,7 +614,7 @@ h6 {
 .header-nav .profile {
   min-width: 240px;
   padding-bottom: 0;
-  top: 8px !important;
+ 
 }
 
 .header-nav .profile .dropdown-header h6 {
@@ -733,7 +740,7 @@ h6 {
   background: #f6f9ff;
   padding: 10px 15px;
   border-radius: 4px;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .sidebar-nav .nav-link i {
@@ -973,11 +980,16 @@ h6 {
   background-color:#f7f7ff;
   color: #000;            
   font-weight: 600;           
-  font-size: 19px;          
+  font-size: 14px;          
   vertical-align: middle;
   white-space: nowrap;
-  padding-top: 35px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   padding-bottom: 35px;
+}
+.dashboard .recent-sales .table thead th:nth-child(4) {
+  text-align: left;
+  padding-left: 34px; /* Optional spacing from the left */
 }
 
 .dashboard .recent-sales .dataTable-top {
@@ -1011,31 +1023,149 @@ h6 {
   max-width: 60px;
 }
 
-.dashboard .recent-sales .table tbody td:nth-child(1),
-.dashboard .recent-sales .table tbody td:nth-child(2) {
-  font-weight: bold;
+/* Common font & alignment for all cells */
+.dashboard .recent-sales .table tbody td {
+  font-size: 12px;
+  vertical-align: middle;
+  padding: 12px 10px;
+  text-align: center;
+
 }
-.dashboard .recent-sales .table tbody td:nth-child(3) {
-  color: #007bff;
+.dashboard .recent-sales .table tbody td .badge{
+  font-size: 12px;
 }
-.dashboard .recent-sales .table tbody td:nth-child(6) {
-   font-size: 22px;
-}
-.dashboard .recent-sales .table tbody td:nth-child(7),
-.dashboard .recent-sales .table tbody td:nth-child(8),
-.dashboard .recent-sales .table tbody td:nth-child(9) {
-  font-size: 22px;
-  text-align: center;           /* Center content horizontally */
-  vertical-align: middle;       /* Center content vertically */
+/* Responsive wrapper for the table */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* Box sizing fix */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Full width table */
+.dashboard .recent-sales .table {
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+/* Assets ID column (left aligned + bold) */
+.dashboard .recent-sales .table tbody td:nth-child(1) {
+  font-weight: bold;
+  color: #000;
+  
+  text-align: left;
+  
+}
+
+/* Prism ID (2nd column) - plain black */
+.dashboard .recent-sales .table tbody td:nth-child(2) a {
+  color: #000!important;
+  font-size: clamp(14px, 2vw, 18px);
+  text-decoration: none;
+}
+
+/* Project name (3rd column) - clickable blue */
+.dashboard .recent-sales .table tbody td:nth-child(3) a {
+  color: #007bff;
+  
+  text-decoration: none;
+}
+
+/* Prism ID, HOD Name, Department text style */
+.dashboard .recent-sales .table tbody td:nth-child(2),
+.dashboard .recent-sales .table tbody td:nth-child(4),
+.dashboard .recent-sales .table tbody td:nth-child(5) {
+  color: #333;
+ 
+}
+
+/* HOD Name (4th column) - prevent wrapping */
+.dashboard .recent-sales .table tbody td:nth-child(4) {
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Badges (Status, Audit, SSL/TLS) */
 .dashboard .recent-sales .table .badge {
-  min-width: 70px;              /* Set a minimum width for all badges */
-  display: inline-block;        /* Allow width/height to apply */
-  text-align: center;           /* Center text inside badge */
-  padding: 10px 0;              /* Consistent vertical padding */
-  font-size: 18px;              /* Consistent font size */
-  border-radius: 8px;           /* Optional: rounded corners */
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: clamp(14px, 1.8vw, 16px);
+  border-radius: 8px;
+  font-weight: 600;
+  min-width: 80px;
+  text-align: center;
+}
+
+
+
+
+/* Edit Button */
+.dashboard .recent-sales .table tbody td:nth-child(12) button {
+  width: 100%;
+  max-width: 120px;
+  padding: 6px 14px;
+  
+  border-radius: 6px;
+  border: 1px solid #007bff;
+  color: #007bff;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.dashboard .recent-sales .table tbody td:nth-child(12) button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Wrap table in responsive container */
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Mobile & Tablet Responsive Styles */
+@media (max-width: 768px) {
+  .dashboard .recent-sales .table thead {
+    display: none;
+  }
+
+  .dashboard .recent-sales .table tbody,
+  .dashboard .recent-sales .table tbody tr,
+  .dashboard .recent-sales .table tbody td {
+    display: block;
+    width: 100%;
+  }
+
+  .dashboard .recent-sales .table tbody tr {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #fff;
+  }
+
+  .dashboard .recent-sales .table tbody td {
+    font-size: 16px;
+    padding: 8px 12px;
+    border: none;
+    position: relative;
+  }
+
+  .dashboard .recent-sales .table tbody td::before {
+    content: attr(data-label); /* Make sure you set data-label in JSX */
+    font-weight: bold;
+    display: block;
+    margin-bottom: 4px;
+    color: #555;
+  }
 }
 
 
@@ -1366,6 +1496,7 @@ h6 {
 }
 
 #msform fieldset {
+  
   /* background: white; */
   border: 0 none;
   /* box-shadow: 0 0 15px 1px rgb(0 0 0 / 8%); */
@@ -1462,9 +1593,11 @@ h6 {
   margin-top: 20px;
 }
 
+
 #msform .action-button:hover,
 #msform .action-button:focus {
   box-shadow: 0 0 0 2px white, 0 0 0 3px #0099cc;
+  /* background-color: #000; */
 }
 
 #msform .action-button-previous {
@@ -1479,6 +1612,33 @@ h6 {
   background: #a8dced;
   margin-top: 20px;
 }
+/* .btn.btn-success {
+   width: 100px;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+  background: #0099cc;
+  margin-top: 20px;
+}
+.btn.btn-outline-primary  {
+  width: 100px;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+  background: #a8dced;
+  margin-top: 20px;
+} */
+
+
+
 
 #msform .action-button-previous:hover,
 #msform .action-button-previous:focus {
@@ -1654,7 +1814,7 @@ h6 {
 
 /*--------------------------------------------------------------
 # Footer
---------------------------------------------------------------*/
+---------------------------------------------------------*/
 .footer {
   padding: 20px 0;
   font-size: 14px;
@@ -1673,4 +1833,263 @@ h6 {
   text-align: center;
   font-size: 13px;
   color: #012970;
+}
+
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .main {
+    width: 100% !important;
+  }
+}
+
+
+
+/* 1. General Responsive Layout */
+:root {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  background: #f6f9ff;
+  color: #444;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+a {
+  color: #4154f1;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+a:hover {
+  color: #717ff5;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Nunito", sans-serif;
+  word-break: break-word;
+}
+
+/* 2. Main Content Responsive */
+#main {
+  margin-top: 60px;
+  padding: 2vw 3vw;
+  transition: all 0.3s;
+  padding-bottom: 85px;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+@media (max-width: 1199px) {
+  #main {
+    padding: 2vw;
+    margin-left: 0 !important;
+  }
+}
+@media (max-width: 768px) {
+  #main {
+    padding: 3vw 2vw 90px 2vw;
+  }
+}
+
+/* 3. Sidebar Responsive */
+.sidebar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  width: 300px;
+  z-index: 996;
+  transition: all 0.3s;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
+  background-color: #fff;
+  max-width: 100vw;
+}
+
+@media (max-width: 1199px) {
+  .sidebar {
+    left: -300px;
+    width: 80vw;
+    max-width: 350px;
+    padding: 15px 10px;
+  }
+}
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+    width: 100vw;
+    max-width: 100vw;
+    padding: 10px 5px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #main, #footer {
+    margin-left: 300px;
+    background-color: #f5f8ff;
+  }
+}
+
+@media (max-width: 1199px) {
+  .toggle-sidebar .sidebar {
+    left: 0;
+    display: block;
+  }
+  .toggle-sidebar #main, .toggle-sidebar #footer {
+    margin-left: 0;
+  }
+}
+
+/* 4. Header Responsive */
+.header {
+  transition: all 0.5s;
+  z-index: 997;
+  height: 60px;
+  box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
+  background-color: #fff;
+  padding-left: 20px;
+  width: 100vw;
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+.logo img {
+  max-height: 45px;
+  margin-right: 6px;
+  width: auto;
+  height: auto;
+}
+.logo span {
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 700;
+  color: #012970;
+  font-family: "Nunito", sans-serif;
+}
+
+@media (max-width: 576px) {
+  .logo span {
+    font-size: 18px;
+  }
+  .header {
+    padding-left: 8px;
+    height: 50px;
+  }
+}
+
+/* 5. Footer Responsive */
+.footer {
+  padding: 20px 0;
+  font-size: clamp(12px, 2vw, 14px);
+  transition: all 0.3s;
+  border-top: 1px solid #cddfff;
+  background: #f6f9ff;
+  width: 100vw;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.footer .copyright,
+.footer .credits {
+  text-align: center;
+  color: #012970;
+  word-break: break-word;
+}
+.footer .credits {
+  padding-top: 5px;
+  font-size: clamp(11px, 1.5vw, 13px);
+}
+
+@media (max-width: 576px) {
+  .footer {
+    padding: 12px 0;
+    font-size: 12px;
+  }
+}
+
+/* 6. Utility: Hide scrollbars on mobile for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+  background-color: #fff;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #aab7cf;
+}
+
+
+/* Here we change the try to be 100%  */
+
+
+
+
+/* Existing styles assumed to be in mvpStyle.css, add these for sidebar and content adjustment */
+body.sidebar-collapsed .sidebar {
+  display: none;
+  width: 0 !important;
+  overflow: hidden;
+  transition: none;
+}
+
+body.sidebar-collapsed #main {
+  margin-left: 0;
+  width: 100%;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.sidebar {
+  width: 260px; /* Adjust to your sidebar width */
+  transition: width 0.3s ease;
+}
+
+#main {
+  margin-left: 250px; /* Should match sidebar width */
+  width: calc(100% - 250px);
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* Ensure header remains full width */
+.header {
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+  #main {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+  body.sidebar-collapsed .sidebar {
+    width: 0;
+  }
+  body.sidebar-collapsed #main {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+
+body.sidebar-collapsed #main {
+  margin-left: 0;
+  width: 100%;
+  transition: margin-left 0.3s ease, width 0.3s ease;
 }

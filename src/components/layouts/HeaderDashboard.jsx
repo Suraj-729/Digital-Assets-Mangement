@@ -4,12 +4,13 @@ import "../../css/mvpStyle.css";
 import api from "../../Api";
 import MultiStepForm from "../MultiStepForm"; // Adjust the import based on your file structure
 
-const Header = () => {
+const Header = ({ onSidebarToggle }) => {
   const [notifications, setNotifications] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [formToShow, setFormToShow] = useState(null);
   const [selectedProjectData, setSelectedProjectData] = useState(null);
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
   const profileRef = useRef(null);
   const navigate = useNavigate();
 
@@ -62,13 +63,27 @@ const Header = () => {
   const toggleProfileDropdown = () =>
     setProfileDropdownOpen((open) => !open);
 
+  const toggleSidebar = () => {
+    const newSidebarState = !isSidebarOpen;
+    setSidebarOpen(newSidebarState);
+    if (onSidebarToggle) {
+      onSidebarToggle(newSidebarState);
+    }
+    document.body.classList.toggle("sidebar-collapsed", !newSidebarState);
+  };
+
   return (
     <header id="header" className="header fixed-top d-flex align-items-center">
       <div className="d-flex align-items-center justify-content-between">
         <Link to="/" className="logo d-flex align-items-center">
           <img src="../../../images/logo.png" alt="Logo" />
         </Link>
-        <i className="bi bi-list toggle-sidebar-btn"></i>
+        <i
+          className="bi bi-list toggle-sidebar-btn"
+          onClick={toggleSidebar}
+          style={{ cursor: "pointer", fontSize: "1.5rem", marginLeft: "10px" }}
+          title="Toggle Sidebar"
+        ></i>
       </div>
 
       <nav className="header-nav ms-auto">
@@ -129,21 +144,6 @@ const Header = () => {
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
-                {/* <li className="dropdown-footer text-center">
-                  <Link
-                    className="btn btn-sm btn-outline-primary me-2"
-                    to="/notifications"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    Show all notifications
-                  </Link>
-                  <button
-                    className="btn btn-sm btn-outline-secondary"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    Close
-                  </button>
-                </li> */}
               </ul>
             )}
           </li>
@@ -191,9 +191,6 @@ const Header = () => {
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
-                
-                
-                
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
@@ -231,4 +228,3 @@ const Header = () => {
 };
 
 export default Header;
-

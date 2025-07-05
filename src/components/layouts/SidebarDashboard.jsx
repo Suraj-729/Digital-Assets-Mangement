@@ -1,36 +1,29 @@
-
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import "../../css/mvpStyle.css";
 
-const Sidebar = ({ setFormToShow }) => {
+const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
   // const [groupHeadsOpen, setGroupHeadsOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
 
   // Get employeeType and trim whitespace
   // const employeeType = (localStorage.getItem("employeeType") || "").trim();
 
   return (
-    <aside id="sidebar" className="sidebar">
+    <aside id="sidebar" className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
       <ul className="sidebar-nav" id="sidebar-nav">
         {/* Dashboard */}
         <li className="nav-item">
-          <a
-            className="nav-link"
-            role="button"
-            onClick={() => {
-              const employeeType = localStorage.getItem("employeeType");
-              if (employeeType) {
-                navigate(`/damLogin/${employeeType}`);
-              } else {
-                navigate("/");
-              }
-            }}
+          <Link
+            className={`nav-link ${location.pathname === "/dashboard" ? "" : "collapsed"}`}
+            to="/dashboard"
+            onClick={() => setFormToShow(null)}
           >
             <i className="bi bi-grid"></i>
             <span>Dashboard</span>
-          </a>
+          </Link>
         </li>
 
         {/* Group Heads Dropdown - Only show if employeeType is ADMIN */}
@@ -105,20 +98,7 @@ const Sidebar = ({ setFormToShow }) => {
                   <span>Add Projects</span>
                 </div>
               </li>
-              <li>
-                <div
-                  className="nav-link"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    // Optionally set form or navigate
-                    // setFormToShow("viewProjects");
-                    // navigate("/view-manage-projects");
-                  }}
-                >
-                  <i className="bi bi-circle"></i>
-                  <span>View / Manage Projects</span>
-                </div>
-              </li>
+              
               <li>
                 <div
                   className="nav-link"
@@ -142,3 +122,6 @@ const Sidebar = ({ setFormToShow }) => {
 };
 
 export default Sidebar;
+
+
+

@@ -162,9 +162,36 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   };
 
   const onDeleteVa = (idx) => setVaRecords(vaRecords.filter((_, i) => i !== idx));
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // try {
+    //   const form = new FormData();
+    //   const employeeId = localStorage.getItem("employeeId");
+    //   // Build sectioned data
+    //   const BP = {
+    //     assetsId: formData.assetsId,
+    //     name: formData.projectName,
+    //     prismId: formData.prismId,
+    //     employeeId, // <-- Add this l
+    //     deptname: formData.departmentName,
+    //     url: formData.url,
+    //     public_ip: formData.publicIp,
+    //     HOD: formData.HOD,
+    //     nodalofficerNIC: {
+    //       Name: formData.nicOfficerName,
+    //       Emp_code: formData.nicOfficerEmpCode,
+    //       Mob: formData.nicOfficerMob,
+    //       Email: formData.nicOfficerEmail,
+    //     },
+    //     nodalofficerDept: {
+    //       Name: formData.deptOfficerName,
+    //       Designation: formData.deptOfficerDesignation,
+    //       Mob: formData.deptOfficerMob,
+    //       Email: formData.deptOfficerEmail,
+    //     },
+    //   };
 
     try {
       const form = new FormData();
@@ -174,22 +201,22 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         assetsId: formData.assetsId,
         name: formData.projectName,
         prismId: formData.prismId,
-        employeeId, // <-- Add this line
-        deptname: formData.departmentName,
+        employeeId, // from localStorage
+        deptName: formData.departmentName, // <-- changed to match backend
         url: formData.url,
-        public_ip: formData.publicIp,
+        publicIp: formData.publicIp,
         HOD: formData.HOD,
-        nodalofficerNIC: {
-          Name: formData.nicOfficerName,
-          Emp_code: formData.nicOfficerEmpCode,
-          Mob: formData.nicOfficerMob,
-          Email: formData.nicOfficerEmail,
+        nodalOfficerNIC: {
+          name: formData.nicOfficerName,
+          empCode: formData.nicOfficerEmpCode,
+          mobile: formData.nicOfficerMob,
+          email: formData.nicOfficerEmail,
         },
-        nodalofficerDept: {
-          Name: formData.deptOfficerName,
-          Designation: formData.deptOfficerDesignation,
-          Mob: formData.deptOfficerMob,
-          Email: formData.deptOfficerEmail,
+        nodalOfficerDept: {
+          name: formData.deptOfficerName,
+          designation: formData.deptOfficerDesignation,
+          mobile: formData.deptOfficerMob,
+          email: formData.deptOfficerEmail,
         },
       };
 
