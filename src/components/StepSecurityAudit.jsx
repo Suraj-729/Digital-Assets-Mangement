@@ -21,7 +21,8 @@ const StepSecurityAudit = ({
     const newRecord = {
       auditDate: formData.auditDate,
       expireDate: formData.expireDate,
-      nextExpireDate: formData.nextExpireDate,
+      typeOfAudit: formData.auditType,           // ✅ match backend
+      tlsNextExpiry: formData.nextExpireDate, 
        // Use auditType consistently
       auditingAgency: formData.agency,
       sslLabScore: formData.sslLabScore,

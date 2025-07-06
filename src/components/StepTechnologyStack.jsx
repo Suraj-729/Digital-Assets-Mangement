@@ -110,7 +110,7 @@ const StepTechnologyStack = ({
     let isValid = true;
 
     if (usedTech.length === 0) {
-      errors.frontEnd = "Please add at least one front-end technology";
+      errors.frontend = "Please add at least one front-end technology";
       isValid = false;
     }
 
@@ -152,9 +152,9 @@ const StepTechnologyStack = ({
           <div className="col-md-6">
             <div className="input-group">
               <select
-                className={`form-select ${errors.frontEnd ? "is-invalid" : ""}`}
-                name="frontEnd"
-                value={formData.frontEnd || ""}
+                className={`form-select ${errors.frontend ? "is-invalid" : ""}`}
+                name="frontend"
+                value={formData.frontend || ""}
                 onChange={onChange}
               >
                 <option value="">Select a front-end technology</option>
@@ -169,17 +169,17 @@ const StepTechnologyStack = ({
                 className="btn btn-primary"
                 type="button"
                 onClick={() =>
-                  addToStack("frontEnd", formData.frontEnd, setUsedTech)
+                  addToStack("frontend", formData.frontend, setUsedTech)
                 }
               >
                 Add
               </button>
             </div>
-            {errors.frontEnd && (
-              <div className="invalid-feedback">{errors.frontEnd}</div>
+            {errors.frontend && (
+              <div className="invalid-feedback">{errors.frontend}</div>
             )}
             <div className="mt-2">
-              {renderStackBadges(usedTech, "frontEnd", setUsedTech)}
+              {renderStackBadges(usedTech, "frontend", setUsedTech)}
             </div>
           </div>
         </div>

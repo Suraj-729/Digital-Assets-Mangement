@@ -61,7 +61,8 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         deptOfficerMob: nodalDept.mobile || "",
         deptOfficerEmail: nodalDept.email || "",
         // Security Audit (first record fields)
-        typeOfAudit: firstAudit.typeOfAudit || "",
+        auditType: firstAudit.typeOfAudit || "",
+        agency: firstAudit.auditingAgency || "", // ✅ This is what you need
         auditingAgency: firstAudit.auditingAgency || "",
         auditDate: firstAudit.auditDate
           ? firstAudit.auditDate.slice(0, 10)
@@ -69,7 +70,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         expireDate: firstAudit.expireDate
           ? firstAudit.expireDate.slice(0, 10)
           : "",
-        tlsNextExpiry: firstAudit.tlsNextExpiry
+          nextExpireDate: firstAudit.tlsNextExpiry
           ? firstAudit.tlsNextExpiry.slice(0, 10)
           : "",
         sslLabScore: firstAudit.sslLabScore || "",
@@ -90,7 +91,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         // Git URL (for adding new git url)
         gitUrl: "",
       });
-      setUsedTech(editData.TS?.frontend ?? editData.TS?.frontEnd ?? []);
+      setUsedTech(editData.TS?.frontend ?? editData.TS?.frontend ?? []);
       setUsedDb(editData.TS?.database || []);
       setUsedOs(editData.TS?.os || []);
       setUsedOsVersion(editData.TS?.osVersion || []);
@@ -224,19 +225,17 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         securityAudit: auditRecords.map((record, idx) => ({
           "Sl no": idx + 1,
           typeOfAudit: record.typeOfAudit,
-          auditingAgency: record.auditingAgency,
+          auditingAgency: record.agency,
           auditDate: record.auditDate ? new Date(record.auditDate) : null,
           expireDate: record.expireDate ? new Date(record.expireDate) : null,
-          tlsNextExpiry: record.nextExpireDate
-            ? new Date(record.nextExpireDate)
-            : null,
+          tlsNextExpiry: record.tlsNextExpiry ? new Date(record.tlsNextExpiry) : null, // ✅ Keep consistent
           sslLabScore: record.sslLabScore,
           certificate: record.certificate,
         })),
       };
 
       const TS = {
-        frontEnd: usedTech,
+        frontend: usedTech,
         framework: formData.framework,
         database: usedDb,
         os: usedOs,
