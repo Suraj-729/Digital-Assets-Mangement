@@ -107,6 +107,80 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       }));
     }
   }, [editData]);
+
+  // useEffect(() => {
+  //   if (editData) {
+  //     const bp = editData.BP || editData;
+  //     const nodalNIC = bp.nodalOfficerNIC || {};
+  //     const nodalDept = bp.nodalOfficerDept || bp.nodalofficerDept || {};
+  //     const audits = editData.SA?.securityAudit || [];
+  
+  //     setFormData({
+  //       // Basic Profile
+  //       assetsId: editData.assetsId || bp.assetsId || "",
+  //       projectName: editData.projectName || bp.name || "",
+  //       prismId: bp.prismId || bp.prismid || "",
+  //       departmentName: bp.deptName || bp.departmentName || "",
+  //       url: bp.url || "",
+  //       publicIp: bp.publicIp || bp.public_ip || "",
+  //       HOD: bp.HOD || localStorage.getItem("HOD") || "",
+  //       // Nodal Officer from NIC
+  //       nicOfficerName: nodalNIC.name || "",
+  //       nicOfficerEmpCode: nodalNIC.empCode || "",
+  //       nicOfficerMob: nodalNIC.mobile || "",
+  //       nicOfficerEmail: nodalNIC.email || "",
+  //       // Nodal Officer from Department
+  //       deptOfficerName: nodalDept.name || "",
+  //       deptOfficerDesignation: nodalDept.designation || "",
+  //       deptOfficerMob: nodalDept.mobile || "",
+  //       deptOfficerEmail: nodalDept.email || "",
+  //       // Technology Stack
+  //       framework: editData.TS?.framework || "",
+  //       // Infrastructure
+  //       typeOfServer: editData.Infra?.typeOfServer || "",
+  //       dataCentre: editData.Infra?.dataCentre || "",
+  //       deployment: editData.Infra?.deployment || "",
+  //       location: editData.Infra?.location || "",
+  //       // VA fields (for adding new VA record)
+  //       ipAddress: "",
+  //       purposeOfUse: "",
+  //       vaScore: "",
+  //       dateOfVA: "",
+  //       vaReport: null,
+  //       // Git URL (for adding new git url)
+  //       gitUrl: "",
+  //     });
+  
+  //     setUsedTech(editData.TS?.frontend ?? editData.TS?.frontEnd ?? []);
+  //     setUsedDb(editData.TS?.database || []);
+  //     setUsedOs(editData.TS?.os || []);
+  //     setUsedOsVersion(editData.TS?.osVersion || []);
+  //     setUsedRepo(editData.TS?.repoUrls || []);
+  //     setGitUrls(editData.Infra?.gitUrls || []);
+  //     setVaRecords(editData.Infra?.vaRecords || []);
+  
+  //     // 🔥 Load full audit record list dynamically
+  //     const dynamicAuditRecords = audits.map((record) => ({
+  //       typeOfAudit: record.typeOfAudit || "",
+  //       auditingAgency: record.auditingAgency || "",
+  //       auditDate: record.auditDate ? record.auditDate.slice(0, 10) : "",
+  //       expireDate: record.expireDate ? record.expireDate.slice(0, 10) : "",
+  //       nextExpireDate: record.tlsNextExpiry
+  //         ? record.tlsNextExpiry.slice(0, 10)
+  //         : "",
+  //       sslLabScore: record.sslLabScore || "",
+  //       certificate: record.certificate || null,
+  //     }));
+  
+  //     setAuditRecords(dynamicAuditRecords);
+  //   } else {
+  //     // Not editing
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       HOD: localStorage.getItem("HOD") || "",
+  //     }));
+  //   }
+  // }, [editData]);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     const newValue = files ? files[0] : value;
@@ -180,7 +254,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     //     url: formData.url,
     //     public_ip: formData.publicIp,
     //     HOD: formData.HOD,
-    //     nodalofficerNIC: {
+    //     nodalofficerNIC: {Date
     //       Name: formData.nicOfficerName,
     //       Emp_code: formData.nicOfficerEmpCode,
     //       Mob: formData.nicOfficerMob,
