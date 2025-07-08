@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import api from "../Api";
 import "../css/loginpage.css";
 import { useNavigate } from "react-router-dom";
+import "../css/mvpStyle.css";
 
 const ChangePasswordPage = () => {
   const [loginId, setLoginId] = useState("");
@@ -33,6 +34,17 @@ const ChangePasswordPage = () => {
 
   return (
     <div className="form-container login-page">
+    <img
+        src="/images/logo.png"
+        alt="AssetsIQ Logo"
+        style={{
+          width: "400px",
+          marginBottom: "80px",
+          display: "block",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      />
       <div className="login-form">
         <h2 className="text-center">Change Password</h2>
         <form className="change-password-form" onSubmit={handleChangePassword}>
@@ -79,6 +91,24 @@ const ChangePasswordPage = () => {
           </button>
         </div>
       </div>
+      <footer
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
+          marginTop: "35px",
+          fontSize: "25px",
+          color: "#000",
+        }}
+      >
+        <img
+          src="/images/niclogo.png"
+          alt="Footer Logo"
+          style={{ height: "45px" }}
+        />
+        <span>© 2025 All Rights Reserved.</span>
+      </footer>
     </div>
   );
 };

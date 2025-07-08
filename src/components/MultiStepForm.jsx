@@ -30,163 +30,79 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   // ...rest of
 
 
-
-
-  // const [formState, setFormState] = useState(editData || {});
-
-  // useEffect(() => {
-  //   if (editData) {
-  //     const bp = editData.BP || editData;
-  //     const nodalNIC = bp.nodalOfficerNIC || bp.nodalOfficerNIC || {};
-  //     const nodalDept = bp.nodalofficerDept || bp.nodalOfficerDept || {};
-  //     const firstAudit = editData.SA?.securityAudit?.[0] || {};
-
-  //     setFormData({
-  //       // Basic Profile
-  //       assetsId: editData.assetsId || bp.assetsId || "",
-  //       projectName: editData.projectName || bp.name || "",
-  //       prismId: bp.prismid || bp.prismId || "",
-  //       departmentName: bp.deptName || bp.departmentName || "",
-  //       url: bp.url || "",
-  //       publicIp: bp.publicIp || bp.public_ip || "",
-  //       HOD: bp.HOD || localStorage.getItem("HOD") || "", // <-- Use localStorage if not present
-  //       // Nodal Officer from NIC
-  //       nicOfficerName: nodalNIC.name || "",
-  //       nicOfficerEmpCode: nodalNIC.empCode || "",
-  //       nicOfficerMob: nodalNIC.mobile || "",
-  //       nicOfficerEmail: nodalNIC.email || "",
-  //       // Nodal Officer from Department
-  //       deptOfficerName: nodalDept.name || "",
-  //       deptOfficerDesignation: nodalDept.designation || "",
-  //       deptOfficerMob: nodalDept.mobile || "",
-  //       deptOfficerEmail: nodalDept.email || "",
-  //       // Security Audit (first record fields)
-  //       auditType: firstAudit.typeOfAudit || "",
-  //       agency: firstAudit.auditingAgency || "", // ✅ This is what you need
-  //       // auditingAgency: firstAudit.auditingAgency || "",
-  //       auditDate: firstAudit.auditDate
-  //         ? firstAudit.auditDate.slice(0, 10)
-  //         : "",
-  //       expireDate: firstAudit.expireDate
-  //         ? firstAudit.expireDate.slice(0, 10)
-  //         : "",
-  //         nextExpireDate: firstAudit.tlsNextExpiry
-  //         ? firstAudit.tlsNextExpiry.slice(0, 10)
-  //         : "",
-  //       sslLabScore: firstAudit.sslLabScore || "",
-  //       certificate: firstAudit.certificate || "",
-  //       // Technology Stack
-  //       framework: editData.TS?.framework || "",
-  //       // Infrastructure
-  //       typeOfServer: editData.Infra?.typeOfServer || "",
-  //       dataCentre: editData.Infra?.dataCentre || "",
-  //       deployment: editData.Infra?.deployment || "",
-  //       location: editData.Infra?.location || "",
-  //       // VA fields (for adding new VA record)
-  //       ipAddress: "",
-  //       purposeOfUse: "",
-  //       vaScore: "",
-  //       dateOfVA: "",
-  //       vaReport: null,
-  //       // Git URL (for adding new git url)
-  //       gitUrl: "",
-  //     });
-  //     setUsedTech(editData.TS?.frontend ?? editData.TS?.frontend ?? []);
-  //     setUsedDb(editData.TS?.database || []);
-  //     setUsedOs(editData.TS?.os || []);
-  //     setUsedOsVersion(editData.TS?.osVersion || []);
-  //     setUsedRepo(editData.TS?.repoUrls || []);
-  //     setGitUrls(editData.Infra?.gitUrls || []);
-  //     setVaRecords(editData.Infra?.vaRecords || []);
-  //     setAuditRecords(editData.SA?.securityAudit || []);
-  //   } else {
-  //     // If not editing, set HOD from localStorage by default
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       HOD: localStorage.getItem("HOD") || "",
-  //     }));
-  //   }
-  // }, [editData]);
-
-
   useEffect(() => {
-    if (editData) {
-      const bp = editData.BP || editData;
-      const sa = editData.SA || {};
-      const ts = editData.TS || {};
-      const infra = editData.Infra || {};
-  
-      const nodalNIC = bp.nodalOfficerNIC || {};
-      const nodalDept = bp.nodalOfficerDept || bp.nodalofficerDept || {};
-      const firstAudit = sa.securityAudit?.[0] || {};
-  
-      // Populate form fields
-      setFormData((prev) => ({
-        ...prev,
-        // Basic Profile
-        assetsId: bp.assetsId || editData.assetsId || "",
-        projectName: bp.name || editData.projectName || "",
-        prismId: bp.prismId || bp.prismid || "",
-        departmentName: bp.deptName || bp.departmentName || "",
-        url: bp.url || "",
-        publicIp: bp.publicIp || bp.public_ip || "",
-        HOD: bp.HOD || localStorage.getItem("HOD") || "",
-  
-        // Nodal Officer (NIC)
-        nicOfficerName: nodalNIC.name || "",
-        nicOfficerEmpCode: nodalNIC.empCode || "",
-        nicOfficerMob: nodalNIC.mobile || "",
-        nicOfficerEmail: nodalNIC.email || "",
-  
-        // Nodal Officer (Department)
-        deptOfficerName: nodalDept.name || "",
-        deptOfficerDesignation: nodalDept.designation || "",
-        deptOfficerMob: nodalDept.mobile || "",
-        deptOfficerEmail: nodalDept.email || "",
-  
-        // Security Audit (1st record, editable form inputs)
-        auditType: firstAudit.typeOfAudit || "",
-        agency: firstAudit.auditingAgency || "",
-        auditDate: firstAudit.auditDate ? firstAudit.auditDate.slice(0, 10) : "",
-        expireDate: firstAudit.expireDate ? firstAudit.expireDate.slice(0, 10) : "",
-        nextExpireDate: firstAudit.tlsNextExpiry ? firstAudit.tlsNextExpiry.slice(0, 10) : "",
-        sslLabScore: firstAudit.sslLabScore || "",
-        certificate: firstAudit.certificate || "",
-  
-        // Technology Stack (single inputs)
-        framework: ts.framework || "",
-  
-        // VA (initial empty for new entry)
-        ipAddress: "",
-        purposeOfUse: "",
-        vaScore: "",
-        dateOfVA: "",
-        vaReport: "",
-  
-        // Git URL (input field for new one)
-        gitUrl: "",
-      }));
-  
-      // Arrays - set with existing values or fallback to []
-      setUsedTech(ts.frontend || []);
-      setUsedDb(ts.database || []);
-      setUsedOs(ts.os || []);
-      setUsedOsVersion(ts.osVersion || []);
-      setUsedRepo(ts.repoUrls || []);
-  
-      setGitUrls(infra.gitUrls || []);
-      setVaRecords(infra.vaRecords || []);
-      setAuditRecords(sa.securityAudit || []);
-    } else {
-      // If creating new, set HOD from localStorage
-      setFormData((prev) => ({
-        ...prev,
-        HOD: localStorage.getItem("HOD") || "",
-      }));
-    }
-  }, [editData]);
-  
+  if (editData) {
+    const bp = editData.BP || editData;
+    const nodalNIC = bp.nodalOfficerNIC || {};
+    const nodalDept = bp.nodalOfficerDept || bp.nodalofficerDept || {};
+    const audits = editData.SA?.securityAudit || [];
 
+    setFormData({
+      // Basic Profile
+      assetsId: editData.assetsId || bp.assetsId || "",
+      projectName: editData.projectName || bp.name || "",
+      prismId: bp.prismId || bp.prismid || "",
+      departmentName: bp.deptName || bp.departmentName || "",
+      url: bp.url || "",
+      publicIp: bp.publicIp || bp.public_ip || "",
+      HOD: bp.HOD || localStorage.getItem("HOD") || "",
+      // Nodal Officer from NIC
+      nicOfficerName: nodalNIC.name || "",
+      nicOfficerEmpCode: nodalNIC.empCode || "",
+      nicOfficerMob: nodalNIC.mobile || "",
+      nicOfficerEmail: nodalNIC.email || "",
+      // Nodal Officer from Department
+      deptOfficerName: nodalDept.name || "",
+      deptOfficerDesignation: nodalDept.designation || "",
+      deptOfficerMob: nodalDept.mobile || "",
+      deptOfficerEmail: nodalDept.email || "",
+      // Technology Stack
+      framework: editData.TS?.framework || "",
+      // Infrastructure
+      typeOfServer: editData.Infra?.typeOfServer || "",
+      dataCentre: editData.Infra?.dataCentre || "",
+      deployment: editData.Infra?.deployment || "",
+      location: editData.Infra?.location || "",
+      // VA fields (for adding new VA record)
+      ipAddress: "",
+      purposeOfUse: "",
+      vaScore: "",
+      dateOfVA: "",
+      vaReport: null,
+      // Git URL (for adding new git url)
+      gitUrl: "",
+    });
+
+    setUsedTech(editData.TS?.frontend ?? editData.TS?.frontEnd ?? []);
+    setUsedDb(editData.TS?.database || []);
+    setUsedOs(editData.TS?.os || []);
+    setUsedOsVersion(editData.TS?.osVersion || []);
+    setUsedRepo(editData.TS?.repoUrls || []);
+    setGitUrls(editData.Infra?.gitUrls || []);
+    setVaRecords(editData.Infra?.vaRecords || []);
+
+    // 🔥 Load full audit record list dynamically
+    const dynamicAuditRecords = audits.map((record) => ({
+      typeOfAudit: record.typeOfAudit || "",
+      auditingAgency: record.auditingAgency || "",
+      auditDate: record.auditDate ? record.auditDate.slice(0, 10) : "",
+      expireDate: record.expireDate ? record.expireDate.slice(0, 10) : "",
+      nextExpireDate: record.tlsNextExpiry
+        ? record.tlsNextExpiry.slice(0, 10)
+        : "",
+      sslLabScore: record.sslLabScore || "",
+      certificate: record.certificate || null,
+    }));
+
+    setAuditRecords(dynamicAuditRecords);
+  } else {
+    // Not editing
+    setFormData((prev) => ({
+      ...prev,
+      HOD: localStorage.getItem("HOD") || "",
+    }));
+  }
+}, [editData]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;

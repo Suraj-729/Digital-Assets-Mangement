@@ -62,7 +62,7 @@ const SecurityAudit = ({ securityAudits }) => {
                 <th>Agency</th>
                 <th>Certificate</th>
                 <th>SSL Lab Score</th>
-                <th>TLS Next Expiry</th>
+                <th>TLS Next Expiry Date</th>
               </tr>
             </thead>
             <tbody>
@@ -176,3 +176,7 @@ SecurityAudit.propTypes = {
 };
 
 export default SecurityAudit;
+
+
+
+

@@ -8,7 +8,6 @@ const LoginPage = ({ onLogin }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -30,7 +29,10 @@ const LoginPage = ({ onLogin }) => {
       localStorage.setItem("employeeType", response.data.user.employeeType);
 
       // Store the actual HOD name if present, otherwise store an empty string
-      const hodValue = response.data.user.HOD && response.data.user.HOD !== "HOD" ? response.data.user.HOD : "";
+      const hodValue =
+        response.data.user.HOD && response.data.user.HOD !== "HOD"
+          ? response.data.user.HOD
+          : "";
       localStorage.setItem("HOD", hodValue);
       console.log("HOD set in localStorage:", localStorage.getItem("HOD"));
 
@@ -51,16 +53,16 @@ const LoginPage = ({ onLogin }) => {
     <div className="form-container login-page">
       {/* Logo just above the white box */}
       <img
-  src="/images/logo.png"
-  alt="AssetsIQ Logo"
-  style={{
-    width: "400px",
-    marginBottom: "80px",
-    display: "block",
-    marginLeft: "auto",
-    marginRight: "auto"
-  }}
-/>
+        src="/images/logo.png"
+        alt="AssetsIQ Logo"
+        style={{
+          width: "400px",
+          marginBottom: "80px",
+          display: "block",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      />
 
       {/* Login Form Box */}
       <div className="login-form">
@@ -93,7 +95,7 @@ const LoginPage = ({ onLogin }) => {
                 border: "none",
                 color: "#007bff",
                 cursor: "pointer",
-                padding: 0
+                padding: 0,
               }}
             >
               Change Password?
@@ -106,26 +108,24 @@ const LoginPage = ({ onLogin }) => {
       </div>
 
       {/* Footer just below the white box */}
-     <footer
-  style={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "8px",
-    marginTop: "35px",
-    fontSize: "25px",
-    color: "#000",
-  }}
->
-  <img
-    src="/images/niclogo.png"
-    alt="Footer Logo"
-    style={{ height: "45px" }}
-  />
-  <span>© 2025 All Rights Reserved.</span>
-</footer>
-
-
+      <footer
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
+          marginTop: "35px",
+          fontSize: "25px",
+          color: "#000",
+        }}
+      >
+        <img
+          src="/images/niclogo.png"
+          alt="Footer Logo"
+          style={{ height: "45px" }}
+        />
+        <span>© 2025 All Rights Reserved.</span>
+      </footer>
     </div>
   );
 };
