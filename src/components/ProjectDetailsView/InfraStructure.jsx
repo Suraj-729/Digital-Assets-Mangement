@@ -1,29 +1,213 @@
 
-import React from "react";
+// import React from "react";
+// import PropTypes from "prop-types";
+
+// const TechnologyAndInfrastructure = ({ project, showTech = false, showInfra = false }) => {
+//   // Helper function to safely display array or string values
+//   const displayValue = (value) => {
+//     if (!value) return 'N/A';
+//     if (Array.isArray(value)) return value.length ? value.join(', ') : 'N/A';
+//     return value;
+//   };
+
+//   // Helper function to format date
+//   const formatDate = (dateString) => {
+//     if (!dateString) return 'N/A';
+//     try {
+//       const date = new Date(dateString);
+//       return date.toLocaleDateString('en-GB', {
+//         day: '2-digit',
+//         month: 'short',
+//         year: 'numeric'
+//       });
+//     } catch (e) {
+//       return 'Invalid date';
+//     }
+//   };
+
+//   return (
+//     <div className="">
+//       {showTech && (
+//         <table className="table table-bordered">
+//           <thead className="table-light">
+//             <tr>
+//               <th>Front End</th>
+//               <th>Framework</th>
+//               <th>Database</th>
+//               <th>OS</th>
+//               <th>OS Version</th>
+//               <th>Repository URLs</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             <tr>
+//               <td>{displayValue(project?.TS?.frontend)}</td>
+//               <td>{displayValue(project?.TS?.framework)}</td>
+//               <td>{displayValue(project?.TS?.database)}</td>
+//               <td>{displayValue(project?.TS?.os)}</td>
+//               <td>{displayValue(project?.TS?.osVersion)}</td>
+//               <td>
+//                 {project?.TS?.repoUrls?.length > 0 ? (
+//                   project.TS.repoUrls.map((url, index) => (
+//                     <div key={index}>
+//                       <a href={url} target="_blank" rel="noopener noreferrer">
+//                         {url}
+//                       </a>
+//                     </div>
+//                   ))
+//                 ) : 'N/A'}
+//               </td>
+//             </tr>
+//           </tbody>
+//         </table>
+//       )}
+
+//       {showInfra && (
+//         <table className="table table-bordered">
+//           <thead className="table-light">
+//             <tr>
+//               <th>Server Type</th>
+//               <th>Data Centre</th>
+//               <th>Deployment</th>
+//               <th>Location</th>
+//               <th>Git URLs</th>
+//               <th>VA IP Address</th>
+//               <th>VA Purpose</th>
+//               <th>VA Date</th>
+//               <th>VA Score</th>
+//               <th>VA Report</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             <tr>
+//               <td>{project?.Infra?.typeOfServer || 'N/A'}</td>
+//               <td>{project?.Infra?.dataCentre || 'N/A'}</td>
+//               <td>{project?.Infra?.deployment || 'N/A'}</td>
+//               <td>{project?.Infra?.location || 'N/A'}</td>
+//               <td>
+//                 {project?.Infra?.gitUrls?.length > 0 ? (
+//                   project.Infra.gitUrls.map((url, index) => (
+//                     <div key={index}>
+//                       <a href={url} target="_blank" rel="noopener noreferrer">
+//                         {url}
+//                       </a>
+//                     </div>
+//                   ))
+//                 ) : 'N/A'}
+//               </td>
+//               <td>{project?.Infra?.vaRecords?.[0]?.ipAddress || 'N/A'}</td>
+//               <td>{project?.Infra?.vaRecords?.[0]?.purposeOfUse || 'N/A'}</td>
+//               <td>{formatDate(project?.Infra?.vaRecords?.[0]?.dateOfVA)}</td>
+//               <td>{project?.Infra?.vaRecords?.[0]?.vaScore || 'N/A'}</td>
+//               <td>
+//                 {project?.Infra?.vaRecords?.[0]?.vaReport ? (
+//                   <a 
+//                     href={`/va-reports/${project.Infra.vaRecords[0].vaReport}`} 
+//                     target="_blank" 
+//                     rel="noopener noreferrer"
+//                     className="text-danger"
+//                   >
+//                     <i className="bi bi-file-earmark-pdf fs-5"></i>
+//                   </a>
+//                 ) : 'N/A'}
+//               </td>
+//             </tr>
+//           </tbody>
+//         </table>
+//       )}
+//     </div>
+//   );
+// };
+
+// TechnologyAndInfrastructure.propTypes = {
+//   project: PropTypes.shape({
+//     TS: PropTypes.shape({
+//       frontend: PropTypes.oneOfType([
+//         PropTypes.arrayOf(PropTypes.string),
+//         PropTypes.string
+//       ]),
+//       framework: PropTypes.oneOfType([
+//         PropTypes.arrayOf(PropTypes.string),
+//         PropTypes.string
+//       ]),
+//       database: PropTypes.oneOfType([
+//         PropTypes.arrayOf(PropTypes.string),
+//         PropTypes.string
+//       ]),
+//       os: PropTypes.oneOfType([
+//         PropTypes.arrayOf(PropTypes.string),
+//         PropTypes.string
+//       ]),
+//       osVersion: PropTypes.oneOfType([
+//         PropTypes.arrayOf(PropTypes.string),
+//         PropTypes.string
+//       ]),
+//       repoUrls: PropTypes.arrayOf(PropTypes.string),
+//     }),
+//     Infra: PropTypes.shape({
+//       typeOfServer: PropTypes.string,
+//       location: PropTypes.string,
+//       deployment: PropTypes.string,
+//       dataCentre: PropTypes.string,
+//       gitUrls: PropTypes.arrayOf(PropTypes.string),
+//       vaRecords: PropTypes.arrayOf(
+//         PropTypes.shape({
+//           ipAddress: PropTypes.string,
+//           purposeOfUse: PropTypes.string,
+//           vaScore: PropTypes.string,
+//           dateOfVA: PropTypes.string,
+//           vaReport: PropTypes.string,
+//         })
+//       ),
+//       additionalInfra: PropTypes.array,
+//     }),
+//   }).isRequired,
+//   showTech: PropTypes.bool,
+//   showInfra: PropTypes.bool
+// };
+
+// export default TechnologyAndInfrastructure;
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+const API = "http://localhost:5000"; // Your backend base URL
+
 const TechnologyAndInfrastructure = ({ project, showTech = false, showInfra = false }) => {
-  // Helper function to safely display array or string values
+  const [showModal, setShowModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState("");
+
+  const handleViewPdf = (filename) => {
+    if (!filename) return;
+    setPdfUrl(`${API}/va-reports/${filename}`);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setPdfUrl("");
+  };
+
   const displayValue = (value) => {
-    if (!value) return 'N/A';
-    if (Array.isArray(value)) return value.length ? value.join(', ') : 'N/A';
+    if (!value) return "N/A";
+    if (Array.isArray(value)) return value.length ? value.join(", ") : "N/A";
     return value;
   };
 
-  // Helper function to format date
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
+      return date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
       });
     } catch (e) {
-      return 'Invalid date';
+      return "Invalid date";
     }
   };
+
+  const vaRecord = project?.Infra?.vaRecords?.[0];
 
   return (
     <div className="">
@@ -55,7 +239,9 @@ const TechnologyAndInfrastructure = ({ project, showTech = false, showInfra = fa
                       </a>
                     </div>
                   ))
-                ) : 'N/A'}
+                ) : (
+                  "N/A"
+                )}
               </td>
             </tr>
           </tbody>
@@ -80,10 +266,10 @@ const TechnologyAndInfrastructure = ({ project, showTech = false, showInfra = fa
           </thead>
           <tbody>
             <tr>
-              <td>{project?.Infra?.typeOfServer || 'N/A'}</td>
-              <td>{project?.Infra?.dataCentre || 'N/A'}</td>
-              <td>{project?.Infra?.deployment || 'N/A'}</td>
-              <td>{project?.Infra?.location || 'N/A'}</td>
+              <td>{project?.Infra?.typeOfServer || "N/A"}</td>
+              <td>{project?.Infra?.dataCentre || "N/A"}</td>
+              <td>{project?.Infra?.deployment || "N/A"}</td>
+              <td>{project?.Infra?.location || "N/A"}</td>
               <td>
                 {project?.Infra?.gitUrls?.length > 0 ? (
                   project.Infra.gitUrls.map((url, index) => (
@@ -93,27 +279,66 @@ const TechnologyAndInfrastructure = ({ project, showTech = false, showInfra = fa
                       </a>
                     </div>
                   ))
-                ) : 'N/A'}
+                ) : (
+                  "N/A"
+                )}
               </td>
-              <td>{project?.Infra?.vaRecords?.[0]?.ipAddress || 'N/A'}</td>
-              <td>{project?.Infra?.vaRecords?.[0]?.purposeOfUse || 'N/A'}</td>
-              <td>{formatDate(project?.Infra?.vaRecords?.[0]?.dateOfVA)}</td>
-              <td>{project?.Infra?.vaRecords?.[0]?.vaScore || 'N/A'}</td>
+              <td>{vaRecord?.ipAddress || "N/A"}</td>
+              <td>{vaRecord?.purposeOfUse || "N/A"}</td>
+              <td>{formatDate(vaRecord?.dateOfVA)}</td>
+              <td>{vaRecord?.vaScore || "N/A"}</td>
               <td>
-                {project?.Infra?.vaRecords?.[0]?.vaReport ? (
-                  <a 
-                    href={`/va-reports/${project.Infra.vaRecords[0].vaReport}`} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-danger"
+                {vaRecord?.vaReport ? (
+                  <button
+                    className="btn btn-link text-danger p-0"
+                    title="View VA Report"
+                    onClick={() => handleViewPdf(vaRecord.vaReport)}
                   >
                     <i className="bi bi-file-earmark-pdf fs-5"></i>
-                  </a>
-                ) : 'N/A'}
+                  </button>
+                ) : (
+                  "N/A"
+                )}
               </td>
             </tr>
           </tbody>
         </table>
+      )}
+
+      {/* PDF Viewer Modal */}
+      {showModal && (
+        <div
+          className="modal fade show"
+          style={{
+            display: "block",
+            background: "rgba(0,0,0,0.5)",
+          }}
+          tabIndex="-1"
+          role="dialog"
+        >
+          <div className="modal-dialog modal-xl" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">VA Report PDF</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={closeModal}
+                ></button>
+              </div>
+              <div className="modal-body" style={{ height: "80vh" }}>
+                <iframe
+                  src={pdfUrl}
+                  title="VA Report PDF"
+                  width="100%"
+                  height="100%"
+                  style={{ border: "none", minHeight: "70vh" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -122,26 +347,11 @@ const TechnologyAndInfrastructure = ({ project, showTech = false, showInfra = fa
 TechnologyAndInfrastructure.propTypes = {
   project: PropTypes.shape({
     TS: PropTypes.shape({
-      frontend: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.string),
-        PropTypes.string
-      ]),
-      framework: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.string),
-        PropTypes.string
-      ]),
-      database: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.string),
-        PropTypes.string
-      ]),
-      os: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.string),
-        PropTypes.string
-      ]),
-      osVersion: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.string),
-        PropTypes.string
-      ]),
+      frontend: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
+      framework: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
+      database: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
+      os: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
+      osVersion: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
       repoUrls: PropTypes.arrayOf(PropTypes.string),
     }),
     Infra: PropTypes.shape({
@@ -163,7 +373,7 @@ TechnologyAndInfrastructure.propTypes = {
     }),
   }).isRequired,
   showTech: PropTypes.bool,
-  showInfra: PropTypes.bool
+  showInfra: PropTypes.bool,
 };
 
 export default TechnologyAndInfrastructure;

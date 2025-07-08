@@ -12,11 +12,47 @@ const StepSecurityAudit = ({
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
 
-  const handleFileChange = (e) => {
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   onChange({ target: { name: "certificate", value: file, files: [file] } });
+  // };
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    onChange({ target: { name: "certificate", value: file, files: [file] } });
+    if (!file || file.type !== "application/pdf") {
+      alert("Please select a valid PDF file.");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("certificate", file);
+  
+    try {
+      const response = await fetch("http://localhost:5000/upload-certificate", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        alert("PDF uploaded successfully");
+  
+        // Save the filename in formData
+        onChange({
+          target: {
+            name: "certificate",
+            value: result.filename,
+          },
+        });
+      } else {
+        alert("Failed to upload PDF: " + result.error);
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Error uploading PDF");
+    }
   };
-
+  
   const handleAddRecord = () => {
     const newRecord = {
       auditDate: formData.auditDate,
@@ -41,24 +77,42 @@ const StepSecurityAudit = ({
     onChange({ target: { name: "certificate", value: null } });
   };
 
+  // const handleView = (index) => {
+  //   const file = auditRecords[index].certificate;
+  //   if (file && file.type === "application/pdf") {
+  //     const fileURL = URL.createObjectURL(file);
+  //     setPdfUrl(fileURL);
+  //     setShowModal(true);
+  //   } else {
+  //     alert("No PDF certificate uploaded.");
+  //   }
+  // };
   const handleView = (index) => {
-    const file = auditRecords[index].certificate;
-    if (file && file.type === "application/pdf") {
-      const fileURL = URL.createObjectURL(file);
-      setPdfUrl(fileURL);
-      setShowModal(true);
-    } else {
-      alert("No PDF certificate uploaded.");
+    const filename = auditRecords[index].certificate;
+    if (!filename) {
+      alert("No certificate uploaded.");
+      return;
     }
+  
+    const fileURL = `http://localhost:5000/view-certificate/${filename}`;
+    setPdfUrl(fileURL);
+    setShowModal(true);
   };
+  
 
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  //   if (pdfUrl) {
+  //     URL.revokeObjectURL(pdfUrl);
+  //     setPdfUrl(null);
+  //   }
+  // };
   const handleCloseModal = () => {
     setShowModal(false);
-    if (pdfUrl) {
-      URL.revokeObjectURL(pdfUrl);
-      setPdfUrl(null);
-    }
+    setPdfUrl(null);
   };
+  
+  
 
   const handleDelete = (index) => {
     const updated = [...auditRecords];
@@ -107,7 +161,7 @@ const StepSecurityAudit = ({
           </div>
 
           <div className="col-md-6">
-            <label className="form-label">Agency</label>
+            <label className="form-label">Auditing Agency</label>
             <select
               className="form-select"
               name="agency"
@@ -146,7 +200,7 @@ const StepSecurityAudit = ({
           </div>
 
           <div className="col-md-6">
-            <label className="form-label">Next Expire Date</label>
+            <label className="form-label"> TLS Next Expire Date</label>
             <input
               type="date"
               className="form-control"
@@ -271,6 +325,7 @@ const StepSecurityAudit = ({
               <iframe
                 src={pdfUrl}
                 title="PDF Preview"
+                // onClick={handleCloseModal}
                 width="100%"
                 height="100%"
                 style={{ border: "none", minHeight: "100%" }}

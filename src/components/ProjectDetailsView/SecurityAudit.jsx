@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
+import api from "../../Api";
+const API = "http://localhost:5000";  
 const SecurityAudit = ({ securityAudits }) => {
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
@@ -36,8 +37,9 @@ const SecurityAudit = ({ securityAudits }) => {
         });
   };
 
-  const handleCertificateClick = (certificate) => {
-    setPdfUrl(`/certificates/${certificate}`);
+  const handleCertificateClick = (filename) => {
+    if (!filename) return;
+    setPdfUrl(`${API}/view-certificate/${filename}`);  // ✅ correct GridFS route
     setShowModal(true);
   };
 
