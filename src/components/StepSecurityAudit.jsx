@@ -539,6 +539,7 @@ const StepSecurityAudit = ({
                   <td>{record.auditDate}</td>
                   <td>
                     <button
+                    type="button"
                       className="icon-btn text-primary"
                       onClick={() => handleView(idx)}
                     >
