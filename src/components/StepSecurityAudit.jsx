@@ -292,7 +292,6 @@
 // };
 
 // export default StepSecurityAudit;
-
 import React, { useState } from "react";
 import "../css/mvpStyle.css";
 
@@ -648,4 +647,3 @@ const StepSecurityAudit = ({
 };
 
 export default StepSecurityAudit;
-
