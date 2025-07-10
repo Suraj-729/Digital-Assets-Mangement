@@ -319,7 +319,7 @@ const StepInfrastructure = ({
           </table>
         </div>
 
-        <input
+        {/* <input
           type="button"
           name="previous"
           className="previous action-button-previous btn btn-primary"
@@ -332,7 +332,26 @@ const StepInfrastructure = ({
           className="submit action-button btn btn-primary"
           value="Submit"
           onClick={onSubmit}
-        />
+        /> */}
+        <div className="d-flex justify-content-between mt-3">
+  <input
+    type="button"
+    name="previous"
+    className="previous action-button-previous btn btn-primary"
+    value="Previous"
+    onClick={onPrevious}
+    style={{marginLeft:"425px"}}
+  />
+  <input
+    type="submit"
+    name="submit"
+    className="submit action-button btn btn-primary"
+    value="Submit"
+    onClick={onSubmit}
+    style={{marginRight:"425px"}}
+  />
+</div>
+
       </div>
 
       {/* PDF Modal */}
