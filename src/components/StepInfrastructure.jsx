@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/mvpStyle.css";
@@ -193,7 +194,7 @@ const StepInfrastructure = ({
               className={`form-control ${errors.ipAddress ? "is-invalid" : ""}`}
               name="ipAddress"
               placeholder="Application server IP"
-              value={formData.ipAddress || ""}
+              value={formData.ipAddress }
               onChange={onChange}
             />
             {errors.ipAddress && <div className="invalid-feedback">{errors.ipAddress}</div>}
@@ -205,9 +206,9 @@ const StepInfrastructure = ({
               type="text"
               className="form-control"
               name="purposeOfUse"
-              value={formData.purposeOfUse || "Application Server"}
+              value={formData.purposeOfUse }
               onChange={onChange}
-              readOnly
+              
             />
           </div>
 
@@ -313,7 +314,7 @@ const StepInfrastructure = ({
           </table>
         </div>
 
-        <div className="d-flex justify-content-between mt-3">
+        {/* <div className="d-flex justify-content-between mt-3">
           <input
             type="button"
             name="previous"
@@ -328,7 +329,25 @@ const StepInfrastructure = ({
             value="Submit"
             onClick={handleSubmit}
           />
-        </div>
+        </div> */}
+        <div className="d-flex justify-content-between mt-3">
+   <input
+     type="button"
+    name="previous"
+    className="previous action-button-previous btn btn-primary"
+     value="Previous"
+     onClick={onPrevious}
+     style={{marginLeft:"425px"}}
+   />
+   <input
+     type="submit"
+     name="submit"
+     className="submit action-button btn btn-primary"
+    value="Submit"
+   onClick={handleSubmit}
+     style={{marginRight:"425px"}}
+   />
+ </div>
       </div>
 
       {/* PDF Modal */}
