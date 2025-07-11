@@ -57,7 +57,7 @@ const RegisterPage = () => {
       
       console.log("Registration successful:", response.data);
       setSuccess(true);
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/damLogin"), 2000);
     } catch (err) {
       console.error("Registration error:", {
         message: err.message,
@@ -111,8 +111,8 @@ const RegisterPage = () => {
           >
             <option value="">Select Employee Type</option>
             <option value="Admin">Admin</option>
-            <option value="Regular">Project Head</option>
-            <option value="Regular">Project Manger</option>
+            <option value="HOD">HEAD OF THE DEPARTMENT</option>
+            {/* <option value="HOD">Project Manger</option> */}
             {/* Add more types as needed */}
           </select>
           <input
@@ -139,7 +139,7 @@ const RegisterPage = () => {
             Register
           </button>
           <div className="login-link">
-            <p>Already have an account? <span onClick={() => navigate("/login")}>Login</span></p>
+            <p>Already have an account? <span onClick={() => navigate("/damLogin")}>Login</span></p>
           </div>
         </form>
       </div>
