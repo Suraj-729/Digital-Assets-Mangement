@@ -71,7 +71,7 @@ const Header = ({ onSidebarToggle }) => {
   return (
     <header id="header" className="header fixed-top d-flex align-items-center">
       <div className="d-flex align-items-center justify-content-between">
-        <Link to="/" className="logo d-flex align-items-center">
+        <Link to="" className="logo d-flex align-items-center">
           <img src="../../../images/logo.png" alt="Logo" />
         </Link>
         <i
@@ -202,7 +202,7 @@ const Header = ({ onSidebarToggle }) => {
                 aria-label="Profile menu"
               >
                 <li className="dropdown-header">
-                  <h6>User Name</h6>
+                  <h6>{localStorage.getItem("HOD")}</h6>
                   <span>Designation</span>
                 </li>
                 <li>

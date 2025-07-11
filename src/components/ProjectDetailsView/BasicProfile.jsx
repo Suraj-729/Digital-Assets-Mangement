@@ -80,7 +80,7 @@ const BasicProfile = ({ project }) => {
                 <p>Public IP: <b>{project.BP?.publicIp || 'N/A'}</b></p>
               </div>
               <div className="col-md-4 col-xxl-3">
-                <p>HOD: <b>{project.BP?.HOD || 'N/A'}</b></p>
+                <p>HOD Name: <b>{project.BP?.HOD || 'N/A'}</b></p>
               </div>
             </div>
             <div className="row">
@@ -136,3 +136,6 @@ BasicProfile.propTypes = {
 };
 
 export default BasicProfile;
+
+
+

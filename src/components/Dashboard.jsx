@@ -380,7 +380,7 @@ const Dashboard = () => {
                             </select>
                           </div>
 
-                          <div className="col-md-3">
+                          {/* <div className="col-md-3">
                             <label className="form-label">Filter Value</label>
                             <select
                               className="form-select"
@@ -413,7 +413,69 @@ const Dashboard = () => {
                                 </option>
                               ))}
                             </select>
-                          </div>
+                          </div> */}
+                          <div className="col-md-3">
+  <label className="form-label">Filter Value</label>
+
+  {filterType === "prismid" ? (
+    // Show input box for prismid
+    <input
+      type="text"
+      className="form-control"
+      placeholder="Enter Prism ID"
+      value={filterValue}
+      onChange={async (e) => {
+        const value = e.target.value;
+        setFilterValue(value);
+
+        if (!value) {
+          setFilteredProjects(projects);
+          return;
+        }
+
+        try {
+          const res = await api.get(`/dashboard/filter/prismid/${value}`);
+          setFilteredProjects(res.data);
+        } catch (err) {
+          console.error("Filter fetch error:", err);
+          setFilteredProjects([]);
+        }
+      }}
+    />
+  ) : (
+    // For other filter types, use dropdown
+    <select
+      className="form-select"
+      value={filterValue}
+      onChange={async (e) => {
+        const value = e.target.value;
+        setFilterValue(value);
+
+        if (!filterType || !value) {
+          setFilteredProjects(projects);
+          return;
+        }
+
+        try {
+          const res = await api.get(`/dashboard/filter/${filterType}/${value}`);
+          setFilteredProjects(res.data);
+        } catch (err) {
+          console.error("Filter fetch error:", err);
+          setFilteredProjects([]);
+        }
+      }}
+      disabled={!filterType}
+    >
+      <option value="">-- Select Value --</option>
+      {getFilterOptions(filterType).map((val) => (
+        <option key={val} value={val}>
+          {val}
+        </option>
+      ))}
+    </select>
+  )}
+</div>
+
                         </div>
 
                         {filteredProjects.length === 0 ? (

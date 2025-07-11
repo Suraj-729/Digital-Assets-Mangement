@@ -70,7 +70,7 @@ const LoginPage = ({ onLogin }) => {
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="User ID or Employee ID"
+            placeholder="Enter Employee Id"
             className="form-control"
             value={loginId}
             onChange={(e) => setLoginId(e.target.value)}
