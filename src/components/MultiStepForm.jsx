@@ -6,6 +6,7 @@ import StepTechnologyStack from "./StepTechnologyStack";
 import StepInfrastructure from "./StepInfrastructure";
 import api from "../Api";
 import "../css/mvpStyle.css";
+import { toast } from "react-toastify";
 
 // ✅ Added: Import motion and AnimatePresence
 import { motion, AnimatePresence } from "framer-motion";
@@ -136,7 +137,8 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
   const onAddVa = () => {
     if (!formData.ipAddress) {
-      alert("IP Address is required");
+      // alert("IP Address is required");
+      toast.error("IP Address is required");
       return;
     }
 
@@ -274,17 +276,24 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-        alert("Asset successfully updated!");
+        // alert("Asset successfully updated!");
+        toast.success("Asset successfully created!");
+
       } else {
         // CREATE: new asset
         await api.post("/assets/createAsset", form, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        alert("Asset successfully created!");
+        // alert("Asset successfully created!");
+        toast.success("Asset successfully updated!");
+
+        
       }
     } catch (err) {
       console.error("Submission error:", err);
-      alert("Error submitting asset. Check console for details.");
+      // alert("Error submitting asset. Check console for details.");
+      toast.error("Error submitting asset. Check console for details.");
+
     }
   };
   const renderStep = () => {

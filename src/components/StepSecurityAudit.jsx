@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import "../css/mvpStyle.css";
+import { toast } from "react-toastify";
 
 const StepSecurityAudit = ({
   formData,
@@ -20,7 +21,9 @@ const StepSecurityAudit = ({
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file || file.type !== "application/pdf") {
-      alert("Please select a valid PDF file.");
+      // alert("Please select a valid PDF file.");
+      toast.error("Please select a valid PDF file.");
+
       return;
     }
   
@@ -36,7 +39,9 @@ const StepSecurityAudit = ({
       const result = await response.json();
   
       if (response.ok) {
-        alert("PDF uploaded successfully");
+        // alert("PDF uploaded successfully");
+        toast.success("PDF uploaded successfully.");
+
   
         // Save the filename in formData
         onChange({
@@ -46,11 +51,15 @@ const StepSecurityAudit = ({
           },
         });
       } else {
-        alert("Failed to upload PDF: " + result.error);
+        // alert("Failed to upload PDF: " + result.error);
+        toast.error("Failed to upload PDF: " + result.error);
+
       }
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Error uploading PDF");
+      // alert("Error uploading PDF");
+      toast.error("Error uploading PDF.");
+
     }
   };
   
@@ -91,7 +100,9 @@ const StepSecurityAudit = ({
   const handleView = (index) => {
     const filename = auditRecords[index].certificate;
     if (!filename) {
-      alert("No certificate uploaded.");
+      // alert("No certificate uploaded.");
+      toast.warn("No certificate uploaded.");
+
       return;
     }
   

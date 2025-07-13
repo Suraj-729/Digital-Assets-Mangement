@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import "../css/mvpStyle.css";
+import { toast } from "react-toastify";
 
 const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => {
   const [errors, setErrors] = useState({});
@@ -63,8 +64,14 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
   };
 
   const handleNextClick = () => {
+    // if (validate()) {
+    //   onNext();
+    // }
     if (validate()) {
+      toast.success("Basic Profile validated successfully!");
       onNext();
+    } else {
+      toast.error("Please fill all required fields correctly.");
     }
   };
 

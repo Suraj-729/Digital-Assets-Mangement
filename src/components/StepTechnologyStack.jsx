@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import "../css/mvpStyle.css";
+import { toast } from "react-toastify";
 
 const StepTechnologyStack = ({
   formData = {},
@@ -20,11 +21,11 @@ const StepTechnologyStack = ({
 }) => {
   const [errors, setErrors] = useState({});
   const [usedFrameworks, setUsedFrameworks] = useState([]);
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
+  // const [notification, setNotification] = useState({
+  //   show: false,
+  //   message: "",
+  //   type: "",
+  // });
 
   const isValidUrl = (url) => {
     try {
@@ -41,11 +42,14 @@ const StepTechnologyStack = ({
         ...prev,
         [field]: "Please select or enter a value first",
       }));
+      toast.error("Please enter a value before adding.");
       return;
     }
 
     if (field === "repoUrl" && !isValidUrl(value)) {
       setErrors((prev) => ({ ...prev, repoUrl: "Please enter a valid URL" }));
+      toast.error("Invalid URL format.");
+
       return;
     }
 
@@ -60,23 +64,13 @@ const StepTechnologyStack = ({
 
     const currentArray = stateMaps[field];
     if (currentArray.includes(value)) {
-      setNotification({
-        show: true,
-        message: `This ${field.replace("Url", "")} is already added`,
-        type: "error",
-      });
-      setTimeout(() => setNotification({ show: false, message: "", type: "" }), 3000);
+      toast.warn(`"${value}" already added to ${field.replace("Url", "")}.`);
       return;
     }
 
     setter((prev) => [...prev, value]);
 
-    setNotification({
-      show: true,
-      message: `Added ${value} to ${field.replace("Url", "")}`,
-      type: "success",
-    });
-    setTimeout(() => setNotification({ show: false, message: "", type: "" }), 3000);
+    toast.success(`"${value}" added to ${field.replace("Url", "")}.`);
 
     setErrors((prev) => ({ ...prev, [field]: "" }));
     onChange({ target: { name: inputField, value: "" } });
@@ -84,6 +78,7 @@ const StepTechnologyStack = ({
 
   const removeFromStack = (field, value, setter) => {
     setter((prev) => prev.filter((item) => item !== value));
+    toast.info(`"${value}" removed from ${field.replace("Url", "")}.`);
   };
 
   const renderStackBadges = (items, field, setter) => {
@@ -141,6 +136,7 @@ const StepTechnologyStack = ({
 
     if (!isValid) {
       setErrors(errors);
+      toast.error("Please complete all fields before proceeding.");
       return;
     }
 
@@ -151,11 +147,11 @@ const StepTechnologyStack = ({
     <fieldset className="technology-stack-form">
       <legend className="form-legend">Technology Stack</legend>
 
-      {notification.show && (
+      {/* {notification.show && (
         <div className={`alert alert-${notification.type}`}>
           {notification.message}
         </div>
-      )}
+      )} */}
 
       <div className="form-section">
         {/* Front End */}

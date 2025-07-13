@@ -1,12 +1,8 @@
 
-
-
-
-
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/mvpStyle.css";
+import { toast } from "react-toastify";
 
 const API = "http://localhost:5000"; // Replace with actual backend base URL
 
@@ -34,18 +30,22 @@ const StepInfrastructure = ({
 
     if (!ipAddress || !/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ipAddress)) {
       newErrors.ipAddress = "Valid IP address is required";
+      toast.error("Valid IP address is required");
     }
 
     if (!dateOfVA) {
       newErrors.dateOfVA = "Date of VA is required";
+      toast.error("Date of VA is required");
     }
 
     if (!vaScore || isNaN(vaScore) || vaScore < 0 || vaScore > 100) {
       newErrors.vaScore = "Valid VA Score (0–100) is required";
+      toast.error("Valid VA Score (0–100) is required");
     }
 
     if (!vaReport) {
       newErrors.vaReport = "VA Report file is required";
+      toast.error("VA Report file is required");
     }
 
     setErrors(newErrors);
@@ -55,6 +55,7 @@ const StepInfrastructure = ({
   const handleAddVa = () => {
     if (validate()) {
       onAddVa();
+      toast.success("VA record added successfully");
       // Reset fields
       onChange({ target: { name: "ipAddress", value: "" } });
       onChange({ target: { name: "dateOfVA", value: "" } });
@@ -68,7 +69,10 @@ const StepInfrastructure = ({
     e.preventDefault();
     if (vaRecords.length === 0) {
       const isValid = validate();
-      if (!isValid) return;
+      if (!isValid) 
+      toast.error("Please add at least one valid VA record before submitting.");
+
+      return;
     }
     onSubmit(e);
   };
@@ -167,7 +171,18 @@ const StepInfrastructure = ({
                 value={formData.gitUrl || ""}
                 onChange={onChange}
               />
-              <button className="btn btn-primary ms-2" type="button" onClick={onAddGitUrl}>
+              <button className="btn btn-primary ms-2" 
+              type="button" 
+              // onClick={onAddGitUrl}
+              onClick={() => {
+                if (!formData.gitUrl?.trim()) {
+                  toast.error("Please enter a Git URL");
+                  return;
+                }
+                onAddGitUrl();
+                toast.success("Git URL added");
+              }}
+              >
                 ADD
               </button>
             </div>
@@ -180,6 +195,7 @@ const StepInfrastructure = ({
                     onClick={(e) => {
                       e.preventDefault();
                       onDeleteGitUrl(idx);
+                      toast.info("Git URL deleted");
                     }}
                   >
                     Delete
@@ -291,7 +307,9 @@ const StepInfrastructure = ({
                         style={{ border: "none", background: "none" }}
                         title="Delete"
                         type="button"
-                        onClick={() => onDeleteVa(idx)}
+                        onClick={() => {onDeleteVa(idx);
+                          toast.info("VA record deleted");
+                        }}
                       >
                         <i className="bi bi-trash"></i>
                       </button>
