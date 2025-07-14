@@ -88,6 +88,34 @@ const StepInfrastructure = ({
     setPdfUrl("");
   };
 
+  const handleVaFileUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file || file.type !== "application/pdf") {
+    alert("Please select a valid PDF file.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("vaReport", file);
+
+  try {
+    const res = await fetch(`${API}/upload-va-report`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("Upload failed");
+    const result = await res.json();
+
+    // Update formData.vaReport with the uploaded filename
+    onChange({ target: { name: "vaReport", value: result.filename } });
+  } catch (err) {
+    console.error("VA report upload failed:", err);
+    alert("Failed to upload VA report");
+  }
+};
+
+
   return (
     <fieldset>
       <div className="form-section">
@@ -260,11 +288,12 @@ const StepInfrastructure = ({
           <div className="col-md-4">
             <label className="form-label">Upload VA Report:</label>
             <input
-              type="file"
-              className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
-              name="vaReport"
-              onChange={onVaFileChange}
-            />
+  type="file"
+  className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
+  name="vaReport"
+  accept="application/pdf"
+  onChange={handleVaFileUpload}
+/>
             {errors.vaReport && <div className="invalid-feedback">{errors.vaReport}</div>}
           </div>
 

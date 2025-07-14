@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import api from "../../Api";
-const API = "http://localhost:5000";  
+const API = "http://localhost:5000";
 const SecurityAudit = ({ securityAudits }) => {
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
@@ -33,13 +33,36 @@ const SecurityAudit = ({ securityAudits }) => {
       : date.toLocaleDateString("en-GB", {
           day: "2-digit",
           month: "short",
-          year: "numeric"
+          year: "numeric",
         });
   };
 
-  const handleCertificateClick = (filename) => {
+  // const handleCertificateClick = (filename) => {
+  //   if (!filename) return;
+  //   setPdfUrl(`${API}/view-certificate/${filename}`); // ✅ correct GridFS route
+  //   setShowModal(true);
+  // };
+  // const handleVaReportClick = (filename) => {
+  //   if (!filename) return;
+  //   setPdfUrl(`${API}/view-va-report/${filename}`); // ✅ VA report endpoint
+  //   setShowModal(true);
+  // };
+
+  const handleCertificateClick = (certificate) => {
+    const filename =
+      typeof certificate === "string" ? certificate : certificate?.filename;
     if (!filename) return;
-    setPdfUrl(`${API}/view-certificate/${filename}`);  // ✅ correct GridFS route
+
+    setPdfUrl(`${API}/view-certificate/${filename}`);
+    setShowModal(true);
+  };
+
+  const handleVaReportClick = (certificate) => {
+    const filename =
+      typeof certificate === "string" ? certificate : certificate?.filename;
+    if (!filename) return;
+
+    setPdfUrl(`${API}/view-va-report/${filename}`);
     setShowModal(true);
   };
 
@@ -61,6 +84,7 @@ const SecurityAudit = ({ securityAudits }) => {
                 <th>Type of Audit</th>
                 <th>Agency</th>
                 <th>Certificate</th>
+                <th>va </th>
                 <th>SSL Lab Score</th>
                 <th>TLS Next Expiry Date</th>
               </tr>
@@ -76,20 +100,45 @@ const SecurityAudit = ({ securityAudits }) => {
                       <td>{formatDate(audit.expireDate)}</td>
                       <td>{audit.typeOfAudit || "N/A"}</td>
                       <td>{audit.auditingAgency || "N/A"}</td>
+                      {/* Certificate */}
                       <td>
                         {audit.certificate ? (
-                          <button
-                            type="button"
-                            className="btn btn-link text-danger p-0"
-                            onClick={() => handleCertificateClick(audit.certificate)}
-                            title="View Certificate"
-                          >
-                            <i className="bi bi-file-earmark-pdf fs-5"></i>
-                          </button>
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-link text-danger p-0 me-2"
+                              onClick={() =>
+                                handleCertificateClick(
+                                  typeof audit.certificate === "string"
+                                    ? audit.certificate
+                                    : audit.certificate?.filename
+                                )
+                              }
+                              title="View Certificate"
+                            >
+                              <i className="bi bi-file-earmark-pdf fs-5"></i>
+                            </button>
+
+                            <button
+                              type="button"
+                              className="btn btn-link text-primary p-0"
+                              onClick={() =>
+                                handleVaReportClick(
+                                  typeof audit.certificate === "string"
+                                    ? audit.certificate
+                                    : audit.certificate?.filename
+                                )
+                              }
+                              title="View VA Report"
+                            >
+                              <i className="bi bi-file-earmark-text fs-5"></i>
+                            </button>
+                          </>
                         ) : (
                           "N/A"
                         )}
                       </td>
+
                       <td>{audit.sslLabScore || "N/A"}</td>
                       <td>{formatDate(audit.tlsNextExpiry)}</td>
                     </tr>
@@ -113,7 +162,7 @@ const SecurityAudit = ({ securityAudits }) => {
           className="modal fade show"
           style={{
             display: "block",
-            background: "rgba(0,0,0,0.5)"
+            background: "rgba(0,0,0,0.5)",
           }}
           tabIndex="-1"
           role="dialog"
@@ -155,28 +204,24 @@ SecurityAudit.propTypes = {
         auditingAgency: PropTypes.string,
         auditDate: PropTypes.oneOfType([
           PropTypes.string,
-          PropTypes.shape({ $date: PropTypes.string })
+          PropTypes.shape({ $date: PropTypes.string }),
         ]),
         expireDate: PropTypes.oneOfType([
           PropTypes.string,
-          PropTypes.shape({ $date: PropTypes.string })
+          PropTypes.shape({ $date: PropTypes.string }),
         ]),
         tlsNextExpiry: PropTypes.oneOfType([
           PropTypes.string,
-          PropTypes.shape({ $date: PropTypes.string })
+          PropTypes.shape({ $date: PropTypes.string }),
         ]),
         sslLabScore: PropTypes.string,
-        certificate: PropTypes.string
+        certificate: PropTypes.string,
       })
     ),
     PropTypes.shape({
-      securityAudit: PropTypes.array
-    })
-  ])
+      securityAudit: PropTypes.array,
+    }),
+  ]),
 };
 
 export default SecurityAudit;
-
-
-
-
