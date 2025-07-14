@@ -11,11 +11,43 @@ const TechnologyAndInfrastructure = ({
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
 
-  const handleViewPdf = (filename) => {
-    if (!filename) return;
-    setPdfUrl(`${API}/va-reports/${filename}`);
-    setShowModal(true);
-  };
+  // const handleViewPdf = (filename) => {
+  //   if (!filename) return;
+  //   setPdfUrl(`${API}/va-reports/${filename}`);
+  //   setShowModal(true);
+  // };
+const handleViewPdf = async (filename) => {
+  if (!filename) {
+    console.warn("No filename provided for PDF preview.");
+    return;
+  }
+
+  const pdfPath = `${API}/va-reports/${filename}`;
+  console.log("PDF View Requested:");
+  console.log("  → Filename:", filename);
+  console.log("  → Full PDF URL:", pdfPath);
+
+  // Optional logging to backend
+  try {
+    await fetch(`${API}/log-va-view`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        assetsId: project.assetsId, // Make sure your project object includes this
+        filename,
+        viewer: "Admin", // Replace with actual viewer info if available (e.g. from auth)
+      }),
+    });
+  } catch (err) {
+    console.error("Error logging VA view:", err);
+  }
+
+  setPdfUrl(pdfPath);
+  setShowModal(true);
+};
+
 
   const closeModal = () => {
     setShowModal(false);

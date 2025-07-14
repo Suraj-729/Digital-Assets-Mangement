@@ -135,31 +135,55 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     }));
   };
 
-  const onAddVa = () => {
-    if (!formData.ipAddress) {
-      // alert("IP Address is required");
-      toast.error("IP Address is required");
-      return;
-    }
+  // const onAddVa = () => {
+  //   if (!formData.ipAddress) {
+  //     // alert("IP Address is required");
+  //     toast.error("IP Address is required");
+  //     return;
+  //   }
 
-    const newRecord = {
-      ipAddress: formData.ipAddress,
-      purposeOfUse: formData.purposeOfUse || "Application Server",
-      vaScore: formData.vaScore,
-      dateOfVA: formData.dateOfVA,
-      vaReport: formData.vaReport?.name || null,
-    };
+  //   const newRecord = {
+  //     ipAddress: formData.ipAddress,
+  //     purposeOfUse: formData.purposeOfUse || "Application Server",
+  //     vaScore: formData.vaScore,
+  //     dateOfVA: formData.dateOfVA,
+  //     vaReport: formData.vaReport?.name || null,
+  //   };
 
-    setVaRecords([...vaRecords, newRecord]);
+  //   setVaRecords([...vaRecords, newRecord]);
 
-    setFormData((prev) => ({
-      ...prev,
-      ipAddress: "",
-      vaScore: "",
-      dateOfVA: "",
-      vaReport: null,
-    }));
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     ipAddress: "",
+  //     vaScore: "",
+  //     dateOfVA: "",
+  //     vaReport: null,
+  //   }));
+  // };
+const onAddVa = () => {
+  if (!formData.ipAddress) {
+    toast.error("IP Address is required");
+    return;
+  }
+
+  const newRecord = {
+    ipAddress: formData.ipAddress,
+    purposeOfUse: formData.purposeOfUse || "Application Server",
+    vaScore: formData.vaScore,
+    dateOfVA: formData.dateOfVA,
+    vaReport: formData.vaReport || null,  // ✅ Fix applied
   };
+
+  setVaRecords([...vaRecords, newRecord]);
+
+  setFormData((prev) => ({
+    ...prev,
+    ipAddress: "",
+    vaScore: "",
+    dateOfVA: "",
+    vaReport: null,
+  }));
+};
 
   const onDeleteVa = (idx) => setVaRecords(vaRecords.filter((_, i) => i !== idx));
   

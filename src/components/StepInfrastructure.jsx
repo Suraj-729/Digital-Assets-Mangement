@@ -22,6 +22,7 @@ const StepInfrastructure = ({
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   // ✅ Validation logic from your code
   const validate = () => {
@@ -52,18 +53,32 @@ const StepInfrastructure = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handleAddVa = () => {
+  //   if (validate()) {
+  //     onAddVa();
+  //     toast.success("VA record added successfully");
+  //     // Reset fields
+  //     onChange({ target: { name: "ipAddress", value: "" } });
+  //     onChange({ target: { name: "dateOfVA", value: "" } });
+  //     onChange({ target: { name: "vaScore", value: "" } });
+  //     onChange({ target: { name: "vaReport", value: "" } });
+  //     setErrors({});
+  //   }
+  // };
   const handleAddVa = () => {
-    if (validate()) {
-      onAddVa();
-      toast.success("VA record added successfully");
-      // Reset fields
-      onChange({ target: { name: "ipAddress", value: "" } });
-      onChange({ target: { name: "dateOfVA", value: "" } });
-      onChange({ target: { name: "vaScore", value: "" } });
-      onChange({ target: { name: "vaReport", value: "" } });
-      setErrors({});
-    }
-  };
+  if (validate()) {
+    onAddVa();
+    toast.success("VA record added successfully");
+
+    // ✅ Reset all fields correctly
+    onChange({ target: { name: "ipAddress", value: "" } });
+    onChange({ target: { name: "dateOfVA", value: "" } });
+    onChange({ target: { name: "vaScore", value: "" } });
+    onChange({ target: { name: "vaReport", value: null } }); // ✅ Correct reset
+    setErrors({});
+  }
+};
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -88,10 +103,44 @@ const StepInfrastructure = ({
     setPdfUrl("");
   };
 
-  const handleVaFileUpload = async (e) => {
+//   const handleVaFileUpload = async (e) => {
+//   const file = e.target.files[0];
+//   if (!file || file.type !== "application/pdf") {
+//     alert("Please select a valid PDF file.");
+//     return;
+//   }
+
+//   const formData = new FormData();
+//   formData.append("vaReport", file);
+
+//   try {
+//     const res = await fetch(`${API}/upload-va-report`, {
+//       method: "POST",
+//       body: formData,
+//     });
+
+//     if (!res.ok) throw new Error("Upload failed");
+//     const result = await res.json();
+
+//     // Update formData.vaReport with the uploaded filename
+//     onChange({ target: { name: "vaReport", value: result.filename } });
+//   } catch (err) {
+//     console.error("VA report upload failed:", err);
+//     alert("Failed to upload VA report");
+//   }
+  
+// };
+
+const handleVaFileUpload = async (e) => {
   const file = e.target.files[0];
-  if (!file || file.type !== "application/pdf") {
-    alert("Please select a valid PDF file.");
+
+  if (!file) {
+    toast.error("No file selected.");
+    return;
+  }
+
+  if (file.type !== "application/pdf") {
+    toast.error("Only PDF files are allowed.");
     return;
   }
 
@@ -99,22 +148,28 @@ const StepInfrastructure = ({
   formData.append("vaReport", file);
 
   try {
-    const res = await fetch(`${API}/upload-va-report`, {
+    const response = await fetch(`${API}/upload-va-report`, {
       method: "POST",
       body: formData,
     });
 
-    if (!res.ok) throw new Error("Upload failed");
-    const result = await res.json();
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Upload failed");
+    }
 
-    // Update formData.vaReport with the uploaded filename
-    onChange({ target: { name: "vaReport", value: result.filename } });
-  } catch (err) {
-    console.error("VA report upload failed:", err);
-    alert("Failed to upload VA report");
+    const result = await response.json();
+
+    onChange({
+      target: { name: "vaReport", value: result.filename },
+    });
+
+    toast.success("VA Report uploaded successfully.");
+  } catch (error) {
+    console.error("VA Report upload failed:", error);
+    toast.error(`Upload failed: ${error.message}`);
   }
 };
-
 
   return (
     <fieldset>
