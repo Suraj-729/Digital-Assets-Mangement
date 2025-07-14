@@ -85,19 +85,19 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
                 <label className="form-label">Project Name:</label>
               </div>
               <div className="col-sm-8">
-               <input
-          type="text"
-          className={`form-control ${errors.departmentName ? "is-invalid" : ""}`}
-          name="departmentName"
-          value={formData.departmentName || ""}
-          onChange={(e) => {
-            const value = e.target.value;
-            // Prevent input if any number is present
-            if (/^[^0-9]*$/.test(value)) {
-              onChange(e);
-            }
-          }}
-        />
+                <input
+                  type="text"
+                  className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
+                  name="projectName"
+                  value={formData.projectName || ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Prevent input if any number is present
+                    if (/^[^0-9]*$/.test(value)) {
+                      onChange(e);
+                    }
+                  }}
+                />
                 {errors.projectName && <div className="invalid-feedback">{errors.projectName}</div>}
               </div>
             </div>
@@ -131,12 +131,18 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
               <div className="col-sm-8">
                 <input
                   type="text"
-                  
-                  className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
-                  name="projectName"
-                  value={formData.projectName || ""}
-                  onChange={onChange}
+                  className={`form-control ${errors.departmentName ? "is-invalid" : ""}`}
+                  name="departmentName"
+                  value={formData.departmentName || ""}
+                  onChange={(e) => {
+                    const capitalOnly = e.target.value.toUpperCase().replace(/[^A-Z]/g, "");
+                    onChange({ target: { name: "departmentName", value: capitalOnly } });
+                  }}
                 />
+                {errors.departmentName && (
+                  <div className="invalid-feedback">{errors.departmentName}</div>
+                )}
+
                 {errors.departmentName && <div className="invalid-feedback">{errors.departmentName}</div>}
               </div>
             </div>

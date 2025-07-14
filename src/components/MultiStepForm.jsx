@@ -166,32 +166,6 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // try {
-    //   const form = new FormData();
-    //   const employeeId = localStorage.getItem("employeeId");
-    //   // Build sectioned data
-    //   const BP = {
-    //     assetsId: formData.assetsId,
-    //     name: formData.projectName,
-    //     prismId: formData.prismId,
-    //     employeeId, // <-- Add this l
-    //     deptname: formData.departmentName,
-    //     url: formData.url,
-    //     public_ip: formData.publicIp,
-    //     HOD: formData.HOD,
-    //     nodalofficerNIC: {Date
-    //       Name: formData.nicOfficerName,
-    //       Emp_code: formData.nicOfficerEmpCode,
-    //       Mob: formData.nicOfficerMob,
-    //       Email: formData.nicOfficerEmail,
-    //     },
-    //     nodalofficerDept: {
-    //       Name: formData.deptOfficerName,
-    //       Designation: formData.deptOfficerDesignation,
-    //       Mob: formData.deptOfficerMob,
-    //       Email: formData.deptOfficerEmail,
-    //     },
-    //   };
 
     try {
       const form = new FormData();

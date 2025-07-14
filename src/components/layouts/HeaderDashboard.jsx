@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../css/mvpStyle.css";
 import api from "../../Api";
 import MultiStepForm from "../MultiStepForm"; // Adjust the import based on your file structure
-
+// import ThemeToggle from "./ThemeToggle"; // Adjust path if needed
+// import ThemeToggle from "./"
 const Header = ({ onSidebarToggle }) => {
   const [notifications, setNotifications] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -82,23 +83,6 @@ const Header = ({ onSidebarToggle }) => {
         ></i>
       </div>
 
-      {/* <div className="search-bar">
-        <form
-          className="search-form d-flex align-items-center"
-          method="POST"
-          action="#"
-        >
-          <input
-            type="text"
-            name="query"
-            placeholder="Search"
-            title="Enter search keyword"
-          />
-          <button type="submit" title="Search">
-            <i className="bi bi-search"></i>
-          </button>
-        </form>
-      </div>  */}
 
       <nav className="header-nav ms-auto">
         <ul className="d-flex align-items-center">

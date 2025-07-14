@@ -8,8 +8,9 @@ import ProjectTabs from "../components/ProjectDetailsView/ProjectTab";
 import "../css/mvpStyle.css";
 import api from "../Api";
 import { toast } from "react-toastify";
-
+import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [formToShow, setFormToShow] = useState(null);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,6 +51,28 @@ const Dashboard = () => {
     setFilteredProjects(projects);
   }, [projects]);
 
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await api.get("/session-check");
+        if (!res.data.loggedIn) {
+          toast.error("Session expired. Please log in again.");
+          localStorage.clear();
+          navigate("/damLogin");
+        }
+      } catch (err) {
+        console.error("Session check failed:", err);
+      }
+    };
+  
+    checkSession(); // Check once when component loads
+  
+    const interval = setInterval(checkSession, 30000); // Every 30 seconds
+    return () => clearInterval(interval); // Cleanup
+  }, []);
+   // empty dependency array — only runs on initial load
+  
   useEffect(() => {
     // Get employeeId and employeeType from localStorage
     const employeeId = localStorage.getItem("employeeId");
