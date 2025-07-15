@@ -75,7 +75,7 @@ const HOD = localStorage.getItem("HOD") || "N/A";
   
     checkSession(); // Check once when component loads
   
-    const interval = setInterval(checkSession, 3000000); // Every 30 seconds
+    const interval = setInterval(checkSession, 30000000); // Every 30 seconds
     return () => clearInterval(interval); // Cleanup
   }, []);
 
@@ -180,13 +180,13 @@ useEffect(() => {
         setSelectedProject(response.data);
         setFormToShow("projectDetails");
       } else {
-        // throw new Error(`Request failed with status ${response.status}`);
-        toast.error(`Failed to load project details. Status: ${response.status}`);
+        throw new Error(`Request failed with status ${response.status}`);
+        // toast.error(`Failed to load project details. Status: ${response.status}`);
 
       }
     } catch (err) {
-      // setError(err.message);
-      toast.error(`Error loading project details: ${err.message}`);
+      setError(err.message);
+      // toast.error(`Error loading project details: ${err.message}`);
 
     } finally {
       setLoading(false);
@@ -205,15 +205,15 @@ useEffect(() => {
         setEditProjectData(response.data); // <-- This stores all previous data
         setFormToShow("addProject"); // <-- This opens the form for editing
       } else {
-        // console.error(`Request failed with status ${response.status}`);
-        // throw new Error(`Request failed with status ${response.status}`);
-        toast.error(`Failed to load project for edit. Status: ${response.status}`);
+        console.error(`Request failed with status ${response.status}`);
+        throw new Error(`Request failed with status ${response.status}`);
+        // toast.error(`Failed to load project for edit. Status: ${response.status}`);
 
       }
     } catch (err) {
-      // console.error("Error fetching project for edit:", err);
-      // setError(err.message);
-      toast.error(`Error fetching project for edit: ${err.message}`);
+      console.error("Error fetching project for edit:", err);
+      setError(err.message);
+      // toast.error(`Error fetching project for edit: ${err.message}`);
 
     } finally {
       setLoading(false);
@@ -535,8 +535,8 @@ useEffect(() => {
           const res = await api.get(`/dashboard/filter/prismid/${value}`);
           setFilteredProjects(res.data);
         } catch (err) {
-          // console.error("Filter fetch error:", err);
-          toast.error(`Filter fetch error: ${err.message}`);
+          console.error("Filter fetch error:", err);
+          // toast.error(`Filter fetch error: ${err.message}`);
 
           setFilteredProjects([]);
         }
