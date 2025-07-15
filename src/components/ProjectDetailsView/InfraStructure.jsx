@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
-const API = "http://localhost:5000"; // Your backend base URL
+import api from "../../Api"; // Adjust the import path as necessary
+// const API = "http://localhost:5000"; // Your backend base URL
 
 const TechnologyAndInfrastructure = ({
   project,
@@ -22,14 +22,14 @@ const handleViewPdf = async (filename) => {
     return;
   }
 
-  const pdfPath = `${API}/va-reports/${filename}`;
+  const pdfPath = `${api}/va-reports/${filename}`;
   console.log("PDF View Requested:");
   console.log("  → Filename:", filename);
   console.log("  → Full PDF URL:", pdfPath);
 
   // Optional logging to backend
   try {
-    await fetch(`${API}/log-va-view`, {
+    await fetch(`${api}/log-va-view`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -75,7 +75,6 @@ const handleViewPdf = async (filename) => {
   };
 
   const vaRecord = project?.Infra?.vaRecords?.[0];
-
   return (
     <div className="">
       {showTech && (

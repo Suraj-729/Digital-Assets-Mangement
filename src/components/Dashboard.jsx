@@ -213,7 +213,7 @@ const Dashboard = () => {
 
   // Badge helpers
   const statusBadge = (status) => {
-    if (status === "Valid") return "badge bg-warning text-dark";
+    if (status === "ACTIVE") return "badge bg-warning text-dark";
     if (status === "Expired") return "badge bg-danger";
     return "badge bg-secondary";
   };
@@ -660,7 +660,7 @@ const Dashboard = () => {
                                     `${project.projectName}-${index}`;
                                   const statusValue = project.expireDate
                                     ? new Date(project.expireDate) > new Date()
-                                      ? "Valid"
+                                      ? "ACTIVE"
                                       : "Expired"
                                     : "N/A";
 

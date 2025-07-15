@@ -38,13 +38,13 @@ const StepTechnologyStack = ({
         ...prev,
         [field]: "Please select or enter a value first",
       }));
-      toast.error("Please enter a value before adding.");
+      // toast.error("Please enter a value before adding.");
       return;
     }
 
     if (field === "repoUrl" && !isValidUrl(value)) {
       setErrors((prev) => ({ ...prev, repoUrl: "Please enter a valid URL" }));
-      toast.error("Invalid URL format.");
+      // toast.error("Invalid URL format.");
       return;
     }
 
@@ -59,12 +59,12 @@ const StepTechnologyStack = ({
 
     const currentArray = stateMaps[field];
     if (currentArray.includes(value)) {
-      toast.warn(`"${value}" already added to ${field.replace("Url", "")}.`);
+      // toast.warn(`"${value}" already added to ${field.replace("Url", "")}.`);
       return;
     }
 
     setter((prev) => [...prev, value]);
-    toast.success(`"${value}" added to ${field.replace("Url", "")}.`);
+    // toast.success(`"${value}" added to ${field.replace("Url", "")}.`);
 
     setErrors((prev) => ({ ...prev, [field]: "" }));
     onChange({ target: { name: inputField, value: "" } });
@@ -72,7 +72,7 @@ const StepTechnologyStack = ({
 
   const removeFromStack = (field, value, setter) => {
     setter((prev) => prev.filter((item) => item !== value));
-    toast.info(`"${value}" removed from ${field.replace("Url", "")}.`);
+    // toast.info(`"${value}" removed from ${field.replace("Url", "")}.`);
   };
 
   const renderStackBadges = (items, field, setter) => {

@@ -169,7 +169,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   // };
 const onAddVa = () => {
   if (!formData.ipAddress) {
-    toast.error("IP Address is required");
+    // toast.error("IP Address is required");
     return;
   }
 
@@ -282,7 +282,7 @@ const onAddVa = () => {
           }
         );
         // alert("Asset successfully updated!");
-        toast.success("Asset successfully created!");
+        toast.success("Asset successfully updated!");
 
       } else {
         // CREATE: new asset
@@ -290,14 +290,14 @@ const onAddVa = () => {
           headers: { "Content-Type": "multipart/form-data" },
         });
         // alert("Asset successfully created!");
-        toast.success("Asset successfully updated!");
+        toast.success("Asset successfully created!");
 
         
       }
     } catch (err) {
       console.error("Submission error:", err);
       // alert("Error submitting asset. Check console for details.");
-      toast.error("Error submitting asset. Check console for details.");
+      // toast.error("Error submitting asset. Check console for details.");
 
     }
   };

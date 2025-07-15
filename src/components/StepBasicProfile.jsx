@@ -68,7 +68,7 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
     //   onNext();
     // }
     if (validate()) {
-      toast.success("Basic Profile validated successfully!");
+      // toast.success("Basic Profile validated successfully!");
       onNext();
     } else {
       toast.error("Please fill all required fields correctly.");
