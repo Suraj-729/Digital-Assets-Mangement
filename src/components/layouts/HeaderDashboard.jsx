@@ -112,33 +112,101 @@ const Header = ({ onSidebarToggle }) => {
               )}
             </Link>
 
-            {dropdownOpen && (
-              <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications show">
-                <li className="dropdown-header d-flex justify-content-between align-items-center">
-                  <span>
-                    You have {notifications.length} new notification
-                    {notifications.length !== 1 ? "s" : ""}
-                  </span>
-                  <button
-                    className="btn btn-sm btn-outline-secondary"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    X
-                  </button>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                {notifications.map((note, idx) => (
-                  <li key={idx} className="notification-item">
-                    <i className="bi bi-exclamation-circle text-warning"></i>
-                    <div>
-                      <h4>{note.projectName}</h4>
-                      <p>{note.message}</p>
-                      <p>{note.daysLeft} days remaining</p>
-                    </div>
-                  </li>
-                ))}
+            
+              {dropdownOpen && (
+ <ul
+  className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications show"
+  style={{
+    maxHeight: "400px",
+    overflowY: "auto",
+    borderRadius: "12px",
+    padding: "0px",
+    boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
+    width: "360px",
+    background: "#fff",
+  }}
+>
+
+             <li
+  className="dropdown-header d-flex justify-content-between align-items-center"
+  style={{
+    padding: "12px 16px",
+    borderBottom: "1px solid #eee",
+    fontWeight: "600",
+    fontSize: "1rem",
+    background: "#f5f5f5",
+  }}
+>
+  <span>🔔 You have {notifications.length} new notification{notifications.length !== 1 ? "s" : ""}</span>
+  <button
+    className="btn btn-sm btn-outline-danger"
+    onClick={() => setDropdownOpen(false)}
+    title="Close"
+    style={{
+      padding: "2px 8px",
+      fontSize: "0.9rem",
+      borderRadius: "50%",
+    }}
+  >
+    ✕
+  </button>
+</li>
+
+            {notifications.map((note, idx) => (
+  <li
+    key={idx}
+    className="notification-item"
+    style={{
+      display: "flex",
+      gap: "12px",
+      padding: "12px 16px",
+      alignItems: "flex-start",
+      background: "#fff",
+      borderBottom: "1px solid #eee",
+      transition: "background 0.2s ease-in-out",
+      cursor: "pointer",
+    }}
+    onMouseEnter={(e) => e.currentTarget.style.background = "#f9f9f9"}
+    onMouseLeave={(e) => e.currentTarget.style.background = "#fff"}
+  >
+    <div style={{ flexShrink: 0 }}>
+      <i
+        className="bi bi-exclamation-triangle-fill"
+        style={{
+          fontSize: "1.6rem",
+          color: "#f39c12",
+          marginTop: "4px",
+        }}
+      ></i>
+    </div>
+
+    <div style={{ flexGrow: 1 }}>
+      <div style={{ fontWeight: "600", fontSize: "1rem", color: "#333" }}>
+        {note.projectName}
+      </div>
+      <div style={{ fontSize: "0.9rem", color: "#555", marginTop: "2px" }}>
+        {note.message}
+      </div>
+      <div
+        style={{
+          fontSize: "0.8rem",
+          color:
+            note.daysLeft <= 2
+              ? "#e74c3c"
+              : note.daysLeft <= 7
+              ? "#f39c12"
+              : "#2ecc71",
+          fontWeight: "bold",
+          marginTop: "4px",
+        }}
+      >
+        {note.daysLeft} day{note.daysLeft !== 1 ? "s" : ""} remaining
+      </div>
+    </div>
+  </li>
+))}
+
+
                 <li>
                   <hr className="dropdown-divider" />
                 </li>

@@ -2093,3 +2093,32 @@ body.sidebar-collapsed #main {
   width: 100%;
   transition: margin-left 0.3s ease, width 0.3s ease;
 }
+
+.notifications.show {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+}
+
+.notifications.show::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notifications.show::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+
+.notifications.show {
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.notifications.show::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notifications.show::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
