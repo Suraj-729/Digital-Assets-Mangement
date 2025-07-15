@@ -101,16 +101,16 @@ const HOD = localStorage.getItem("HOD") || "N/A";
   //       console.log("API response body:", response.body);
   //       console.log("API response data:", response.data); // <-- Add this log
 
-  //       if (response.status >= 200 && response.status < 300) {
-  //         setProjects(response.data);
-  //       } else {
-  //         // throw new Error(`Request failed with status ${response.status}`);
-  //         toast.error(`Failed to fetch projects. Status: ${response.status}`);
+        if (response.status >= 200 && response.status < 300) {
+          setProjects(response.data);
+        } else {
+          throw new Error(`Request failed with status ${response.status}`);
+          // toast.error(`Failed to fetch projects. Status: ${response.status}`);
 
-  //       }
-  //     } catch (err) {
-  //       // setError(err.message);
-  //       toast.error(`Error fetching projects: ${err.message}`);
+        }
+      } catch (err) {
+        setError(err.message);
+        // toast.error(`Error fetching projects: ${err.message}`);
 
   //     } finally {
   //       setLoading(false);
@@ -185,8 +185,8 @@ useEffect(() => {
 
       }
     } catch (err) {
-      // setError(err.message);
-      toast.error(`Error loading project details: ${err.message}`);
+      setError(err.message);
+      // toast.error(`Error loading project details: ${err.message}`);
 
     } finally {
       setLoading(false);
@@ -211,9 +211,9 @@ useEffect(() => {
 
       }
     } catch (err) {
-      // console.error("Error fetching project for edit:", err);
-      // setError(err.message);
-      toast.error(`Error fetching project for edit: ${err.message}`);
+      console.error("Error fetching project for edit:", err);
+      setError(err.message);
+      // toast.error(`Error fetching project for edit: ${err.message}`);
 
     } finally {
       setLoading(false);
@@ -535,8 +535,8 @@ useEffect(() => {
           const res = await api.get(`/dashboard/filter/prismid/${value}`);
           setFilteredProjects(res.data);
         } catch (err) {
-          // console.error("Filter fetch error:", err);
-          toast.error(`Filter fetch error: ${err.message}`);
+          console.error("Filter fetch error:", err);
+          // toast.error(`Filter fetch error: ${err.message}`);
 
           setFilteredProjects([]);
         }

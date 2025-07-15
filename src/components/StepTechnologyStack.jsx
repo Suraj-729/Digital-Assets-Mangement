@@ -17,9 +17,11 @@ const StepTechnologyStack = ({
   setUsedOsVersion,
   usedRepo,
   setUsedRepo,
+  usedFrameworks,            // ✅ Accept from props
+  setUsedFrameworks, 
 }) => {
   const [errors, setErrors] = useState({});
-  const [usedFrameworks, setUsedFrameworks] = useState([]);
+  // const [usedFrameworks, setUsedFrameworks] = useState([]);
 
   const isValidUrl = (url) => {
     try {

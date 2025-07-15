@@ -125,55 +125,50 @@
 
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import "../../css/mvpStyle.css";
 import { toast } from "react-toastify";
 import api from "../../Api";
-
-const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
+const Sidebar = ({setFormToShow, isSidebarOpen }) => {
+  // const [groupHeadsOpen, setGroupHeadsOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const location = useLocation();
+  // const navigate = useNavigate();
   const navigate = useNavigate();
-
-const employeeId = localStorage.getItem("employeeId");
+  const [loading, setLoading] = useState(false);
+  const employeeId = localStorage.getItem("employeeId");
 const employeeType = localStorage.getItem("employeeType");
 
-if (!employeeId || !employeeType) {
-  toast.error("User data not found. Please login again.");
-  return;
-}
+  // Get employeeType and trim whitespace
+  // const employeeType = (localStorage.getItem("employeeType") || "").trim();
+  const handleDashboardClick = async () => {
+    setFormToShow(null);
+    setLoading(true);
+    try {
+      const url = `/dashboard/by-type/${employeeId}?employeeType=${employeeType}`;
+      const response = await api.get(url, { withCredentials: true });
 
+      console.log("API response:", response.data);
 
-const handleDashboardClick = async () => {
-  setFormToShow(null);
-  setLoading(true);
-  try {
-    const url = `/dashboard/by-type/${employeeId}?employeeType=${employeeType}`;
-    const response = await api.get(url, { withCredentials: true });
-
-    console.log("API response:", response.data);
-
-    if (response.status >= 200 && response.status < 300) {
-      navigate(`/dashboard/${employeeId}/${employeeType}`, {
-        state: {
-          fetchedProjects: response.data,
-        },
-      });
-    } else {
-      toast.error(`Failed to fetch projects. Status: ${response.status}`);
+      if (response.status >= 200 && response.status < 300) 
+      {
+        navigate("/dashboard/by-type/${employeeId}?employeeType=${employeeType}", {
+          state: {
+            fetchedProjects: response.data,
+          },
+        });
+      } else {
+        toast.error(`Failed to fetch projects. Status: ${response.status}`);
+      }
+    } catch (err) {
+      toast.error(`Error fetching projects: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    toast.error(`Error fetching projects: ${err.message}`);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
+  };
   return (
     <aside id="sidebar" className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
-      <ul className="sidebar-nav" id="sidebar-nav">
+        <ul className="sidebar-nav" id="sidebar-nav">
         <li className="nav-item">
           <div
             className="nav-link"

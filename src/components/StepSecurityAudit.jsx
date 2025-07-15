@@ -283,27 +283,32 @@ const StepSecurityAudit = ({
     <fieldset>
       <div className="form-section">
         <div className="row g-3">
-          <div className="col-md-6">
-            <label className="form-label">Audit Date</label>
-            <input
-              type="date"
-              className="form-control"
-              name="auditDate"
-              value={formData.auditDate || ""}
-              onChange={onChange}
-            />
-          </div>
+        <div className="col-md-6">
+  <label className="form-label">Audit Date</label>
 
-          <div className="col-md-6">
-            <label className="form-label">Expire Date</label>
-            <input
-              type="date"
-              className="form-control"
-              name="expireDate"
-              value={formData.expireDate || ""}
-              onChange={onChange}
-            />
-          </div>
+  <input
+    type="date"
+    className="form-control"
+    name="auditDate"
+    value={formData.auditDate || ""}
+    onChange={onChange}
+    max={new Date().toISOString().split("T")[0]} // ✅ today's date in yyyy-mm-dd format
+  />
+
+</div>
+
+         <div className="col-md-6">
+  <label className="form-label">Expire Date</label>
+  <input
+    type="date"
+    className="form-control"
+    name="expireDate"
+    value={formData.expireDate || ""}
+    onChange={onChange}
+    min={formData.auditDate || ""} // Cannot select a date before audit date
+  />
+</div>
+
 
           <div className="col-md-6">
             <label className="form-label">Type of Audit</label>

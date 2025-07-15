@@ -145,10 +145,10 @@ function App() {
 
         {/* Protected Dashboard route with both employeeId and employeeType */}
         <Route
-          path="/dashboard/:employeeId/:employeeType"
+          path="`/dashboard/by-type/${employeeId}?employeeType=${employeeType}`"
           element={
             <ProtectedRoute>
-              <Dashboard prevPath={prevPath} />
+              {/* <Dashboard prevPath={prevPath} />  */}
             </ProtectedRoute>
           }
         />

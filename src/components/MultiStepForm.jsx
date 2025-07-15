@@ -24,7 +24,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   const [usedOs, setUsedOs] = useState([]);
   const [usedOsVersion, setUsedOsVersion] = useState([]);
   const [usedRepo, setUsedRepo] = useState([]);
-
+  const [usedFrameworks, setUsedFrameworks] = useState([]);
   // Add this line to fix the currentStep/setCurrentStep errors
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -58,7 +58,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       deptOfficerMob: nodalDept.mobile || "",
       deptOfficerEmail: nodalDept.email || "",
       // Technology Stack
-      framework: editData.TS?.framework || "",
+      // framework: editData.TS?.framework || "",
       // Infrastructure
       typeOfServer: editData.Infra?.typeOfServer || "",
       dataCentre: editData.Infra?.dataCentre || "",
@@ -75,6 +75,13 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     });
 
     setUsedTech(editData.TS?.frontend ?? editData.TS?.frontEnd ?? []);
+    setUsedFrameworks(
+      Array.isArray(editData.TS?.framework)
+        ? editData.TS.framework
+        : editData.TS?.framework
+        ? [editData.TS.framework]
+        : []
+    );
     setUsedDb(editData.TS?.database || []);
     setUsedOs(editData.TS?.os || []);
     setUsedOsVersion(editData.TS?.osVersion || []);
@@ -233,7 +240,7 @@ const onAddVa = () => {
 
       const TS = {
         frontend: usedTech,
-        framework: formData.framework,
+        framework: usedFrameworks,
         database: usedDb,
         os: usedOs,
         osVersion: usedOsVersion,
@@ -333,6 +340,8 @@ const onAddVa = () => {
             setUsedOsVersion={setUsedOsVersion}
             usedRepo={usedRepo}
             setUsedRepo={setUsedRepo}
+            usedFrameworks={usedFrameworks}              // ✅ Add this
+  setUsedFrameworks={setUsedFrameworks} 
           />
         );
       case 3:
