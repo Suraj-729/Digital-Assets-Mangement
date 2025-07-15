@@ -6,6 +6,7 @@ import StepTechnologyStack from "./StepTechnologyStack";
 import StepInfrastructure from "./StepInfrastructure";
 import api from "../Api";
 import "../css/mvpStyle.css";
+import { toast } from "react-toastify";
 
 // ✅ Added: Import motion and AnimatePresence
 import { motion, AnimatePresence } from "framer-motion";
@@ -134,62 +135,61 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     }));
   };
 
-  const onAddVa = () => {
-    if (!formData.ipAddress) {
-      alert("IP Address is required");
-      return;
-    }
+  // const onAddVa = () => {
+  //   if (!formData.ipAddress) {
+  //     // alert("IP Address is required");
+  //     toast.error("IP Address is required");
+  //     return;
+  //   }
 
-    const newRecord = {
-      ipAddress: formData.ipAddress,
-      purposeOfUse: formData.purposeOfUse || "Application Server",
-      vaScore: formData.vaScore,
-      dateOfVA: formData.dateOfVA,
-      vaReport: formData.vaReport?.name || null,
-    };
+  //   const newRecord = {
+  //     ipAddress: formData.ipAddress,
+  //     purposeOfUse: formData.purposeOfUse || "Application Server",
+  //     vaScore: formData.vaScore,
+  //     dateOfVA: formData.dateOfVA,
+  //     vaReport: formData.vaReport?.name || null,
+  //   };
 
-    setVaRecords([...vaRecords, newRecord]);
+  //   setVaRecords([...vaRecords, newRecord]);
 
-    setFormData((prev) => ({
-      ...prev,
-      ipAddress: "",
-      vaScore: "",
-      dateOfVA: "",
-      vaReport: null,
-    }));
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     ipAddress: "",
+  //     vaScore: "",
+  //     dateOfVA: "",
+  //     vaReport: null,
+  //   }));
+  // };
+const onAddVa = () => {
+  if (!formData.ipAddress) {
+    toast.error("IP Address is required");
+    return;
+  }
+
+  const newRecord = {
+    ipAddress: formData.ipAddress,
+    purposeOfUse: formData.purposeOfUse || "Application Server",
+    vaScore: formData.vaScore,
+    dateOfVA: formData.dateOfVA,
+    vaReport: formData.vaReport || null,  // ✅ Fix applied
   };
+
+  setVaRecords([...vaRecords, newRecord]);
+
+  setFormData((prev) => ({
+    ...prev,
+    ipAddress: "",
+    vaScore: "",
+    dateOfVA: "",
+    vaReport: null,
+  }));
+};
 
   const onDeleteVa = (idx) => setVaRecords(vaRecords.filter((_, i) => i !== idx));
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // try {
-    //   const form = new FormData();
-    //   const employeeId = localStorage.getItem("employeeId");
-    //   // Build sectioned data
-    //   const BP = {
-    //     assetsId: formData.assetsId,
-    //     name: formData.projectName,
-    //     prismId: formData.prismId,
-    //     employeeId, // <-- Add this l
-    //     deptname: formData.departmentName,
-    //     url: formData.url,
-    //     public_ip: formData.publicIp,
-    //     HOD: formData.HOD,
-    //     nodalofficerNIC: {Date
-    //       Name: formData.nicOfficerName,
-    //       Emp_code: formData.nicOfficerEmpCode,
-    //       Mob: formData.nicOfficerMob,
-    //       Email: formData.nicOfficerEmail,
-    //     },
-    //     nodalofficerDept: {
-    //       Name: formData.deptOfficerName,
-    //       Designation: formData.deptOfficerDesignation,
-    //       Mob: formData.deptOfficerMob,
-    //       Email: formData.deptOfficerEmail,
-    //     },
-    //   };
 
     try {
       const form = new FormData();
@@ -274,17 +274,24 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-        alert("Asset successfully updated!");
+        // alert("Asset successfully updated!");
+        toast.success("Asset successfully created!");
+
       } else {
         // CREATE: new asset
         await api.post("/assets/createAsset", form, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        alert("Asset successfully created!");
+        // alert("Asset successfully created!");
+        toast.success("Asset successfully updated!");
+
+        
       }
     } catch (err) {
       console.error("Submission error:", err);
-      alert("Error submitting asset. Check console for details.");
+      // alert("Error submitting asset. Check console for details.");
+      toast.error("Error submitting asset. Check console for details.");
+
     }
   };
   const renderStep = () => {

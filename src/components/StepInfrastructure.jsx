@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/mvpStyle.css";
+import { toast } from "react-toastify";
 
 const API = "http://localhost:5000"; // Replace with actual backend base URL
 
@@ -21,6 +22,7 @@ const StepInfrastructure = ({
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   // ✅ Validation logic from your code
   const validate = () => {
@@ -29,41 +31,63 @@ const StepInfrastructure = ({
 
     if (!ipAddress || !/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ipAddress)) {
       newErrors.ipAddress = "Valid IP address is required";
+      toast.error("Valid IP address is required");
     }
 
     if (!dateOfVA) {
       newErrors.dateOfVA = "Date of VA is required";
+      toast.error("Date of VA is required");
     }
 
     if (!vaScore || isNaN(vaScore) || vaScore < 0 || vaScore > 100) {
       newErrors.vaScore = "Valid VA Score (0–100) is required";
+      toast.error("Valid VA Score (0–100) is required");
     }
 
     if (!vaReport) {
       newErrors.vaReport = "VA Report file is required";
+      toast.error("VA Report file is required");
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handleAddVa = () => {
+  //   if (validate()) {
+  //     onAddVa();
+  //     toast.success("VA record added successfully");
+  //     // Reset fields
+  //     onChange({ target: { name: "ipAddress", value: "" } });
+  //     onChange({ target: { name: "dateOfVA", value: "" } });
+  //     onChange({ target: { name: "vaScore", value: "" } });
+  //     onChange({ target: { name: "vaReport", value: "" } });
+  //     setErrors({});
+  //   }
+  // };
   const handleAddVa = () => {
-    if (validate()) {
-      onAddVa();
-      // Reset fields
-      onChange({ target: { name: "ipAddress", value: "" } });
-      onChange({ target: { name: "dateOfVA", value: "" } });
-      onChange({ target: { name: "vaScore", value: "" } });
-      onChange({ target: { name: "vaReport", value: "" } });
-      setErrors({});
-    }
-  };
+  if (validate()) {
+    onAddVa();
+    toast.success("VA record added successfully");
+
+    // ✅ Reset all fields correctly
+    onChange({ target: { name: "ipAddress", value: "" } });
+    onChange({ target: { name: "dateOfVA", value: "" } });
+    onChange({ target: { name: "vaScore", value: "" } });
+    onChange({ target: { name: "vaReport", value: null } }); // ✅ Correct reset
+    setErrors({});
+  }
+};
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (vaRecords.length === 0) {
       const isValid = validate();
-      if (!isValid) return;
+      if (!isValid) 
+      toast.error("Please add at least one valid VA record before submitting.");
+
+      return;
     }
     onSubmit(e);
   };
@@ -78,6 +102,74 @@ const StepInfrastructure = ({
     setShowModal(false);
     setPdfUrl("");
   };
+
+//   const handleVaFileUpload = async (e) => {
+//   const file = e.target.files[0];
+//   if (!file || file.type !== "application/pdf") {
+//     alert("Please select a valid PDF file.");
+//     return;
+//   }
+
+//   const formData = new FormData();
+//   formData.append("vaReport", file);
+
+//   try {
+//     const res = await fetch(`${API}/upload-va-report`, {
+//       method: "POST",
+//       body: formData,
+//     });
+
+//     if (!res.ok) throw new Error("Upload failed");
+//     const result = await res.json();
+
+//     // Update formData.vaReport with the uploaded filename
+//     onChange({ target: { name: "vaReport", value: result.filename } });
+//   } catch (err) {
+//     console.error("VA report upload failed:", err);
+//     alert("Failed to upload VA report");
+//   }
+  
+// };
+
+const handleVaFileUpload = async (e) => {
+  const file = e.target.files[0];
+
+  if (!file) {
+    toast.error("No file selected.");
+    return;
+  }
+
+  if (file.type !== "application/pdf") {
+    toast.error("Only PDF files are allowed.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("vaReport", file);
+
+  try {
+    const response = await fetch(`${API}/upload-va-report`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Upload failed");
+    }
+
+    const result = await response.json();
+
+    onChange({
+      target: { name: "vaReport", value: result.filename },
+    });
+
+    toast.success("VA Report uploaded successfully.");
+  } catch (error) {
+    console.error("VA Report upload failed:", error);
+    toast.error(`Upload failed: ${error.message}`);
+  }
+};
 
   return (
     <fieldset>
@@ -162,7 +254,18 @@ const StepInfrastructure = ({
                 value={formData.gitUrl || ""}
                 onChange={onChange}
               />
-              <button className="btn btn-primary ms-2" type="button" onClick={onAddGitUrl}>
+              <button className="btn btn-primary ms-2" 
+              type="button" 
+              // onClick={onAddGitUrl}
+              onClick={() => {
+                if (!formData.gitUrl?.trim()) {
+                  toast.error("Please enter a Git URL");
+                  return;
+                }
+                onAddGitUrl();
+                toast.success("Git URL added");
+              }}
+              >
                 ADD
               </button>
             </div>
@@ -175,6 +278,7 @@ const StepInfrastructure = ({
                     onClick={(e) => {
                       e.preventDefault();
                       onDeleteGitUrl(idx);
+                      toast.info("Git URL deleted");
                     }}
                   >
                     Delete
@@ -239,11 +343,12 @@ const StepInfrastructure = ({
           <div className="col-md-4">
             <label className="form-label">Upload VA Report:</label>
             <input
-              type="file"
-              className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
-              name="vaReport"
-              onChange={onVaFileChange}
-            />
+  type="file"
+  className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
+  name="vaReport"
+  accept="application/pdf"
+  onChange={handleVaFileUpload}
+/>
             {errors.vaReport && <div className="invalid-feedback">{errors.vaReport}</div>}
           </div>
 
@@ -286,7 +391,9 @@ const StepInfrastructure = ({
                         style={{ border: "none", background: "none" }}
                         title="Delete"
                         type="button"
-                        onClick={() => onDeleteVa(idx)}
+                        onClick={() => {onDeleteVa(idx);
+                          toast.info("VA record deleted");
+                        }}
                       >
                         <i className="bi bi-trash"></i>
                       </button>

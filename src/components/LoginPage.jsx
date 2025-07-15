@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import api from "../Api";
 import "../css/loginpage.css";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
+import { FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaExclamationTriangle } from "react-icons/fa";
 const LoginPage = ({ onLogin }) => {
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +15,10 @@ const LoginPage = ({ onLogin }) => {
     e.preventDefault();
     setError("");
     console.log("Login attempt with:", { loginId, password });
-
+    if (!loginId.trim() || !password.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
     try {
       const response = await api.post(
         "/users/login",
@@ -37,16 +41,29 @@ const LoginPage = ({ onLogin }) => {
       console.log("HOD set in localStorage:", localStorage.getItem("HOD"));
 
       if (onLogin) onLogin(response.data.user);
+      toast.success("Login successful");
+      // toast.success(
+      //   <>
+      //     <FaCheckCircle className="toast-icon" />
+      //     Login successful!
+      //   </>,
+      //    { icon: false }
+      // );
 
       navigate(`/damLogin/${response.data.user.employeeType}`);
     } catch (err) {
-      console.error("Login error details:", {
-        message: err.message,
-        response: err.response?.data,
-        stack: err.stack,
-      });
-      setError(err.response?.data?.error || "Login failed. Please try again.");
-    }
+    //   console.error("Login error details:", {
+    //     message: err.message,
+    //     response: err.response?.data,
+    //     stack: err.stack,
+    //   });
+    //   setError(err.response?.data?.error || "Login failed. Please try again.");
+    // }
+    console.error("Login error:", err);
+    const message = err.response?.data?.error || "Login failed. Please try again.";
+    setError(message);
+    toast.error(message);
+  }
   };
 
   return (
@@ -84,7 +101,7 @@ const LoginPage = ({ onLogin }) => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          {error && <div className="error-message">{error}</div>}
+          {/* {error && <div className="error-message">{error}</div>} */}
           <div className="forgot-password">
             <button
               type="button"

@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
 import "../css/mvpStyle.css";
+import { toast } from "react-toastify";
 
 const StepSecurityAudit = ({
   formData,
@@ -12,6 +12,7 @@ const StepSecurityAudit = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [vaReport, setVaReport] = useState(null); // Needed for preview to work
 
   // const handleFileChange = (e) => {
   //   const file = e.target.files[0];
@@ -20,7 +21,9 @@ const StepSecurityAudit = ({
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file || file.type !== "application/pdf") {
-      alert("Please select a valid PDF file.");
+      // alert("Please select a valid PDF file.");
+      toast.error("Please select a valid PDF file.");
+
       return;
     }
   
@@ -36,7 +39,9 @@ const StepSecurityAudit = ({
       const result = await response.json();
   
       if (response.ok) {
-        alert("PDF uploaded successfully");
+        // alert("PDF uploaded successfully");
+        toast.success("PDF uploaded successfully.");
+
   
         // Save the filename in formData
         onChange({
@@ -46,24 +51,29 @@ const StepSecurityAudit = ({
           },
         });
       } else {
-        alert("Failed to upload PDF: " + result.error);
+        // alert("Failed to upload PDF: " + result.error);
+        toast.error("Failed to upload PDF: " + result.error);
+
       }
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Error uploading PDF");
+      // alert("Error uploading PDF");
+      toast.error("Error uploading PDF.");
+
     }
   };
-  
+
   const handleAddRecord = () => {
     const newRecord = {
       auditDate: formData.auditDate,
       expireDate: formData.expireDate,
-      typeOfAudit: formData.auditType,           // ✅ match backend
-      tlsNextExpiry: formData.nextExpireDate, 
-       // Use auditType consistently
+      typeOfAudit: formData.auditType, // ✅ match backend
+      tlsNextExpiry: formData.nextExpireDate,
+      // Use auditType consistently
       auditingAgency: formData.agency,
       sslLabScore: formData.sslLabScore,
       certificate: formData.certificate,
+      vaReport: vaReport, // 👈 Added
     };
 
     setAuditRecords([...auditRecords, newRecord]);
@@ -88,17 +98,19 @@ const StepSecurityAudit = ({
   //     alert("No PDF certificate uploaded.");
   //   }
   // };
-  const handleView = (index) => {
-    const filename = auditRecords[index].certificate;
-    if (!filename) {
-      alert("No certificate uploaded.");
-      return;
-    }
+  // const handleView = (index) => {
+  //   const filename = auditRecords[index].certificate;
+  //   if (!filename) {
+  //     // alert("No certificate uploaded.");
+  //     toast.warn("No certificate uploaded.");
+
+  //     return;
+  //   }
   
-    const fileURL = `http://localhost:5000/view-certificate/${filename}`;
-    setPdfUrl(fileURL);
-    setShowModal(true);
-  };
+  //   const fileURL = `http://localhost:5000/view-certificate/${filename}`;
+  //   setPdfUrl(fileURL);
+  //   setShowModal(true);
+  // };
   
 
   // const handleCloseModal = () => {
@@ -119,6 +131,152 @@ const StepSecurityAudit = ({
     const updated = [...auditRecords];
     updated.splice(index, 1);
     setAuditRecords(updated);
+  };
+
+  const handleVAReportUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || file.type !== "application/pdf") {
+      alert("Only PDF files are allowed.");
+      return;
+    }
+
+    const formDataUpload = new FormData();
+    formDataUpload.append("vaReport", file); // backend expects this field
+
+    try {
+      const res = await fetch("http://localhost:5000/upload-va-report", {
+        method: "POST",
+        body: formDataUpload,
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        // Treat VA Report as Certificate
+        onChange({
+          target: {
+            name: "certificate",
+            value: {
+              filename: result.filename,
+            },
+          },
+        });
+
+        // Optional: also store locally for preview
+        setVaReport({ filename: result.filename });
+      } else {
+        alert("Upload failed: " + result.error);
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Upload error occurred");
+    }
+  };
+
+  const handleViewVAReport = () => {
+    if (!vaReport?.filename) {
+      alert("No file to preview");
+      return;
+    }
+
+    setPdfUrl(`http://localhost:5000/view-va-report/${vaReport.filename}`);
+    setShowModal(true);
+  };
+
+
+  const handleView = async (index) => {
+  try {
+    const record = auditRecords[index];
+    const certFilename = record?.certificate?.filename;
+
+    if (!certFilename) {
+      alert("No certificate available for this record.");
+      return;
+    }
+
+    const previewUrl = `http://localhost:5000/view-va-report/${encodeURIComponent(certFilename)}`;
+
+    const verifyRes = await fetch(previewUrl);
+    if (!verifyRes.ok) {
+      alert("File not found on server.");
+      return;
+    }
+
+    setPdfUrl(previewUrl);
+    setShowModal(true);
+  } catch (err) {
+    console.error("Error viewing certificate:", err);
+    alert("Error displaying certificate");
+  }
+};
+
+  // const handleView = async (index) => {
+  //   try {
+  //     const record = auditRecords[index];
+  //     const certFilename = record?.certificate?.filename;
+  //     const vaFilename = record?.vaReport?.filename;
+
+  //     if (!certFilename && !vaFilename) {
+  //       alert("No certificate or VA report available for this record.");
+  //       return;
+  //     }
+
+  //     // Prioritize showing certificate if available, else VA report
+  //     const previewUrl = certFilename
+  //       ? `http://localhost:5000/view-certificate/${encodeURIComponent(
+  //           certFilename
+  //         )}`
+  //       : `http://localhost:5000/view-va-report/${encodeURIComponent(
+  //           vaFilename
+  //         )}`;
+
+  //     const verifyRes = await fetch(previewUrl);
+  //     if (!verifyRes.ok) {
+  //       alert("File not found on server.");
+  //       return;
+  //     }
+
+  //     setPdfUrl(previewUrl);
+  //     setShowModal(true);
+  //   } catch (err) {
+  //     console.error("Error viewing file:", err);
+  //     alert("Error displaying file.");
+  //   }
+  // };
+
+  const handleCertificateUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || file.type !== "application/pdf") {
+      alert("Only PDF files are allowed.");
+      return;
+    }
+
+    const formDataUpload = new FormData();
+    formDataUpload.append("certificate", file);
+
+    try {
+      const res = await fetch("http://localhost:5000/upload-certificate", {
+        method: "POST",
+        body: formDataUpload,
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        onChange({
+          target: {
+            name: "certificate",
+            value: {
+              filename: result.filename,
+            },
+          },
+        });
+      } else {
+        alert("Certificate upload failed: " + result.error);
+      }
+    } catch (err) {
+      console.error("Certificate upload error:", err);
+      alert("Certificate upload failed");
+    }
   };
 
   return (
@@ -176,13 +334,22 @@ const StepSecurityAudit = ({
           </div>
 
           <div className="col-md-6">
-            <label className="form-label">Upload Certificate</label>
+            <label className="form-label">Upload VA Report (PDF)</label>
             <input
               type="file"
               className="form-control"
-              name="certificate"
-              onChange={handleFileChange}
+              accept="application/pdf"
+              onChange={handleVAReportUpload}
             />
+            {formData?.certificate?.filename && (
+              <button
+                type="button"
+                className="btn btn-sm btn-link"
+                onClick={handleViewVAReport}
+              >
+                View Uploaded VA Report
+              </button>
+            )}
           </div>
 
           <div className="col-md-6">
@@ -223,6 +390,7 @@ const StepSecurityAudit = ({
         </div>
       </div>
 
+      {/* Modal for PDF preview */}
       <div className="table-responsive mt-4">
         <table className="table table-bordered align-middle">
           <thead className="table-light">
@@ -245,15 +413,28 @@ const StepSecurityAudit = ({
                   <td>{record.auditDate}</td>
                   <td>
                     <button
-                    type="button"
+                      type="button"
                       className="icon-btn text-primary"
                       onClick={() => handleView(idx)}
+                      disabled={
+                        !record?.certificate?.filename &&
+                        !record?.vaReport?.filename
+                      }
+                      title={
+                        record?.certificate?.filename
+                          ? "View Certificate"
+                          : record?.vaReport?.filename
+                          ? "View VA Report"
+                          : "No file"
+                      }
                     >
                       <i className="bi bi-eye"></i>
                     </button>
                   </td>
+
                   <td>
                     <button
+                      type="button"
                       className="icon-btn text-danger"
                       onClick={() => handleDelete(idx)}
                     >
@@ -273,65 +454,34 @@ const StepSecurityAudit = ({
         </table>
       </div>
 
-      {/* Modal for PDF preview */}
+      {/* PDF Modal */}
       {showModal && (
-        <div>
-          {/* Overlay */}
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              background: "rgba(0,0,0,0.7)",
-              zIndex: 1040,
-            }}
-          />
-          {/* Modal */}
-          <div
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 1050,
-              width: "90vw",
-              maxWidth: "1000px",
-              height: "90vh",
-              display: "flex",
-              flexDirection: "column",
-              background: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 4px 32px rgba(0,0,0,0.3)",
-            }}
-          >
-            <div
-              style={{
-                padding: "1rem",
-                borderBottom: "1px solid #eee",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <h5 style={{ margin: 0 }}>PDF Preview</h5>
-              <button
-                type="button"
-                className="btn-close"
-                aria-label="Close"
-                onClick={handleCloseModal}
-              ></button>
-            </div>
-            <div style={{ flex: 1, overflow: "hidden" }}>
-              <iframe
-                src={pdfUrl}
-                title="PDF Preview"
-                // onClick={handleCloseModal}
-                width="100%"
-                height="100%"
-                style={{ border: "none", minHeight: "100%" }}
-              ></iframe>
+        <div
+          className="modal d-block"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-xl">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">PDF Preview</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleCloseModal}
+                ></button>
+              </div>
+              <div className="modal-body" style={{ height: "80vh" }}>
+                {pdfUrl ? (
+                  <embed
+                    src={pdfUrl}
+                    type="application/pdf"
+                    width="100%"
+                    height="100%"
+                  />
+                ) : (
+                  <p>Loading...</p>
+                )}
+              </div>
             </div>
           </div>
         </div>

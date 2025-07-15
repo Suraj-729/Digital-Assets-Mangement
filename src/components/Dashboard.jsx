@@ -7,8 +7,10 @@ import MultiStepForm from "./MultiStepForm";
 import ProjectTabs from "../components/ProjectDetailsView/ProjectTab";
 import "../css/mvpStyle.css";
 import api from "../Api";
-
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [formToShow, setFormToShow] = useState(null);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +51,28 @@ const Dashboard = () => {
     setFilteredProjects(projects);
   }, [projects]);
 
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await api.get("/session-check");
+        if (!res.data.loggedIn) {
+          toast.error("Session expired. Please log in again.");
+          localStorage.clear();
+          navigate("/damLogin");
+        }
+      } catch (err) {
+        console.error("Session check failed:", err);
+      }
+    };
+  
+    checkSession(); // Check once when component loads
+  
+    const interval = setInterval(checkSession, 30000); // Every 30 seconds
+    return () => clearInterval(interval); // Cleanup
+  }, []);
+   // empty dependency array — only runs on initial load
+  
   useEffect(() => {
     // Get employeeId and employeeType from localStorage
     const employeeId = localStorage.getItem("employeeId");
@@ -66,10 +90,14 @@ const Dashboard = () => {
         if (response.status >= 200 && response.status < 300) {
           setProjects(response.data);
         } else {
-          throw new Error(`Request failed with status ${response.status}`);
+          // throw new Error(`Request failed with status ${response.status}`);
+          toast.error(`Failed to fetch projects. Status: ${response.status}`);
+
         }
       } catch (err) {
-        setError(err.message);
+        // setError(err.message);
+        toast.error(`Error fetching projects: ${err.message}`);
+
       } finally {
         setLoading(false);
       }
@@ -90,10 +118,14 @@ const Dashboard = () => {
         setSelectedProject(response.data);
         setFormToShow("projectDetails");
       } else {
-        throw new Error(`Request failed with status ${response.status}`);
+        // throw new Error(`Request failed with status ${response.status}`);
+        toast.error(`Failed to load project details. Status: ${response.status}`);
+
       }
     } catch (err) {
-      setError(err.message);
+      // setError(err.message);
+      toast.error(`Error loading project details: ${err.message}`);
+
     } finally {
       setLoading(false);
     }
@@ -111,12 +143,16 @@ const Dashboard = () => {
         setEditProjectData(response.data); // <-- This stores all previous data
         setFormToShow("addProject"); // <-- This opens the form for editing
       } else {
-        console.error(`Request failed with status ${response.status}`);
-        throw new Error(`Request failed with status ${response.status}`);
+        // console.error(`Request failed with status ${response.status}`);
+        // throw new Error(`Request failed with status ${response.status}`);
+        toast.error(`Failed to load project for edit. Status: ${response.status}`);
+
       }
     } catch (err) {
-      console.error("Error fetching project for edit:", err);
-      setError(err.message);
+      // console.error("Error fetching project for edit:", err);
+      // setError(err.message);
+      toast.error(`Error fetching project for edit: ${err.message}`);
+
     } finally {
       setLoading(false);
     }
@@ -437,7 +473,9 @@ const Dashboard = () => {
           const res = await api.get(`/dashboard/filter/prismid/${value}`);
           setFilteredProjects(res.data);
         } catch (err) {
-          console.error("Filter fetch error:", err);
+          // console.error("Filter fetch error:", err);
+          toast.error(`Filter fetch error: ${err.message}`);
+
           setFilteredProjects([]);
         }
       }}
