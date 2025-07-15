@@ -75,7 +75,7 @@ const HOD = localStorage.getItem("HOD") || "N/A";
   
     checkSession(); // Check once when component loads
   
-    const interval = setInterval(checkSession, 30000); // Every 30 seconds
+    const interval = setInterval(checkSession, 3000000); // Every 30 seconds
     return () => clearInterval(interval); // Cleanup
   }, []);
 
