@@ -230,7 +230,7 @@ const StepTechnologyStack = ({
               className={`form-select ${errors.database ? "is-invalid" : ""}`}
               name="database"
               value={
-                knownDatabases.includes(formData.database) ? formData.database : ""
+                knownDatabases.includes(formData.database) ? formData.database : " "
               }
               onChange={onChange}
             >
@@ -238,7 +238,7 @@ const StepTechnologyStack = ({
               {knownDatabases.map((db) => (
                 <option key={db} value={db}>{db}</option>
               ))}
-              <option value="Other">Other</option>
+              <option value="Other">OTHER</option>
             </select>
             <button
               className="btn btn-primary"
