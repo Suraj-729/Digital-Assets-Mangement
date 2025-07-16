@@ -39,13 +39,13 @@ const StepTechnologyStack = ({
         ...prev,
         [field]: "Please select or enter a value first",
       }));
-      toast.error("Please enter a value before adding.");
+      // toast.error("Please enter a value before adding.");
       return;
     }
 
     if (field === "repoUrl" && !isValidUrl(value)) {
       setErrors((prev) => ({ ...prev, repoUrl: "Please enter a valid URL" }));
-      toast.error("Invalid URL format.");
+      // toast.error("Invalid URL format.");
       return;
     }
 
@@ -60,12 +60,12 @@ const StepTechnologyStack = ({
 
     const currentArray = stateMaps[field];
     if (currentArray.includes(value)) {
-      toast.warn(`"${value}" already added to ${field.replace("Url", "")}.`);
+      // toast.warn(`"${value}" already added to ${field.replace("Url", "")}.`);
       return;
     }
 
     setter((prev) => [...prev, value]);
-    toast.success(`"${value}" added to ${field.replace("Url", "")}.`);
+    // toast.success(`"${value}" added to ${field.replace("Url", "")}.`);
 
     setErrors((prev) => ({ ...prev, [field]: "" }));
     onChange({ target: { name: inputField, value: "" } });
@@ -73,7 +73,7 @@ const StepTechnologyStack = ({
 
   const removeFromStack = (field, value, setter) => {
     setter((prev) => prev.filter((item) => item !== value));
-    toast.info(`"${value}" removed from ${field.replace("Url", "")}.`);
+    // toast.info(`"${value}" removed from ${field.replace("Url", "")}.`);
   };
 
   const renderStackBadges = (items, field, setter) => {
@@ -184,7 +184,7 @@ const StepTechnologyStack = ({
           {errors.frontEnd && (
             <div className="invalid-feedback">{errors.frontEnd}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" style={{marginRight:"620px"}} >
             {renderStackBadges(usedTech, "frontEnd", setUsedTech)}
           </div>
         </div>
@@ -216,7 +216,7 @@ const StepTechnologyStack = ({
           {errors.framework && (
             <div className="invalid-feedback">{errors.framework}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {renderStackBadges(usedFrameworks, "framework", setUsedFrameworks)}
           </div>
         </div>
@@ -231,7 +231,7 @@ const StepTechnologyStack = ({
               className={`form-select ${errors.database ? "is-invalid" : ""}`}
               name="database"
               value={
-                knownDatabases.includes(formData.database) ? formData.database : "Other"
+                knownDatabases.includes(formData.database) ? formData.database : ""
               }
               onChange={onChange}
             >
@@ -255,7 +255,7 @@ const StepTechnologyStack = ({
           {!knownDatabases.includes(formData.database) && (
             <input
               type="text"
-              className="form-control mt-2"
+              className="form-control mt-2" style={{marginRight:"620px"}}
               placeholder="Enter other database"
               name="database"
               value={formData.database || ""}
@@ -274,7 +274,7 @@ const StepTechnologyStack = ({
             <div className="invalid-feedback d-block">{errors.database}</div>
           )}
 
-          <div className="mt-2">
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {renderStackBadges(usedDb, "database", setUsedDb)}
           </div>
         </div>
@@ -306,7 +306,7 @@ const StepTechnologyStack = ({
           {errors.os && (
             <div className="invalid-feedback">{errors.os}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {renderStackBadges(usedOs, "os", setUsedOs)}
           </div>
         </div>
@@ -340,7 +340,7 @@ const StepTechnologyStack = ({
           {errors.osVersion && (
             <div className="invalid-feedback">{errors.osVersion}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {renderStackBadges(usedOsVersion, "osVersion", setUsedOsVersion)}
           </div>
         </div>
@@ -370,7 +370,7 @@ const StepTechnologyStack = ({
           {errors.repoUrl && (
             <div className="invalid-feedback">{errors.repoUrl}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {usedRepo.map((repo) => (
               <div key={repo} className="d-flex align-items-center mb-2">
                 <a

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import api from "../../Api";
-const API = "http://localhost:5000";
+// const API = "http://localhost:5000";
 const SecurityAudit = ({ securityAudits }) => {
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
@@ -53,7 +53,7 @@ const SecurityAudit = ({ securityAudits }) => {
       typeof certificate === "string" ? certificate : certificate?.filename;
     if (!filename) return;
 
-    setPdfUrl(`${API}/view-certificate/${filename}`);
+    setPdfUrl(`${api}/view-certificate/${filename}`);
     setShowModal(true);
   };
 
@@ -62,7 +62,7 @@ const SecurityAudit = ({ securityAudits }) => {
       typeof certificate === "string" ? certificate : certificate?.filename;
     if (!filename) return;
 
-    setPdfUrl(`${API}/view-va-report/${filename}`);
+    setPdfUrl(`${api}/view-va-report/${filename}`);
     setShowModal(true);
   };
 
@@ -84,7 +84,7 @@ const SecurityAudit = ({ securityAudits }) => {
                 <th>Type of Audit</th>
                 <th>Agency</th>
                 <th>Certificate</th>
-                <th>va </th>
+                {/* <th>va </th> */}
                 <th>SSL Lab Score</th>
                 <th>TLS Next Expiry Date</th>
               </tr>

@@ -8,18 +8,18 @@ import ProjectTabs from "../components/ProjectDetailsView/ProjectTab";
 import "../css/mvpStyle.css";
 import api from "../Api";
 import { toast } from "react-toastify";
-import { useNavigate  , useParams, useLocation} from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 // import { useParams } from "react-router-dom";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-   const location = useLocation();
-   const initialProjects = location.state?.fetchedProjects || [];
+  const location = useLocation();
+  const initialProjects = location.state?.fetchedProjects || [];
   const [formToShow, setFormToShow] = useState(null);
   const [projects, setProjects] = useState(initialProjects);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
 
   const [selectedProject, setSelectedProject] = useState(null);
   const [editProjectData, setEditProjectData] = useState(null);
@@ -33,7 +33,7 @@ const Dashboard = () => {
   // const HOD = localStorage.getItem("HOD") || "N/A";
   // const employeeId = localStorage.getItem("employeeId") || "N/A";
   const { employeeId, employeeType } = useParams();
-const HOD = localStorage.getItem("HOD") || "N/A";
+  const HOD = localStorage.getItem("HOD") || "N/A";
 
   const getFilterOptions = (type) => {
     if (type === "department") {
@@ -72,100 +72,45 @@ const HOD = localStorage.getItem("HOD") || "N/A";
         console.error("Session check failed:", err);
       }
     };
-  
+
     checkSession(); // Check once when component loads
-  
+
     const interval = setInterval(checkSession, 3000000); // Every 30 seconds
     return () => clearInterval(interval); // Cleanup
   }, []);
 
   useEffect(() => {
-  if (location.state?.fetchedProjects) {
-    setProjects(location.state.fetchedProjects);
-  }
-}, [location.state?.fetchedProjects]);
-
-   // empty dependency array — only runs on initial load
-  
-  // useEffect(() => {
-  //   // Get employeeId and employeeType from localStorage
-  //   const employeeId = localStorage.getItem("employeeId");
-  //   const employeeType = localStorage.getItem("employeeType");
-
-  //   const fetchProjects = async () => {
-  //     try {
-  //       setLoading(true);
-  //       // Build the URL with employeeId and employeeType
-  //       const url = `/dashboard/by-type/${employeeId}?employeeType=${employeeType}`;
-  //       const response = await api.get(url, { withCredentials: true }); // <-- Add this option
-  //       console.log("API response body:", response.body);
-  //       console.log("API response data:", response.data); // <-- Add this log
-
-  //       if (response.status >= 200 && response.status < 300) {
-  //         setProjects(response.data);
-  //       } else {
-  //         // throw new Error(`Request failed with status ${response.status}`);
-  //         toast.error(`Failed to fetch projects. Status: ${response.status}`);
-
-  //       }
-  //     } catch (err) {
-  //       // setError(err.message);
-  //       toast.error(`Error fetching projects: ${err.message}`);
-
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchProjects();
-  // }, []);
-
-//   useEffect(() => {
-//   const fetchProjects = async () => {
-//     try {
-//       setLoading(true);
-//       const url = `/dashboard/by-type/${employeeId}?employeeType=${employeeType}`;
-//       const response = await api.get(url, { withCredentials: true });
-//       if (response.status >= 200 && response.status < 300) {
-//         setProjects(response.data);
-//       } else {
-//         toast.error(`Failed to fetch projects. Status: ${response.status}`);
-//       }
-//     } catch (err) {
-//       toast.error(`Error fetching projects: ${err.message}`);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   fetchProjects();
-// }, [employeeId, employeeType]);
-
-useEffect(() => {
-  const fetchProjects = async () => {
-    try {
-      setLoading(true);
-      const url = `/dashboard/by-type/${employeeId}?employeeType=${employeeType}`;
-      const response = await api.get(url, { withCredentials: true });
-
-      if (response.status >= 200 && response.status < 300) {
-        setProjects(response.data);
-      } else {
-        toast.error(`Failed to fetch projects. Status: ${response.status}`);
-      }
-    } catch (err) {
-      toast.error(`Error fetching projects: ${err.message}`);
-    } finally {
-      setLoading(false);
+    if (location.state?.fetchedProjects) {
+      setProjects(location.state.fetchedProjects);
     }
-  };
+  }, [location.state?.fetchedProjects]);
 
-  if (!initialProjects.length) {
-    fetchProjects();
-  } else {
-    setLoading(false); // already got data via location.state
-  }
-}, [employeeId, employeeType]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        const url = `/dashboard/by-type/${employeeId}?employeeType=${employeeType}`;
+        const response = await api.get(url, { withCredentials: true });
+
+        if (response.status >= 200 && response.status < 300) {
+          setProjects(response.data);
+        } else {
+          toast.error(`Failed to fetch projects. Status: ${response.status}`);
+        }
+      } catch (err) {
+        toast.error(`Error fetching projects: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (!initialProjects.length) {
+      fetchProjects();
+    } else {
+      setLoading(false); // already got data via location.state
+    }
+  }, [employeeId, employeeType]);
 
 
   const handleProjectNameClick = async (projectName) => {
@@ -268,7 +213,7 @@ useEffect(() => {
 
   // Badge helpers
   const statusBadge = (status) => {
-    if (status === "Valid") return "badge bg-warning text-dark";
+    if (status === "ACTIVE") return "badge bg-warning text-dark";
     if (status === "Expired") return "badge bg-danger";
     return "badge bg-secondary";
   };
@@ -309,8 +254,8 @@ useEffect(() => {
   //     </div>
   //   );
   // }
-   // ✅ Static page for new users
-   if (projects.length === 0 && formToShow !== "addProject") {
+  // ✅ Static page for new users
+  if (projects.length === 0 && formToShow !== "addProject") {
     return (
       <div className="d-flex" style={{ minHeight: "100vh", flexDirection: "column" }}>
         <Header />
@@ -457,101 +402,209 @@ useEffect(() => {
                       style={{ paddingTop: "20px" }}
                     >
                       <div className="card-body pt-3">
-                      
-                       <div className="row mb-4">
-  <div className="col-md-3">
-    <label className="form-label">Filter Type</label>
-    <select
-      className="form-select"
-      value={filterType}
-      onChange={(e) => {
-        const selectedType = e.target.value;
-        setFilterType(selectedType);
-        setFilterValue(""); // reset value when type changes
-        setFilteredProjects(projects); // reset filter
-      }}
-    >
-      <option value="">-- Select Filter Type --</option>
-      <option value="department">Department</option>
-      <option value="prismid">Prism ID</option>
-      <option value="datacenter">Data Center</option>
-    </select>
-  </div>
 
-  <div className="col-md-3">
-    <label className="form-label">Filter Value</label>
-    {filterType === "prismid" ? (
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Enter Prism ID"
-        value={filterValue}
-        onChange={async (e) => {
-          const value = e.target.value;
-          setFilterValue(value);
+                        <div className="row mb-4">
+                          <div className="col-md-3">
+                            <label className="form-label">Filter Type</label>
+                            <select
+                              className="form-select"
+                              value={filterType}
+                              onChange={(e) => {
+                                const selectedType = e.target.value;
+                                setFilterType(selectedType);
+                                setFilterValue(""); // reset value when type changes
+                                setFilteredProjects(projects); // reset filter
+                              }}
+                            >
+                              <option value="">-- Select Filter Type --</option>
+                              <option value="department">Department</option>
+                              <option value="prismid">Prism ID</option>
+                              <option value="datacenter">Data Center</option>
+                            </select>
+                          </div>
 
-          if (!value) {
-            setFilteredProjects(projects);
-            return;
-          }
 
-          try {
-            const res = await api.get(`/dashboard/filter/prismid/${value}`);
-            setFilteredProjects(res.data);
-          } catch (err) {
-            toast.error(`Filter fetch error: ${err.message}`);
-            setFilteredProjects([]);
-          }
-        }}
-      />
-    ) : (
-      <select
-        className="form-select"
-        value={filterValue}
-        onChange={async (e) => {
-          const value = e.target.value;
-          setFilterValue(value);
+                          {/* <div className="col-md-3">
+                            <label className="form-label">Filter Value</label>
 
-          if (!filterType || !value) {
-            setFilteredProjects(projects);
-            return;
-          }
+                            {filterType === "prismid" ? (
+                              // Show input box for prismid
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter Prism ID"
+                                value={filterValue}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
 
-          try {
-            const res = await api.get(
-              `/dashboard/filter/${filterType}/${value}`
-            );
-            setFilteredProjects(res.data);
-          } catch (err) {
-            console.error("Filter fetch error:", err);
-            setFilteredProjects([]);
-          }
-        }}
-        disabled={!filterType}
-      >
-        <option value="">-- Select Value --</option>
-        {getFilterOptions(filterType).map((val) => (
-          <option key={val} value={val}>
-            {val}
-          </option>
-        ))}
-      </select>
-    )}
-  </div>
+                                  if (!value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
 
-  <div className="col-md-3 d-flex align-items-end">
-    <button
-      className="btn btn-secondary w-100"
-      onClick={() => {
-        setFilterType("");
-        setFilterValue("");
-        setFilteredProjects(projects);
-      }}
-    >
-      Reset Filter
-    </button>
-  </div>
-</div>
+                                  try {
+                                    const res = await api.get(`/dashboard/filter/prismid/${value}`);
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    // console.error("Filter fetch error:", err);
+                                    // toast.error(`Filter fetch error: ${err.message}`);
+
+                                    setFilteredProjects([]);
+                                  }
+                                }}
+                              />
+                            ) : (
+                              // For other filter types, use dropdown
+                              <select
+                                className="form-select"
+                                value={filterType}
+                                onChange={(e) => {
+                                  const selectedType = e.target.value;
+                                  setFilterType(selectedType);
+                                  setFilterValue(""); // reset value when type changes
+                                  setFilteredProjects(projects); // reset filter
+                                }}
+                              >
+                                <option value="">-- Select Filter Type --</option>
+                                <option value="department">Department</option>
+                                <option value="prismid">Prism ID</option>
+                                <option value="datacenter">Data Center</option>
+                              </select>
+                                                      // </div>                             */}
+
+                          <div className="col-md-3">
+                            <label className="form-label">Filter Value</label>
+
+                            {filterType === "prismid" ? (
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter Prism ID"
+                                value={filterValue}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
+
+                                  if (!value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
+
+                                  try {
+                                    const res = await api.get(`/dashboard/filter/prismid/${value}`);
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    setFilteredProjects([]);
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <select
+                                className="form-select"
+                                value={filterValue}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
+
+                                  if (!filterType || !value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
+
+                                  try {
+                                    const res = await api.get(`/dashboard/filter/${filterType}/${value}`);
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    setFilteredProjects([]);
+                                  }
+                                }}
+                                disabled={!filterType}
+                              >
+                                <option value="">-- Select Value --</option>
+                                {getFilterOptions(filterType).map((val) => (
+                                  <option key={val} value={val}>
+                                    {val}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                          </div>
+
+                          {/* <div className="col-md-3">
+                            <label className="form-label">Filter Value</label>
+                            {filterType === "prismid" ? (
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter Prism ID"
+                                value={filterValue}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
+
+                                  if (!value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
+
+                                  try {
+                                    const res = await api.get(`/dashboard/filter/prismid/${value}`);
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    toast.error(`Filter fetch error: ${err.message}`);
+                                    setFilteredProjects([]);
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <select
+                                className="form-select"
+                                value={filterValue}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
+
+                                  if (!filterType || !value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
+
+                                  try {
+                                    const res = await api.get(
+                                      `/dashboard/filter/${filterType}/${value}`
+                                    );
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    console.error("Filter fetch error:", err);
+                                    setFilteredProjects([]);
+                                  }
+                                }}
+                                disabled={!filterType}
+                              >
+                                <option value="">-- Select Value --</option>
+                                {getFilterOptions(filterType).map((val) => (
+                                  <option key={val} value={val}>
+                                    {val}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                          </div> */}
+
+                          <div className="col-md-3 d-flex align-items-end">
+                            <button
+                              className="btn btn-secondary w-100"
+                              onClick={() => {
+                                setFilterType("");
+                                setFilterValue("");
+                                setFilteredProjects(projects);
+                              }}
+                            >
+                              Reset Filter
+                            </button>
+                          </div>
+                        </div>
 
 
                         {filteredProjects.length === 0 ? (
@@ -607,7 +660,7 @@ useEffect(() => {
                                     `${project.projectName}-${index}`;
                                   const statusValue = project.expireDate
                                     ? new Date(project.expireDate) > new Date()
-                                      ? "Valid"
+                                      ? "ACTIVE"
                                       : "Expired"
                                     : "N/A";
 
