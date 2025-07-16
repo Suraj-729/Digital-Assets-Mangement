@@ -96,10 +96,10 @@ const Dashboard = () => {
         if (response.status >= 200 && response.status < 300) {
           setProjects(response.data);
         } else {
-          toast.error(`Failed to fetch projects. Status: ${response.status}`);
+          // toast.error(`Failed to fetch projects. Status: ${response.status}`);
         }
       } catch (err) {
-        toast.error(`Error fetching projects: ${err.message}`);
+        // toast.error(`Error fetching projects: ${err.message}`);
       } finally {
         setLoading(false);
       }
@@ -125,13 +125,13 @@ const Dashboard = () => {
         setSelectedProject(response.data);
         setFormToShow("projectDetails");
       } else {
-        // throw new Error(`Request failed with status ${response.status}`);
-        toast.error(`Failed to load project details. Status: ${response.status}`);
+        throw new Error(`Request failed with status ${response.status}`);
+        // toast.error(`Failed to load project details. Status: ${response.status}`);
 
       }
     } catch (err) {
-      // setError(err.message);
-      toast.error(`Error loading project details: ${err.message}`);
+      setError(err.message);
+      // toast.error(`Error loading project details: ${err.message}`);
 
     } finally {
       setLoading(false);
@@ -150,15 +150,15 @@ const Dashboard = () => {
         setEditProjectData(response.data); // <-- This stores all previous data
         setFormToShow("addProject"); // <-- This opens the form for editing
       } else {
-        // console.error(`Request failed with status ${response.status}`);
-        // throw new Error(`Request failed with status ${response.status}`);
-        toast.error(`Failed to load project for edit. Status: ${response.status}`);
+        console.error(`Request failed with status ${response.status}`);
+        throw new Error(`Request failed with status ${response.status}`);
+        // toast.error(`Failed to load project for edit. Status: ${response.status}`);
 
       }
     } catch (err) {
-      // console.error("Error fetching project for edit:", err);
-      // setError(err.message);
-      toast.error(`Error fetching project for edit: ${err.message}`);
+      console.error("Error fetching project for edit:", err);
+      setError(err.message);
+      // toast.error(`Error fetching project for edit: ${err.message}`);
 
     } finally {
       setLoading(false);
@@ -247,13 +247,6 @@ const Dashboard = () => {
     );
   }
 
-  // if (formToShow === "projectDetails" && !selectedProject) {
-  //   return (
-  //     <div className="alert alert-warning m-4" role="alert">
-  //       No project data available. Please try selecting a project again.
-  //     </div>
-  //   );
-  // }
   // ✅ Static page for new users
   if (projects.length === 0 && formToShow !== "addProject") {
     return (
@@ -424,54 +417,7 @@ const Dashboard = () => {
                           </div>
 
 
-                          {/* <div className="col-md-3">
-                            <label className="form-label">Filter Value</label>
-
-                            {filterType === "prismid" ? (
-                              // Show input box for prismid
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Enter Prism ID"
-                                value={filterValue}
-                                onChange={async (e) => {
-                                  const value = e.target.value;
-                                  setFilterValue(value);
-
-                                  if (!value) {
-                                    setFilteredProjects(projects);
-                                    return;
-                                  }
-
-                                  try {
-                                    const res = await api.get(`/dashboard/filter/prismid/${value}`);
-                                    setFilteredProjects(res.data);
-                                  } catch (err) {
-                                    // console.error("Filter fetch error:", err);
-                                    // toast.error(`Filter fetch error: ${err.message}`);
-
-                                    setFilteredProjects([]);
-                                  }
-                                }}
-                              />
-                            ) : (
-                              // For other filter types, use dropdown
-                              <select
-                                className="form-select"
-                                value={filterType}
-                                onChange={(e) => {
-                                  const selectedType = e.target.value;
-                                  setFilterType(selectedType);
-                                  setFilterValue(""); // reset value when type changes
-                                  setFilteredProjects(projects); // reset filter
-                                }}
-                              >
-                                <option value="">-- Select Filter Type --</option>
-                                <option value="department">Department</option>
-                                <option value="prismid">Prism ID</option>
-                                <option value="datacenter">Data Center</option>
-                              </select>
-                                                      // </div>                             */}
+                         
 
                           <div className="col-md-3">
                             <label className="form-label">Filter Value</label>
@@ -530,67 +476,6 @@ const Dashboard = () => {
                               </select>
                             )}
                           </div>
-
-                          {/* <div className="col-md-3">
-                            <label className="form-label">Filter Value</label>
-                            {filterType === "prismid" ? (
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Enter Prism ID"
-                                value={filterValue}
-                                onChange={async (e) => {
-                                  const value = e.target.value;
-                                  setFilterValue(value);
-
-                                  if (!value) {
-                                    setFilteredProjects(projects);
-                                    return;
-                                  }
-
-                                  try {
-                                    const res = await api.get(`/dashboard/filter/prismid/${value}`);
-                                    setFilteredProjects(res.data);
-                                  } catch (err) {
-                                    toast.error(`Filter fetch error: ${err.message}`);
-                                    setFilteredProjects([]);
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <select
-                                className="form-select"
-                                value={filterValue}
-                                onChange={async (e) => {
-                                  const value = e.target.value;
-                                  setFilterValue(value);
-
-                                  if (!filterType || !value) {
-                                    setFilteredProjects(projects);
-                                    return;
-                                  }
-
-                                  try {
-                                    const res = await api.get(
-                                      `/dashboard/filter/${filterType}/${value}`
-                                    );
-                                    setFilteredProjects(res.data);
-                                  } catch (err) {
-                                    console.error("Filter fetch error:", err);
-                                    setFilteredProjects([]);
-                                  }
-                                }}
-                                disabled={!filterType}
-                              >
-                                <option value="">-- Select Value --</option>
-                                {getFilterOptions(filterType).map((val) => (
-                                  <option key={val} value={val}>
-                                    {val}
-                                  </option>
-                                ))}
-                              </select>
-                            )}
-                          </div> */}
 
                           <div className="col-md-3 d-flex align-items-end">
                             <button

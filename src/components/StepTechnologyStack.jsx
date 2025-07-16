@@ -223,7 +223,7 @@ const StepTechnologyStack = ({
       </div>
 
       {/* Database */}
-      <div className="form-group row mb-4">
+      {/* <div className="form-group row mb-4">
         <label className="col-md-3 col-form-label">Database</label>
         <div className="col-md-6">
           <div className="input-group">
@@ -231,7 +231,7 @@ const StepTechnologyStack = ({
               className={`form-select ${errors.database ? "is-invalid" : ""}`}
               name="database"
               value={
-                knownDatabases.includes(formData.database) ? formData.database : ""
+                knownDatabases.includes(formData.database) ? formData.database : " "
               }
               onChange={onChange}
             >
@@ -239,7 +239,7 @@ const StepTechnologyStack = ({
               {knownDatabases.map((db) => (
                 <option key={db} value={db}>{db}</option>
               ))}
-              <option value="Other">Other</option>
+              <option value="Other">OTHER</option>
             </select>
             <button
               className="btn btn-primary"
@@ -278,7 +278,72 @@ const StepTechnologyStack = ({
             {renderStackBadges(usedDb, "database", setUsedDb)}
           </div>
         </div>
-      </div>
+      </div> */}
+      <div className="form-group row mb-4">
+  <label className="col-md-3 col-form-label">Database</label>
+  <div className="col-md-6">
+    <div className="input-group">
+      <select
+        className={`form-select ${errors.database ? "is-invalid" : ""}`}
+        name="database"
+        value={formData.database || ""}
+        onChange={onChange}
+      >
+        <option value="">Select a database</option>
+        {knownDatabases.map((db) => (
+          <option key={db} value={db}>
+            {db}
+          </option>
+        ))}
+        <option value="Other">OTHER</option>
+      </select>
+      <button
+        className="btn btn-primary"
+        type="button"
+        onClick={() =>
+          addToStack(
+            "database",
+            formData.database === "Other" ? formData.otherDatabase : formData.database,
+            setUsedDb,
+            "database"
+          )
+        }
+      >
+        Add
+      </button>
+    </div>
+
+    {/* Show input field only if 'Other' is selected */}
+    {formData.database === "Other" && (
+      <input
+        type="text"
+        className="form-control mt-2 " style={{marginRight:"620px"}}
+        placeholder="Enter other database"
+        name="otherDatabase"
+        value={formData.otherDatabase || ""}
+        onChange={(e) =>
+          onChange({
+            target: {
+              name: "otherDatabase",
+              value: e.target.value,
+            },
+          })
+        }
+      />
+    )}
+
+    {/* Show validation error */}
+    {errors.database && (
+      <div className="invalid-feedback d-block">{errors.database}</div>
+    )}
+
+    {/* Show selected databases as badges */}
+    <div className="mt-2">
+      {renderStackBadges(usedDb, "database", setUsedDb)}
+    </div>
+  </div>
+</div>
+
 
       {/* OS */}
       <div className="form-group row mb-4">

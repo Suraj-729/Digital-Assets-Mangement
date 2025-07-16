@@ -4,6 +4,9 @@ import StepBasicProfile from "./StepBasicProfile";
 import StepSecurityAudit from "./StepSecurityAudit";
 import StepTechnologyStack from "./StepTechnologyStack";
 import StepInfrastructure from "./StepInfrastructure";
+import Header from "./layouts/HeaderDashboard";
+import Sidebar from "./layouts/SidebarDashboard";
+
 import api from "../Api";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
@@ -364,9 +367,22 @@ const onAddVa = () => {
         return null;
     }
   };
+ 
+     {/* There is a work of ramsis to do the ui dymaic level  */}
+
 
   return (
+    
     <div className="form-container ">
+      <Header/>
+      <Sidebar/>
+
+       {/* There is a work of ramsis to do the ui dymaic level  */}
+
+
+
+      
+
       <form id="msform" onSubmit={handleSubmit}>
         <ProgressBar
           steps={steps}
