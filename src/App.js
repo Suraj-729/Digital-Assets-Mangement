@@ -12,7 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ChangePasswordPage from "./components/ChangePassword";
 import RegisterPage from "./components/Register";
 import RouteTracker from "./components/RouteTracker";
-
+import MultiStepForm from "./components/MultiStepForm";
 import "./css/bootstrap/dist/css/bootstrap.min.css";
 import "./css/bootstrap-icons/font/bootstrap-icons.css";
 import "./css/app.css";
@@ -47,7 +47,7 @@ function App() {
 
         {/* Change Password */}
         <Route path="/change-password" element={<ChangePasswordPage />} />
-
+        <Route path="/addProject" element={<MultiStepForm/>}/>
         {/* Optional fallback: if directly accessed with only employeeType (not recommended) */}
         {/* <Route
           path="/dashboard/:employeeType"

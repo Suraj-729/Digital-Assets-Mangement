@@ -316,7 +316,7 @@ const StepTechnologyStack = ({
     {formData.database === "Other" && (
       <input
         type="text"
-        className="form-control mt-2"
+        className="form-control mt-2 " style={{marginRight:"620px"}}
         placeholder="Enter other database"
         name="otherDatabase"
         value={formData.otherDatabase || ""}

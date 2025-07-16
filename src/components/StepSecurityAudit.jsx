@@ -373,7 +373,7 @@ const StepSecurityAudit = ({
           </div>
 
           <div className="col-md-6">
-            <label className="form-label"> TLS Next Expire Date</label>
+            <label className="form-label"> TLS Expire Date</label>
             <input
               type="date"
               className="form-control"
