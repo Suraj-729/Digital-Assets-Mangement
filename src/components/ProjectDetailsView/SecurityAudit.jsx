@@ -84,7 +84,7 @@ const SecurityAudit = ({ securityAudits }) => {
                 <th>Type of Audit</th>
                 <th>Agency</th>
                 <th>Certificate</th>
-                <th>va </th>
+                {/* <th>va </th> */}
                 <th>SSL Lab Score</th>
                 <th>TLS Next Expiry Date</th>
               </tr>

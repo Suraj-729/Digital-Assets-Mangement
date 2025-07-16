@@ -183,7 +183,7 @@ const StepTechnologyStack = ({
           {errors.frontEnd && (
             <div className="invalid-feedback">{errors.frontEnd}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" >
             {renderStackBadges(usedTech, "frontEnd", setUsedTech)}
           </div>
         </div>
@@ -215,7 +215,7 @@ const StepTechnologyStack = ({
           {errors.framework && (
             <div className="invalid-feedback">{errors.framework}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" >
             {renderStackBadges(usedFrameworks, "framework", setUsedFrameworks)}
           </div>
         </div>
@@ -230,7 +230,7 @@ const StepTechnologyStack = ({
               className={`form-select ${errors.database ? "is-invalid" : ""}`}
               name="database"
               value={
-                knownDatabases.includes(formData.database) ? formData.database : "Other"
+                knownDatabases.includes(formData.database) ? formData.database : ""
               }
               onChange={onChange}
             >
@@ -305,7 +305,7 @@ const StepTechnologyStack = ({
           {errors.os && (
             <div className="invalid-feedback">{errors.os}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" >
             {renderStackBadges(usedOs, "os", setUsedOs)}
           </div>
         </div>
@@ -369,7 +369,7 @@ const StepTechnologyStack = ({
           {errors.repoUrl && (
             <div className="invalid-feedback">{errors.repoUrl}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" >
             {usedRepo.map((repo) => (
               <div key={repo} className="d-flex align-items-center mb-2">
                 <a
