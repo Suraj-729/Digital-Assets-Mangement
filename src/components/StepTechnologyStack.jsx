@@ -183,7 +183,7 @@ const StepTechnologyStack = ({
           {errors.frontEnd && (
             <div className="invalid-feedback">{errors.frontEnd}</div>
           )}
-          <div className="mt-2" >
+          <div className="mt-2" style={{marginRight:"620px"}} >
             {renderStackBadges(usedTech, "frontEnd", setUsedTech)}
           </div>
         </div>
@@ -215,7 +215,7 @@ const StepTechnologyStack = ({
           {errors.framework && (
             <div className="invalid-feedback">{errors.framework}</div>
           )}
-          <div className="mt-2" >
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {renderStackBadges(usedFrameworks, "framework", setUsedFrameworks)}
           </div>
         </div>
@@ -254,7 +254,7 @@ const StepTechnologyStack = ({
           {!knownDatabases.includes(formData.database) && (
             <input
               type="text"
-              className="form-control mt-2"
+              className="form-control mt-2" style={{marginRight:"620px"}}
               placeholder="Enter other database"
               name="database"
               value={formData.database || ""}
@@ -273,7 +273,7 @@ const StepTechnologyStack = ({
             <div className="invalid-feedback d-block">{errors.database}</div>
           )}
 
-          <div className="mt-2">
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {renderStackBadges(usedDb, "database", setUsedDb)}
           </div>
         </div>
@@ -370,7 +370,7 @@ const StepTechnologyStack = ({
           {errors.os && (
             <div className="invalid-feedback">{errors.os}</div>
           )}
-          <div className="mt-2" >
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {renderStackBadges(usedOs, "os", setUsedOs)}
           </div>
         </div>
@@ -404,7 +404,7 @@ const StepTechnologyStack = ({
           {errors.osVersion && (
             <div className="invalid-feedback">{errors.osVersion}</div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {renderStackBadges(usedOsVersion, "osVersion", setUsedOsVersion)}
           </div>
         </div>
@@ -434,7 +434,7 @@ const StepTechnologyStack = ({
           {errors.repoUrl && (
             <div className="invalid-feedback">{errors.repoUrl}</div>
           )}
-          <div className="mt-2" >
+          <div className="mt-2" style={{marginRight:"620px"}}>
             {usedRepo.map((repo) => (
               <div key={repo} className="d-flex align-items-center mb-2">
                 <a
