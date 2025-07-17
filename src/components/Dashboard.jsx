@@ -32,8 +32,12 @@ const Dashboard = () => {
   // Get HOD and employeeId from localStorage
   // const HOD = localStorage.getItem("HOD") || "N/A";
   // const employeeId = localStorage.getItem("employeeId") || "N/A";
-  const { employeeId, employeeType } = useParams();
+  // const { employeeId, employeeType } = useParams();
   const HOD = localStorage.getItem("HOD") || "N/A";
+  // const location = useLocation();
+const employeeId = location.state?.employeeId || localStorage.getItem("employeeId");
+const employeeType = location.state?.employeeType || localStorage.getItem("employeeType");
+
 
   const getFilterOptions = (type) => {
     if (type === "department") {

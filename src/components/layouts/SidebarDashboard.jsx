@@ -152,9 +152,11 @@ const employeeType = localStorage.getItem("employeeType");
 
       if (response.status >= 200 && response.status < 300) 
       {
-        navigate("/dashboard/by-type/${employeeId}?employeeType=${employeeType}", {
+        navigate("/dashboard", {
           state: {
             fetchedProjects: response.data,
+            employeeId,
+          employeeType,
           },
         });
       } else {

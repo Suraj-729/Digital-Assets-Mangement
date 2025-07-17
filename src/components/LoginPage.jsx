@@ -153,8 +153,10 @@ import api from "../Api";
 import "../css/loginpage.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { useLocation } from "react-router-dom";
 const LoginPage = ({ onLogin }) => {
+  const location = useLocation();
+
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -178,7 +180,9 @@ const LoginPage = ({ onLogin }) => {
       );
 
       const user = response.data.user;
-
+      const employeeId = location.state?.employeeId || localStorage.getItem("employeeId");
+      const employeeType = location.state?.employeeType || localStorage.getItem("employeeType");
+      
       // Save session data
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("userId", user.userId);
@@ -194,7 +198,15 @@ const LoginPage = ({ onLogin }) => {
       toast.success("Login successful");
 
       // ✅ Navigate to the protected route with both params
-      navigate(`/dashboard/${user.employeeId}/${user.employeeType}`);
+      // navigate(`/dashboard/${user.employeeId}/${user.employeeType}`);
+      navigate("/dashboard", {
+        state: {
+          // fetchedProjects: response.data,
+          employeeId,
+          employeeType,
+        },
+      });
+      
     } catch (err) {
       console.error("Login error:", err);
       const message =

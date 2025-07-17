@@ -313,9 +313,9 @@ const Header = ({ onSidebarToggle }) => {
       <nav className="header-nav ms-auto">
         <ul className="d-flex align-items-center">
           <li className="nav-item d-block d-lg-none">
-            <Link className="nav-link nav-icon search-bar-toggle" to="#">
-              <i className="bi bi-search"></i>
-            </Link>
+            {/* <Link className="nav-link nav-icon search-bar-toggle" to="#"> */}
+              {/* <i className="bi bi-search"></i> */}
+            {/* </Link> */}
           </li>
 
           {/* Notifications */}
