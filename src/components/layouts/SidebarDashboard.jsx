@@ -8,6 +8,7 @@ const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
   const [projectsOpen, setProjectsOpen] = useState(false);
   // const location = useLocation();
   // const navigate = useNavigate();
+ 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const employeeId = localStorage.getItem("employeeId");
@@ -90,7 +91,7 @@ const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
                   style={{ cursor: "pointer" }}
                   onClick={() => {
                     setFormToShow("addProject");
-                    navigate("/addProject");
+                    navigate("/dashboard/addProject");
                   }}
                 >
                   <i className="bi bi-circle"></i>

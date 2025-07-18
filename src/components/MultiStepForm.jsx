@@ -31,6 +31,10 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   // Add this line to fix the currentStep/setCurrentStep errors
   const [currentStep, setCurrentStep] = useState(0);
 
+  // const [currentStep, setCurrentStep] = useState(0);
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [formToShow, setFormToShow] = useState(null);
+
   // ...rest of
 
 
@@ -373,9 +377,11 @@ const onAddVa = () => {
 
   return (
     
-    <div className="form-container ">
-      <Header/>
-      <Sidebar/>
+   <div className={`form-container ${isSidebarOpen ? "compact-form" : "fullscreen-form"}`}>
+       <Header onSidebarToggle={setSidebarOpen} />
+
+     <Sidebar isSidebarOpen={isSidebarOpen} 
+     setFormToShow={setFormToShow}/>
 
        {/* There is a work of ramsis to do the ui dymaic level  */}
 

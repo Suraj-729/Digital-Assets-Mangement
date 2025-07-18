@@ -47,7 +47,7 @@ function App() {
 
         {/* Change Password */}
         <Route path="/change-password" element={<ChangePasswordPage />} />
-        <Route path="/addProject" element={<MultiStepForm/>}/>
+        <Route path="/dashboard/addProject" element={<MultiStepForm/>}/>
         {/* Optional fallback: if directly accessed with only employeeType (not recommended) */}
         {/* <Route
           path="/dashboard/:employeeType"
