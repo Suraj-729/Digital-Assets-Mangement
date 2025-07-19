@@ -279,10 +279,10 @@ const StepTechnologyStack = ({
           </div>
         </div>
       </div> */}
-      <div className="form-group row mb-4" >
+  <div className="form-group row mb-4">
   <label className="col-md-3 col-form-label">Database</label>
   <div className="col-md-6">
-    <div className="input-group" style={{marginRight:"620px"}}>
+    <div className="input-group">
       <select
         className={`form-select ${errors.database ? "is-invalid" : ""}`}
         name="database"
@@ -291,9 +291,7 @@ const StepTechnologyStack = ({
       >
         <option value="">Select a database</option>
         {knownDatabases.map((db) => (
-          <option key={db} value={db}>
-            {db}
-          </option>
+          <option key={db} value={db}>{db}</option>
         ))}
         <option value="Other">OTHER</option>
       </select>
@@ -313,11 +311,10 @@ const StepTechnologyStack = ({
       </button>
     </div>
 
-    {/* Show input field only if 'Other' is selected */}
     {formData.database === "Other" && (
       <input
         type="text"
-        className="form-control mt-2 " style={{marginRight:"620px"}}
+        className="form-control mt-2"
         placeholder="Enter other database"
         name="otherDatabase"
         value={formData.otherDatabase || ""}
@@ -332,17 +329,17 @@ const StepTechnologyStack = ({
       />
     )}
 
-    {/* Show validation error */}
     {errors.database && (
       <div className="invalid-feedback d-block">{errors.database}</div>
     )}
 
-    {/* Show selected databases as badges */}
-    <div className="mt-2">
+    {/* Use common badge container class */}
+    <div className="badge-container mt-2">
       {renderStackBadges(usedDb, "database", setUsedDb)}
     </div>
   </div>
 </div>
+
 
 
       {/* OS */}
@@ -438,13 +435,19 @@ const StepTechnologyStack = ({
           <div className="mt-2" style={{marginRight:"620px"}}>
             {usedRepo.map((repo) => (
               <div key={repo} className="d-flex align-items-center mb-2">
-                <a
-                  href={repo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-truncate me-2"
-                  style={{ maxWidth: "300px" }}
-                >
+   <a
+      href={repo}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={repo}
+      className="text-primary text-truncate"
+      style={{
+        flexShrink: 1,
+        flexGrow: 1,
+        minWidth: 0,
+        textDecoration: "none",
+      }}
+    >
                   {repo}
                 </a>
                 <button

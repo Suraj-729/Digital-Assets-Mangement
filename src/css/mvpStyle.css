@@ -2156,3 +2156,10 @@ body.sidebar-collapsed #main {
   }
 }
 
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+

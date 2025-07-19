@@ -14,6 +14,8 @@ const StepSecurityAudit = ({
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [vaReport, setVaReport] = useState(null); // Needed for preview to work
+    const [errors, setErrors] = useState({});
+
 
   // const handleFileChange = (e) => {
   //   const file = e.target.files[0];
