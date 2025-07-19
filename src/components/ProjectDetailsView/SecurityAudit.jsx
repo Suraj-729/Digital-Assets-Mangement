@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import api from "../../Api";
+import "../../css/mvpStyle.css";
 
 const SecurityAudit = ({ securityAudits }) => {
   const [showModal, setShowModal] = useState(false);

@@ -377,8 +377,8 @@ const StepSecurityAudit = ({
             <input
               type="date"
               className="form-control"
-              name="nextExpireDate"
-              value={formData.nextExpireDate || ""}
+              name="tlsNextExpiry"
+              value={formData.tlsNextExpiry  || ""}
               onChange={onChange}
             />
           </div>

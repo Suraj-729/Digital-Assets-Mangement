@@ -151,6 +151,7 @@ import { useParams } from "react-router-dom";
 import api from "../../Api";
 import Header from "../layouts/HeaderDashboard";
 import Sidebar from "../layouts/SidebarDashboard";
+import "../../css/mvpStyle.css";
 
 const TAB_CONFIG = [
   { id: "basic", label: "Basic Profile", icon: "BasicProfile.png" },
