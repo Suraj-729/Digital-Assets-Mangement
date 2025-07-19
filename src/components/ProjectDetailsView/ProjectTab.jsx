@@ -149,6 +149,8 @@ import SecurityAudit from "./SecurityAudit";
 import TechnologyAndInfrastructure from "./InfraStructure";
 import { useParams } from "react-router-dom";
 import api from "../../Api";
+import Header from "../layouts/HeaderDashboard";
+import Sidebar from "../layouts/SidebarDashboard";
 
 const TAB_CONFIG = [
   { id: "basic", label: "Basic Profile", icon: "BasicProfile.png" },
@@ -161,7 +163,9 @@ const ProjectTabs = () => {
   const [activeTab, setActiveTab] = useState("basic");
   const [project, setProject] = useState(null);
   const { projectName } = useParams();
-
+    const [isSidebarOpen, setSidebarOpen] = useState(true);
+    const [formToShow, setFormToShow] = useState(null);
+  
   useEffect(() => {
     async function fetchProjectDetails() {
       try {
@@ -178,7 +182,13 @@ const ProjectTabs = () => {
   if (!project) return <div>Loading project...</div>; // Optional: loading state
 
   return (
-    <div className="project-tabs-container">
+   <div className={`project-tabs-container form-container ${isSidebarOpen ? "compact-form" : "fullscreen-form"}`}>
+ 
+
+     <Header onSidebarToggle={setSidebarOpen} />
+
+     <Sidebar isSidebarOpen={isSidebarOpen} 
+     setFormToShow={setFormToShow}/>
       <ul className="nav nav-tabs nav-tabs-bordered" role="tablist">
         {TAB_CONFIG.map((tab) => (
           <li className="nav-item" key={tab.id} role="presentation">
