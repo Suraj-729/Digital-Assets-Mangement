@@ -279,10 +279,10 @@ const StepTechnologyStack = ({
           </div>
         </div>
       </div> */}
-      <div className="form-group row mb-4">
+      <div className="form-group row mb-4" >
   <label className="col-md-3 col-form-label">Database</label>
   <div className="col-md-6">
-    <div className="input-group">
+    <div className="input-group" style={{marginRight:"620px"}}>
       <select
         className={`form-select ${errors.database ? "is-invalid" : ""}`}
         name="database"

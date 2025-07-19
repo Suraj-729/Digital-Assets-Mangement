@@ -32,8 +32,12 @@ const Dashboard = () => {
   // Get HOD and employeeId from localStorage
   // const HOD = localStorage.getItem("HOD") || "N/A";
   // const employeeId = localStorage.getItem("employeeId") || "N/A";
-  const { employeeId, employeeType } = useParams();
+  // const { employeeId, employeeType } = useParams();
   const HOD = localStorage.getItem("HOD") || "N/A";
+  // const location = useLocation();
+const employeeId = location.state?.employeeId || localStorage.getItem("employeeId");
+const employeeType = location.state?.employeeType || localStorage.getItem("employeeType");
+
 
   const getFilterOptions = (type) => {
     if (type === "department") {
@@ -113,57 +117,86 @@ const Dashboard = () => {
   }, [employeeId, employeeType]);
 
 
+  // const handleProjectNameClick = async (projectName) => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await api.get(
+  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
+  //     );
+
+  //     if (response.status >= 200 && response.status < 300) {
+  //       console.log("Project details response:", response.data);
+  //       setSelectedProject(response.data);
+  //       setFormToShow("projectDetails");
+  //     } else {
+  //       throw new Error(`Request failed with status ${response.status}`);
+  //       // toast.error(`Failed to load project details. Status: ${response.status}`);
+
+  //     }
+  //   } catch (err) {
+  //     setError(err.message);
+  //     // toast.error(`Error loading project details: ${err.message}`);
+
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleProjectNameClick = async (projectName) => {
     try {
       setLoading(true);
       const response = await api.get(
         `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
       );
-
+  
       if (response.status >= 200 && response.status < 300) {
         console.log("Project details response:", response.data);
-        setSelectedProject(response.data);
-        setFormToShow("projectDetails");
+        // You can store in global state if needed, or just navigate
+        navigate(`/dashboard/viewProject/${encodeURIComponent(projectName)}`);
       } else {
         throw new Error(`Request failed with status ${response.status}`);
-        // toast.error(`Failed to load project details. Status: ${response.status}`);
-
       }
     } catch (err) {
       setError(err.message);
-      // toast.error(`Error loading project details: ${err.message}`);
-
+      console.error(err.message);
     } finally {
       setLoading(false);
     }
   };
-  const handleEditProject = async (projectName) => {
-    try {
-      setLoading(true);
-      console.log("Fetching project details for edit:", projectName);
-      const response = await api.get(
-        `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-      );
-      console.log("API response for edit:", response);
-      if (response.status >= 200 && response.status < 300) {
-        console.log("Project data fetched for edit:", response.data);
-        setEditProjectData(response.data); // <-- This stores all previous data
-        setFormToShow("addProject"); // <-- This opens the form for editing
-      } else {
-        console.error(`Request failed with status ${response.status}`);
-        throw new Error(`Request failed with status ${response.status}`);
-        // toast.error(`Failed to load project for edit. Status: ${response.status}`);
+  // const handleEditProject = async (projectName) => {
+  //   try {
+  //     setLoading(true);
+  //     console.log("Fetching project details for edit:", projectName);
+  //     const response = await api.get(
+  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
+  //     );
+  //     console.log("API response for edit:", response);
+  //     if (response.status >= 200 && response.status < 300) {
+  //       console.log("Project data fetched for edit:", response.data);
+  //       setEditProjectData(response.data); // <-- This stores all previous data
+  //       setFormToShow("addProject"); // <-- This opens the form for editing
+  //     } else {
+  //       console.error(`Request failed with status ${response.status}`);
+  //       throw new Error(`Request failed with status ${response.status}`);
+  //       // toast.error(`Failed to load project for edit. Status: ${response.status}`);
 
-      }
-    } catch (err) {
-      console.error("Error fetching project for edit:", err);
-      setError(err.message);
-      // toast.error(`Error fetching project for edit: ${err.message}`);
+  //     }
+  //   } catch (err) {
+  //     console.error("Error fetching project for edit:", err);
+  //     setError(err.message);
+  //     // toast.error(`Error fetching project for edit: ${err.message}`);
 
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  const handleEditProject = (projectName) => {
+    console.log("Edit clicked for", projectName); 
+     if (!projectName) return;
+     navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`, {
+      //  state: { from: location.pathname, projectName },
+
+      });
+     };
 
   // Add this function to handle Add Project click
   const handleAddProject = () => {

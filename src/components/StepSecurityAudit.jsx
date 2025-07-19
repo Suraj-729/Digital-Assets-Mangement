@@ -68,7 +68,7 @@ const StepSecurityAudit = ({
       auditDate: formData.auditDate,
       expireDate: formData.expireDate,
       typeOfAudit: formData.auditType, // ✅ match backend
-      tlsNextExpiry: formData.nextExpireDate,
+      tlsNextExpiry: formData.tlsNextExpiry,
       // Use auditType consistently
       auditingAgency: formData.agency,
       sslLabScore: formData.sslLabScore,
@@ -81,7 +81,7 @@ const StepSecurityAudit = ({
     // Clear form fields
     onChange({ target: { name: "auditDate", value: "" } });
     onChange({ target: { name: "expireDate", value: "" } });
-    onChange({ target: { name: "nextExpireDate", value: "" } });
+    onChange({ target: { name: "tlsNextExpiry", value: "" } });
     onChange({ target: { name: "auditType", value: "" } });
     onChange({ target: { name: "agency", value: "" } });
     onChange({ target: { name: "sslLabScore", value: "" } });
