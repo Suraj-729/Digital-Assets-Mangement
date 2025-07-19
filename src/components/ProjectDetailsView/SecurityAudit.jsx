@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 // import api from "../../Api";
-import api, { baseURL } from "../../Api";
+import api from "../../Api";
 
 const SecurityAudit = ({ securityAudits }) => {
   const [showModal, setShowModal] = useState(false);

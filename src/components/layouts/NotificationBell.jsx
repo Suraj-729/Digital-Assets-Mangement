@@ -99,7 +99,8 @@ export default function NotificationBell() {
             <hr className="dropdown-divider" />
           </li>
 
-          <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+          <div className="notification-scroll-area">
+
             {latest.map((n) => {
               const daysLeft = calculateDaysLeft(n);
 

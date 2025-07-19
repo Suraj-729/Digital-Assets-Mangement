@@ -243,6 +243,24 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
       month: "long",
     })} / ${date.getFullYear()}`;
   };
+  
+  // const formatDate = (date) => {
+  //   if (!date || date === "NA" || date === null || date === "null") return "NA";
+  
+  //   const d = new Date(date);
+  
+  //   if (isNaN(d.getTime())) {
+  //     console.warn("Invalid date format:", date);
+  //     return "NA";
+  //   }
+  
+  //   return d.toLocaleDateString("en-IN", {
+  //     day: "2-digit",
+  //     month: "short",
+  //     year: "numeric",
+  //   });
+  // };
+  
 
   // Badge helpers
   const statusBadge = (status) => {
@@ -637,9 +655,12 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                                           {project.sslStatus || "N/A"}
                                         </span>
                                       </td>
+                                      
+                                      {/* <td>{formatDate(project.nextExpireDate)}</td> */}
                                       <td>
                                         {formatDate(project.tlsNextExpiry)}
                                       </td>
+                                      
                                       <td>
                                         <button
                                           className="btn btn-sm btn-outline-primary"

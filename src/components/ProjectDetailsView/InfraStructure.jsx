@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import "../../css/mvpStyle.css";
 import api from "../../Api"; // Adjust the import path as necessary
 // const API = "http://localhost:5000"; // Your backend base URL
 
@@ -76,6 +77,7 @@ const handleViewPdf = async (filename) => {
 
   const vaRecord = project?.Infra?.vaRecords?.[0];
   return (
+      <div className="tech-infra-container">
     <div className="">
       {showTech && (
         <table className="table table-bordered">
@@ -189,6 +191,7 @@ const handleViewPdf = async (filename) => {
   </div>
 )}
 
+    </div>
     </div>
   );
 };

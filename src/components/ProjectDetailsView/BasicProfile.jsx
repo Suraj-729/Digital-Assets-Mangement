@@ -1,6 +1,9 @@
 
 import React from "react";
+
+
 import PropTypes from "prop-types";
+import "../../css/mvpStyle.css";
 
 const BasicProfile = ({ project }) => {
   // If no project data is provided, show a loading state or empty fields

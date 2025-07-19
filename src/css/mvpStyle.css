@@ -1469,12 +1469,12 @@ h6 {
   background: #dae8fce0;
   min-height: 100vh;
   margin: 0 !important;
-  padding: 50px 0 0;
+  padding: 75px 0 0;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  background-color: #fff;
+  justify-content:   flex-start;
+  background-color: #f5f8ff;
 }
 
 .header-heading h1 {
@@ -2155,3 +2155,11 @@ body.sidebar-collapsed #main {
     padding: 20px;
   }
 }
+
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+

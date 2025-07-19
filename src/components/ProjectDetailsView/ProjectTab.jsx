@@ -152,6 +152,7 @@ import api from "../../Api";
 import Header from "../layouts/HeaderDashboard";
 import Sidebar from "../layouts/SidebarDashboard";
 import Footer from "../layouts/FooterDashboard";
+import "../../css/mvpStyle.css";
 
 const TAB_CONFIG = [
   { id: "basic", label: "Basic Profile", icon: "BasicProfile.png" },

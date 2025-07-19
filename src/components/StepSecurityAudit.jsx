@@ -13,37 +13,46 @@ const StepSecurityAudit = ({
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [vaReport, setVaReport] = useState(null); // Needed for preview to work
+  const [errors, setErrors] = useState({});
 
-  // const handleFileChange = (e) => {
-  //   const file = e.target.files[0];
-  //   onChange({ target: { name: "certificate", value: file, files: [file] } });
-  // };
+  const validateFields = () => {
+    const newErrors = {};
+
+    if (!formData.auditDate) newErrors.auditDate = "Audit Date is required.";
+    if (!formData.expireDate) newErrors.expireDate = "Expire Date is required.";
+    if (!formData.auditType) newErrors.auditType = "Audit Type is required.";
+    if (!formData.agency) newErrors.agency = "Agency is required.";
+    if (!formData.sslLabScore) newErrors.sslLabScore = "SSL Lab Score is required.";
+    if (!formData.tlsNextExpiry) newErrors.tlsNextExpiry = "TLS Expiry Date is required.";
+    if (!formData.certificate || !formData.certificate.filename)
+      newErrors.certificate = "Certificate upload is required.";
+    if (!vaReport || !vaReport.filename)
+      newErrors.vaReport = "VA Report upload is required.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file || file.type !== "application/pdf") {
-      // alert("Please select a valid PDF file.");
       toast.error("Please select a valid PDF file.");
-
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("certificate", file);
-  
+
     try {
       const response = await fetch("http://localhost:5000/upload-certificate", {
         method: "POST",
         body: formData,
       });
-  
-      const result = await response.json();
-  
-      if (response.ok) {
-        // alert("PDF uploaded successfully");
-        toast.success("PDF uploaded successfully.");
 
-  
-        // Save the filename in formData
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success("PDF uploaded successfully.");
         onChange({
           target: {
             name: "certificate",
@@ -51,34 +60,33 @@ const StepSecurityAudit = ({
           },
         });
       } else {
-        // alert("Failed to upload PDF: " + result.error);
         toast.error("Failed to upload PDF: " + result.error);
-
       }
     } catch (err) {
       console.error("Upload error:", err);
-      // alert("Error uploading PDF");
       toast.error("Error uploading PDF.");
-
     }
   };
 
   const handleAddRecord = () => {
+    if (!validateFields()) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
+
     const newRecord = {
       auditDate: formData.auditDate,
       expireDate: formData.expireDate,
-      typeOfAudit: formData.auditType, // ✅ match backend
+      typeOfAudit: formData.auditType,
       tlsNextExpiry: formData.tlsNextExpiry,
-      // Use auditType consistently
       auditingAgency: formData.agency,
       sslLabScore: formData.sslLabScore,
       certificate: formData.certificate,
-      vaReport: vaReport, // 👈 Added
+      vaReport: vaReport,
     };
 
     setAuditRecords([...auditRecords, newRecord]);
 
-    // Clear form fields
     onChange({ target: { name: "auditDate", value: "" } });
     onChange({ target: { name: "expireDate", value: "" } });
     onChange({ target: { name: "tlsNextExpiry", value: "" } });
@@ -86,46 +94,14 @@ const StepSecurityAudit = ({
     onChange({ target: { name: "agency", value: "" } });
     onChange({ target: { name: "sslLabScore", value: "" } });
     onChange({ target: { name: "certificate", value: null } });
+    setVaReport(null);
+    setErrors({});
   };
 
-  // const handleView = (index) => {
-  //   const file = auditRecords[index].certificate;
-  //   if (file && file.type === "application/pdf") {
-  //     const fileURL = URL.createObjectURL(file);
-  //     setPdfUrl(fileURL);
-  //     setShowModal(true);
-  //   } else {
-  //     alert("No PDF certificate uploaded.");
-  //   }
-  // };
-  // const handleView = (index) => {
-  //   const filename = auditRecords[index].certificate;
-  //   if (!filename) {
-  //     // alert("No certificate uploaded.");
-  //     toast.warn("No certificate uploaded.");
-
-  //     return;
-  //   }
-  
-  //   const fileURL = `http://localhost:5000/view-certificate/${filename}`;
-  //   setPdfUrl(fileURL);
-  //   setShowModal(true);
-  // };
-  
-
-  // const handleCloseModal = () => {
-  //   setShowModal(false);
-  //   if (pdfUrl) {
-  //     URL.revokeObjectURL(pdfUrl);
-  //     setPdfUrl(null);
-  //   }
-  // };
   const handleCloseModal = () => {
     setShowModal(false);
     setPdfUrl(null);
   };
-  
-  
 
   const handleDelete = (index) => {
     const updated = [...auditRecords];
@@ -141,7 +117,7 @@ const StepSecurityAudit = ({
     }
 
     const formDataUpload = new FormData();
-    formDataUpload.append("vaReport", file); // backend expects this field
+    formDataUpload.append("vaReport", file);
 
     try {
       const res = await fetch("http://localhost:5000/upload-va-report", {
@@ -151,7 +127,6 @@ const StepSecurityAudit = ({
 
       const result = await res.json();
       if (res.ok) {
-        // Treat VA Report as Certificate
         onChange({
           target: {
             name: "certificate",
@@ -160,8 +135,6 @@ const StepSecurityAudit = ({
             },
           },
         });
-
-        // Optional: also store locally for preview
         setVaReport({ filename: result.filename });
       } else {
         alert("Upload failed: " + result.error);
@@ -182,66 +155,31 @@ const StepSecurityAudit = ({
     setShowModal(true);
   };
 
-
   const handleView = async (index) => {
-  try {
-    const record = auditRecords[index];
-    const certFilename = record?.certificate?.filename;
+    try {
+      const record = auditRecords[index];
+      const certFilename = record?.certificate?.filename;
 
-    if (!certFilename) {
-      alert("No certificate available for this record.");
-      return;
+      if (!certFilename) {
+        alert("No certificate available for this record.");
+        return;
+      }
+
+      const previewUrl = `http://localhost:5000/view-va-report/${encodeURIComponent(certFilename)}`;
+
+      const verifyRes = await fetch(previewUrl);
+      if (!verifyRes.ok) {
+        alert("File not found on server.");
+        return;
+      }
+
+      setPdfUrl(previewUrl);
+      setShowModal(true);
+    } catch (err) {
+      console.error("Error viewing certificate:", err);
+      alert("Error displaying certificate");
     }
-
-    const previewUrl = `http://localhost:5000/view-va-report/${encodeURIComponent(certFilename)}`;
-
-    const verifyRes = await fetch(previewUrl);
-    if (!verifyRes.ok) {
-      alert("File not found on server.");
-      return;
-    }
-
-    setPdfUrl(previewUrl);
-    setShowModal(true);
-  } catch (err) {
-    console.error("Error viewing certificate:", err);
-    alert("Error displaying certificate");
-  }
-};
-
-  // const handleView = async (index) => {
-  //   try {
-  //     const record = auditRecords[index];
-  //     const certFilename = record?.certificate?.filename;
-  //     const vaFilename = record?.vaReport?.filename;
-
-  //     if (!certFilename && !vaFilename) {
-  //       alert("No certificate or VA report available for this record.");
-  //       return;
-  //     }
-
-  //     // Prioritize showing certificate if available, else VA report
-  //     const previewUrl = certFilename
-  //       ? `http://localhost:5000/view-certificate/${encodeURIComponent(
-  //           certFilename
-  //         )}`
-  //       : `http://localhost:5000/view-va-report/${encodeURIComponent(
-  //           vaFilename
-  //         )}`;
-
-  //     const verifyRes = await fetch(previewUrl);
-  //     if (!verifyRes.ok) {
-  //       alert("File not found on server.");
-  //       return;
-  //     }
-
-  //     setPdfUrl(previewUrl);
-  //     setShowModal(true);
-  //   } catch (err) {
-  //     console.error("Error viewing file:", err);
-  //     alert("Error displaying file.");
-  //   }
-  // };
+  };
 
   const handleCertificateUpload = async (e) => {
     const file = e.target.files[0];
@@ -283,37 +221,34 @@ const StepSecurityAudit = ({
     <fieldset>
       <div className="form-section">
         <div className="row g-3">
-        <div className="col-md-6">
-  <label className="form-label">Audit Date</label>
+          <div className="col-md-6">
+            <label className="form-label">Audit Date</label>
+            <input
+              type="date"
+              className={`form-control ${errors.auditDate ? "is-invalid" : ""}`}
+              name="auditDate"
+              value={formData.auditDate || ""}
+              onChange={onChange}
+              max={new Date().toISOString().split("T")[0]}
+            />
+          </div>
 
-  <input
-    type="date"
-    className="form-control"
-    name="auditDate"
-    value={formData.auditDate || ""}
-    onChange={onChange}
-    max={new Date().toISOString().split("T")[0]} // ✅ today's date in yyyy-mm-dd format
-  />
-
-</div>
-
-         <div className="col-md-6">
-  <label className="form-label">Expire Date</label>
-  <input
-    type="date"
-    className="form-control"
-    name="expireDate"
-    value={formData.expireDate || ""}
-    onChange={onChange}
-    min={formData.auditDate || ""} // Cannot select a date before audit date
-  />
-</div>
-
+          <div className="col-md-6">
+            <label className="form-label">Expire Date</label>
+            <input
+              type="date"
+              className={`form-control ${errors.expireDate ? "is-invalid" : ""}`}
+              name="expireDate"
+              value={formData.expireDate || ""}
+              onChange={onChange}
+              min={formData.auditDate || ""}
+            />
+          </div>
 
           <div className="col-md-6">
             <label className="form-label">Type of Audit</label>
             <select
-              className="form-select"
+              className={`form-select ${errors.auditType ? "is-invalid" : ""}`}
               name="auditType"
               value={formData.auditType || ""}
               onChange={onChange}
@@ -327,7 +262,7 @@ const StepSecurityAudit = ({
           <div className="col-md-6">
             <label className="form-label">Auditing Agency</label>
             <select
-              className="form-select"
+              className={`form-select ${errors.agency ? "is-invalid" : ""}`}
               name="agency"
               value={formData.agency || ""}
               onChange={onChange}
@@ -342,7 +277,7 @@ const StepSecurityAudit = ({
             <label className="form-label">Upload VA Report (PDF)</label>
             <input
               type="file"
-              className="form-control"
+              className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
               accept="application/pdf"
               onChange={handleVAReportUpload}
             />
@@ -360,7 +295,7 @@ const StepSecurityAudit = ({
           <div className="col-md-6">
             <label className="form-label">SSL Lab Score</label>
             <select
-              className="form-select"
+              className={`form-select ${errors.sslLabScore ? "is-invalid" : ""}`}
               name="sslLabScore"
               value={formData.sslLabScore || ""}
               onChange={onChange}
@@ -376,9 +311,9 @@ const StepSecurityAudit = ({
             <label className="form-label"> TLS Expire Date</label>
             <input
               type="date"
-              className="form-control"
-              name="nextExpireDate"
-              value={formData.nextExpireDate || ""}
+              className={`form-control ${errors.tlsNextExpiry ? "is-invalid" : ""}`}
+              name="tlsNextExpiry"
+              value={formData.tlsNextExpiry || ""}
               onChange={onChange}
             />
           </div>
@@ -395,7 +330,6 @@ const StepSecurityAudit = ({
         </div>
       </div>
 
-      {/* Modal for PDF preview */}
       <div className="table-responsive mt-4">
         <table className="table table-bordered align-middle">
           <thead className="table-light">
@@ -459,7 +393,6 @@ const StepSecurityAudit = ({
         </table>
       </div>
 
-      {/* PDF Modal */}
       {showModal && (
         <div
           className="modal d-block"
@@ -503,6 +436,12 @@ const StepSecurityAudit = ({
         className="next action-button btn btn-success"
         value="Next"
         onClick={onNext}
+        disabled={auditRecords.length === 0}
+        title={
+          auditRecords.length === 0
+            ? "Add at least one record to proceed"
+            : "Next"
+        }
       />
     </fieldset>
   );
