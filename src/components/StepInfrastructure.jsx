@@ -1,10 +1,12 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
+import { baseURL }   from "../Api";
 
-const API = "http://localhost:5000"; // Replace with actual backend base URL
+// import API from "../Api";
+
+// const API = "http://localhost:5000"; // Replace with actual backend base URL
 
 const StepInfrastructure = ({
   formData = {},
@@ -53,123 +55,125 @@ const StepInfrastructure = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  // const handleAddVa = () => {
-  //   if (validate()) {
-  //     onAddVa();
-  //     toast.success("VA record added successfully");
-  //     // Reset fields
-  //     onChange({ target: { name: "ipAddress", value: "" } });
-  //     onChange({ target: { name: "dateOfVA", value: "" } });
-  //     onChange({ target: { name: "vaScore", value: "" } });
-  //     onChange({ target: { name: "vaReport", value: "" } });
-  //     setErrors({});
-  //   }
-  // };
   const handleAddVa = () => {
-  if (validate()) {
-    onAddVa();
-    toast.success("VA record added successfully");
+    if (validate()) {
+      onAddVa();
+      toast.success("VA record added successfully");
 
-    // ✅ Reset all fields correctly
-    onChange({ target: { name: "ipAddress", value: "" } });
-    onChange({ target: { name: "dateOfVA", value: "" } });
-    onChange({ target: { name: "vaScore", value: "" } });
-    onChange({ target: { name: "vaReport", value: null } }); // ✅ Correct reset
-    setErrors({});
-  }
-};
-
+      // ✅ Reset all fields correctly
+      onChange({ target: { name: "ipAddress", value: "" } });
+      onChange({ target: { name: "dateOfVA", value: "" } });
+      onChange({ target: { name: "vaScore", value: "" } });
+      onChange({ target: { name: "vaReport", value: null } }); // ✅ Correct reset
+      setErrors({});
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (vaRecords.length === 0) {
       const isValid = validate();
-      if (!isValid) 
-      // toast.error("Please add at least one valid VA record before submitting.");
+      if (!isValid)
+        // toast.error("Please add at least one valid VA record before submitting.");
 
-      return;
+        return;
     }
     onSubmit(e);
   };
 
-  const handleViewPdf = (filename) => {
-    if (!filename) return;
-    setPdfUrl(`${API}/va-reports/${filename}`);
-    setShowModal(true);
-  };
+  // const handleViewPdf = (filename) => {
+  //   if (!filename) return;
+  //   setPdfUrl(`${api.defaults.baseURL}va-reports/${encodeURIComponent(filename)}`);
+  //   setShowModal(true);
+  // };
+const handleViewPdf = (filename) => {
+  if (!filename || typeof filename !== "string") {
+    console.error("Invalid filename provided for PDF view:", filename);
+    return;
+  }
+
+  const cleanFilename = encodeURIComponent(filename.trim());
+  const url = `${baseURL}view-certificate/${cleanFilename}`;
+  console.log("PDF URL set to:", url);
+
+  setPdfUrl(url);
+  setShowModal(true);
+};
+
 
   const closeModal = () => {
     setShowModal(false);
     setPdfUrl("");
   };
 
-//   const handleVaFileUpload = async (e) => {
-//   const file = e.target.files[0];
-//   if (!file || file.type !== "application/pdf") {
-//     alert("Please select a valid PDF file.");
-//     return;
-//   }
 
-//   const formData = new FormData();
-//   formData.append("vaReport", file);
+  //   if (!file || file.type !== "application/pdf") {
+  //     alert("Please select a valid PDF file.");
+  //     return;
+  //   }
 
-//   try {
-//     const res = await fetch(`${API}/upload-va-report`, {
-//       method: "POST",
-//       body: formData,
-//     });
+  //   const formData = new FormData();
+  //   formData.append("vaReport", file);
 
-//     if (!res.ok) throw new Error("Upload failed");
-//     const result = await res.json();
+  //   try {
+  //     const res = await fetch(`${API}/upload-va-report`, {
+  //       method: "POST",
+  //       body: formData,
+  //     });
 
-//     // Update formData.vaReport with the uploaded filename
-//     onChange({ target: { name: "vaReport", value: result.filename } });
-//   } catch (err) {
-//     console.error("VA report upload failed:", err);
-//     alert("Failed to upload VA report");
-//   }
-  
-// };
+  //     if (!res.ok) throw new Error("Upload failed");
+  //     const result = await res.json();
 
-const handleVaFileUpload = async (e) => {
-  const file = e.target.files[0];
+  //     // Update formData.vaReport with the uploaded filename
+  //     onChange({ target: { name: "vaReport", value: result.filename } });
+  //   } catch (err) {
+  //     console.error("VA report upload failed:", err);
+  //     alert("Failed to upload VA report");
+  //   }
 
-  if (!file) {
-    // toast.error("No file selected.");
-    return;
-  }
+  // };
 
-  if (file.type !== "application/pdf") {
-    // toast.error("Only PDF files are allowed.");
-    return;
-  }
+  const handleVaFileUpload = async (e) => {
+    const file = e.target.files[0];
 
-  const formData = new FormData();
-  formData.append("vaReport", file);
-
-  try {
-    const response = await fetch(`${API}/upload-va-report`, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Upload failed");
+    if (!file) {
+      // toast.error("No file selected.");
+      return;
     }
 
-    const result = await response.json();
+    if (file.type !== "application/pdf") {
+      // toast.error("Only PDF files are allowed.");
+      return;
+    }
 
-    onChange({
-      target: { name: "vaReport", value: result.filename },
-    });
+    const formData = new FormData();
+    formData.append("vaReport", file);
 
-    // toast.success("VA Report uploaded successfully.");
-  } catch (error) {
-    console.error("VA Report upload failed:", error);
-    // toast.error(`Upload failed: ${error.message}`);
-  }
-};
+    try {
+      // const response = await fetch(`${API}/upload-va-report`, {
+      const response = await fetch(`${baseURL}upload-va-report`, {
+
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Upload failed");
+      }
+
+      const result = await response.json();
+
+      onChange({
+        target: { name: "vaReport", value: result.filename },
+      });
+
+      // toast.success("VA Report uploaded successfully.");
+    } catch (error) {
+      console.error("VA Report upload failed:", error);
+      // toast.error(`Upload failed: ${error.message}`);
+    }
+  };
 
   return (
     <fieldset>
@@ -254,17 +258,18 @@ const handleVaFileUpload = async (e) => {
                 value={formData.gitUrl || ""}
                 onChange={onChange}
               />
-              <button className="btn btn-primary ms-2" 
-              type="button" 
-              // onClick={onAddGitUrl}
-              onClick={() => {
-                if (!formData.gitUrl?.trim()) {
-                  // toast.error("Please enter a Git URL");
-                  return;
-                }
-                onAddGitUrl();
-                // toast.success("Git URL added");
-              }}
+              <button
+                className="btn btn-primary ms-2"
+                type="button"
+                // onClick={onAddGitUrl}
+                onClick={() => {
+                  if (!formData.gitUrl?.trim()) {
+                    // toast.error("Please enter a Git URL");
+                    return;
+                  }
+                  onAddGitUrl();
+                  // toast.success("Git URL added");
+                }}
               >
                 ADD
               </button>
@@ -298,10 +303,12 @@ const handleVaFileUpload = async (e) => {
               className={`form-control ${errors.ipAddress ? "is-invalid" : ""}`}
               name="ipAddress"
               placeholder="Application server IP"
-              value={formData.ipAddress }
+              value={formData.ipAddress}
               onChange={onChange}
             />
-            {errors.ipAddress && <div className="invalid-feedback">{errors.ipAddress}</div>}
+            {errors.ipAddress && (
+              <div className="invalid-feedback">{errors.ipAddress}</div>
+            )}
           </div>
 
           <div className="col-md-4">
@@ -310,9 +317,8 @@ const handleVaFileUpload = async (e) => {
               type="text"
               className="form-control"
               name="purposeOfUse"
-              value={formData.purposeOfUse }
+              value={formData.purposeOfUse}
               onChange={onChange}
-              
             />
           </div>
 
@@ -325,7 +331,9 @@ const handleVaFileUpload = async (e) => {
               value={formData.dateOfVA || ""}
               onChange={onChange}
             />
-            {errors.dateOfVA && <div className="invalid-feedback">{errors.dateOfVA}</div>}
+            {errors.dateOfVA && (
+              <div className="invalid-feedback">{errors.dateOfVA}</div>
+            )}
           </div>
 
           <div className="col-md-4">
@@ -337,23 +345,31 @@ const handleVaFileUpload = async (e) => {
               value={formData.vaScore || ""}
               onChange={onChange}
             />
-            {errors.vaScore && <div className="invalid-feedback">{errors.vaScore}</div>}
+            {errors.vaScore && (
+              <div className="invalid-feedback">{errors.vaScore}</div>
+            )}
           </div>
 
           <div className="col-md-4">
             <label className="form-label">Upload VA Report:</label>
             <input
-  type="file"
-  className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
-  name="vaReport"
-  accept="application/pdf"
-  onChange={handleVaFileUpload}
-/>
-            {errors.vaReport && <div className="invalid-feedback">{errors.vaReport}</div>}
+              type="file"
+              className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
+              name="vaReport"
+              accept="application/pdf"
+              onChange={handleVaFileUpload}
+            />
+            {errors.vaReport && (
+              <div className="invalid-feedback">{errors.vaReport}</div>
+            )}
           </div>
 
           <div className="col-md-4 d-flex align-items-end">
-            <button className="btn btn-primary w-100" type="button" onClick={handleAddVa}>
+            <button
+              className="btn btn-primary w-100"
+              type="button"
+              onClick={handleAddVa}
+            >
               ADD
             </button>
           </div>
@@ -391,7 +407,8 @@ const handleVaFileUpload = async (e) => {
                         style={{ border: "none", background: "none" }}
                         title="Delete"
                         type="button"
-                        onClick={() => {onDeleteVa(idx);
+                        onClick={() => {
+                          onDeleteVa(idx);
                           // toast.info("VA record deleted");
                         }}
                       >
@@ -401,7 +418,10 @@ const handleVaFileUpload = async (e) => {
                         <button
                           className="btn btn-link p-0 text-danger ms-2"
                           type="button"
-                          onClick={() => handleViewPdf(record.vaReport)}
+                          onClick={() => {
+                            console.log("record.vaReport = ", record.vaReport);
+                            handleViewPdf(record.vaReport);
+                          }}
                           title="View VA Report"
                         >
                           <i className="bi bi-file-earmark-pdf fs-5"></i>
@@ -438,23 +458,23 @@ const handleVaFileUpload = async (e) => {
           />
         </div> */}
         <div className="d-flex justify-content-between mt-3">
-   <input
-     type="button"
-    name="previous"
-    className="previous action-button-previous btn btn-primary"
-     value="Previous"
-     onClick={onPrevious}
-     style={{marginLeft:"425px"}}
-   />
-   <input
-     type="submit"
-     name="submit"
-     className="submit action-button btn btn-primary"
-    value="Submit"
-   onClick={handleSubmit}
-     style={{marginRight:"425px"}}
-   />
- </div>
+          <input
+            type="button"
+            name="previous"
+            className="previous action-button-previous btn btn-primary"
+            value="Previous"
+            onClick={onPrevious}
+            style={{ marginLeft: "425px" }}
+          />
+          <input
+            type="submit"
+            name="submit"
+            className="submit action-button btn btn-primary"
+            value="Submit"
+            onClick={handleSubmit}
+            style={{ marginRight: "425px" }}
+          />
+        </div>
       </div>
 
       {/* PDF Modal */}

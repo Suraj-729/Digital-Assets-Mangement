@@ -112,7 +112,7 @@ const RegisterPage = () => {
             <option value="">Select Employee Type</option>
             <option value="Admin">Admin</option>
             <option value="HOD">HEAD OF THE DEPARTMENT</option>
-            {/* <option value="HOD">Project Manger</option> */}
+            <option value="PM">Project Manger</option>
             {/* Add more types as needed */}
           </select>
           <input

@@ -151,6 +151,7 @@ import { useParams } from "react-router-dom";
 import api from "../../Api";
 import Header from "../layouts/HeaderDashboard";
 import Sidebar from "../layouts/SidebarDashboard";
+import Footer from "../layouts/FooterDashboard";
 
 const TAB_CONFIG = [
   { id: "basic", label: "Basic Profile", icon: "BasicProfile.png" },
@@ -186,7 +187,6 @@ const ProjectTabs = () => {
  
 
      <Header onSidebarToggle={setSidebarOpen} />
-
      <Sidebar isSidebarOpen={isSidebarOpen} 
      setFormToShow={setFormToShow}/>
       <ul className="nav nav-tabs nav-tabs-bordered" role="tablist">
@@ -224,6 +224,9 @@ const ProjectTabs = () => {
           <TechnologyAndInfrastructure project={project} showInfra />
         )}
       </div>
+
+      <Footer/>
+
     </div>
   );
 };
