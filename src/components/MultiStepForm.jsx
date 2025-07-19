@@ -4,6 +4,11 @@ import StepBasicProfile from "./StepBasicProfile";
 import StepSecurityAudit from "./StepSecurityAudit";
 import StepTechnologyStack from "./StepTechnologyStack";
 import StepInfrastructure from "./StepInfrastructure";
+import Header from "./layouts/HeaderDashboard";
+import Sidebar from "./layouts/SidebarDashboard";
+import { useNavigate } from "react-router-dom";
+
+
 import api from "../Api";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
@@ -14,6 +19,8 @@ import { motion, AnimatePresence } from "framer-motion";
 const steps = ["Basic Profile", "Security Audit", "Technology Stack", "Infrastructure"];
 
 const MultiStepForm = ({ editData, onEditComplete }) => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({});
   const [gitUrls, setGitUrls] = useState([]);
   const [vaRecords, setVaRecords] = useState([]);
@@ -28,8 +35,9 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   // Add this line to fix the currentStep/setCurrentStep errors
   const [currentStep, setCurrentStep] = useState(0);
 
-  // ...rest of
-
+  // const [currentStep, setCurrentStep] = useState(0);
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [formToShow, setFormToShow] = useState(null);
 
   useEffect(() => {
   if (editData) {
@@ -95,7 +103,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       auditingAgency: record.auditingAgency || "",
       auditDate: record.auditDate ? record.auditDate.slice(0, 10) : "",
       expireDate: record.expireDate ? record.expireDate.slice(0, 10) : "",
-      nextExpireDate: record.tlsNextExpiry
+      tlsNextExpiry: record.tlsNextExpiry
         ? record.tlsNextExpiry.slice(0, 10)
         : "",
       sslLabScore: record.sslLabScore || "",
@@ -142,31 +150,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     }));
   };
 
-  // const onAddVa = () => {
-  //   if (!formData.ipAddress) {
-  //     // alert("IP Address is required");
-  //     toast.error("IP Address is required");
-  //     return;
-  //   }
 
-  //   const newRecord = {
-  //     ipAddress: formData.ipAddress,
-  //     purposeOfUse: formData.purposeOfUse || "Application Server",
-  //     vaScore: formData.vaScore,
-  //     dateOfVA: formData.dateOfVA,
-  //     vaReport: formData.vaReport?.name || null,
-  //   };
-
-  //   setVaRecords([...vaRecords, newRecord]);
-
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     ipAddress: "",
-  //     vaScore: "",
-  //     dateOfVA: "",
-  //     vaReport: null,
-  //   }));
-  // };
 const onAddVa = () => {
   if (!formData.ipAddress) {
     // toast.error("IP Address is required");
@@ -196,8 +180,6 @@ const onAddVa = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-
     try {
       const form = new FormData();
       const employeeId = localStorage.getItem("employeeId");
@@ -283,6 +265,8 @@ const onAddVa = () => {
         );
         // alert("Asset successfully updated!");
         toast.success("Asset successfully updated!");
+        navigate("/dashboard"); 
+        window.location.reload();// ✅ Redirect to dashboard
 
       } else {
         // CREATE: new asset
@@ -291,7 +275,8 @@ const onAddVa = () => {
         });
         // alert("Asset successfully created!");
         toast.success("Asset successfully created!");
-
+        navigate("/dashboard"); 
+        window.location.reload()
         
       }
     } catch (err) {
@@ -364,9 +349,24 @@ const onAddVa = () => {
         return null;
     }
   };
+ 
+     {/* There is a work of ramsis to do the ui dymaic level  */}
+
 
   return (
-    <div className="form-container ">
+    
+   <div className={`form-container ${isSidebarOpen ? "compact-form" : "fullscreen-form"}`}>
+       <Header onSidebarToggle={setSidebarOpen} />
+
+     <Sidebar isSidebarOpen={isSidebarOpen} 
+     setFormToShow={setFormToShow}/>
+
+       {/* There is a work of ramsis to do the ui dymaic level  */}
+
+
+
+      
+
       <form id="msform" onSubmit={handleSubmit}>
         <ProgressBar
           steps={steps}
