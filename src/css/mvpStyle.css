@@ -2163,3 +2163,25 @@ body.sidebar-collapsed #main {
   gap: 8px;
 }
 
+.project-details{
+  background-color: #fff;
+   margin-bottom: 100px;
+   margin-top: 20px;
+
+}
+
+.nav-tabs .nav-link {
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border-radius: 8px;
+  color: #333;
+  background-color: #f2f2f2;
+}
+
+.nav-tabs .nav-link.active {
+  background: linear-gradient(135deg, #d1d4d6, #e0e2e4);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: scale(1.02);
+}

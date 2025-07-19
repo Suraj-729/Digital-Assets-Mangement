@@ -152,6 +152,7 @@ import api from "../../Api";
 import Header from "../layouts/HeaderDashboard";
 import Sidebar from "../layouts/SidebarDashboard";
 import "../../css/mvpStyle.css";
+import { motion, AnimatePresence } from "framer-motion";
 
 const TAB_CONFIG = [
   { id: "basic", label: "Basic Profile", icon: "BasicProfile.png" },
@@ -187,10 +188,26 @@ const ProjectTabs = () => {
  
 
      <Header onSidebarToggle={setSidebarOpen} />
+      {/* Project Title */}
+  <motion.div
+  className="project-details-heading px-4 pt-4 mb-3"
+  initial={{ opacity: 0, y: -20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, ease: "easeOut" }}
+>
+  <h3 style={{ fontWeight: "600", color: "#333", fontSize: "26px" }}>
+    Project Details:{" "}
+    <span style={{ color: "#1E90FF", fontSize: "20px", fontWeight: "normal" }}>
+      {project?.basicDetails?.projectName || projectName}
+    </span>
+  </h3>
+</motion.div>
+
 
      <Sidebar isSidebarOpen={isSidebarOpen} 
      setFormToShow={setFormToShow}/>
-      <ul className="nav nav-tabs nav-tabs-bordered" role="tablist">
+     <ul className="nav nav-tabs nav-tabs-bordered mt-5" role="tablist">
+
         {TAB_CONFIG.map((tab) => (
           <li className="nav-item" key={tab.id} role="presentation">
             <button
@@ -214,17 +231,54 @@ const ProjectTabs = () => {
       </ul>
 
       <div className="tab-content pt-3">
-        {activeTab === "basic" && <BasicProfile project={project} />}
-        {activeTab === "security" && (
-          <SecurityAudit securityAudits={project?.SA?.securityAudit || []} />
-        )}
-        {activeTab === "tech" && (
-          <TechnologyAndInfrastructure project={project} showTech />
-        )}
-        {activeTab === "infra" && (
-          <TechnologyAndInfrastructure project={project} showInfra />
-        )}
-      </div>
+  <AnimatePresence mode="wait">
+    {activeTab === "basic" && (
+      <motion.div
+        key="basic"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.4 }}
+      >
+        <BasicProfile project={project} />
+      </motion.div>
+    )}
+    {activeTab === "security" && (
+      <motion.div
+        key="security"
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -30 }}
+        transition={{ duration: 0.4 }}
+      >
+        <SecurityAudit securityAudits={project?.SA?.securityAudit || []} />
+      </motion.div>
+    )}
+    {activeTab === "tech" && (
+      <motion.div
+        key="tech"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.4 }}
+      >
+        <TechnologyAndInfrastructure project={project} showTech />
+      </motion.div>
+    )}
+    {activeTab === "infra" && (
+      <motion.div
+        key="infra"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}
+        transition={{ duration: 0.4 }}
+      >
+        <TechnologyAndInfrastructure project={project} showInfra />
+      </motion.div>
+    )}
+  </AnimatePresence>
+</div>
+
     </div>
   );
 };
