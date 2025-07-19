@@ -751,10 +751,15 @@ const onAddVa = () => {
   return (
     
    <div className={`form-container ${isSidebarOpen ? "compact-form" : "fullscreen-form"}`}>
-       <Header onSidebarToggle={setSidebarOpen} />
+  <Header onSidebarToggle={setSidebarOpen} />
+  <Sidebar isSidebarOpen={isSidebarOpen} setFormToShow={setFormToShow} />
 
-     <Sidebar isSidebarOpen={isSidebarOpen} 
-     setFormToShow={setFormToShow}/>
+  <div className="form-header">
+    <h2 style={{ padding: "10px 20px", fontWeight: "700", fontSize: "1.7rem", }}>
+      {editData ? "Edit Project" : "Add Project"}
+    </h2>
+  </div>
+
 
        {/* There is a work of ramsis to do the ui dymaic level  */}
 
