@@ -378,38 +378,38 @@ const StepTechnologyStack = ({
       </div>
 
       {/* OS Version */}
-      <div className="form-group row mb-4">
-        <label className="col-md-3 col-form-label">OS Version</label>
-        <div className="col-md-6">
-          <div className="input-group">
-            <select
-              className={`form-select ${errors.osVersion ? "is-invalid" : ""}`}
-              name="osVersion"
-              value={formData.osVersion || ""}
-              onChange={onChange}
-            >
-              <option value="">Select version</option>
-              <option value="Version 1">Version 1</option>
-              <option value="Version 2">Version 2</option>
-            </select>
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={() =>
-                addToStack("osVersion", formData.osVersion, setUsedOsVersion, "osVersion")
-              }
-            >
-              Add
-            </button>
-          </div>
-          {errors.osVersion && (
-            <div className="invalid-feedback">{errors.osVersion}</div>
-          )}
-          <div className="mt-2" style={{marginRight:"620px"}}>
-            {renderStackBadges(usedOsVersion, "osVersion", setUsedOsVersion)}
-          </div>
-        </div>
-      </div>
+     {/* OS Version */}
+<div className="form-group row mb-4">
+  <label className="col-md-3 col-form-label">OS Version</label>
+  <div className="col-md-6">
+    <div className="input-group">
+      <input
+        type="text"
+        className={`form-control ${errors.osVersion ? "is-invalid" : ""}`}
+        name="osVersion"
+        placeholder="Enter OS version"
+        value={formData.osVersion || ""}
+        onChange={onChange}
+      />
+      <button
+        className="btn btn-primary"
+        type="button"
+        onClick={() =>
+          addToStack("osVersion", formData.osVersion, setUsedOsVersion, "osVersion")
+        }
+      >
+        Add
+      </button>
+    </div>
+    {errors.osVersion && (
+      <div className="invalid-feedback">{errors.osVersion}</div>
+    )}
+    <div className="mt-2" style={{ marginRight: "620px" }}>
+      {renderStackBadges(usedOsVersion, "osVersion", setUsedOsVersion)}
+    </div>
+  </div>
+</div>
+
 
       {/* Repository URL */}
       <div className="form-group row mb-4">
