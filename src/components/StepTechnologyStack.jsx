@@ -153,8 +153,8 @@ const StepTechnologyStack = ({
       <legend className="form-legend">Technology Stack</legend>
 
       {/* Front End */}
-      <div className="form-group row mb-4">
-        <label className="col-md-3 col-form-label">Front End Technology</label>
+      <div className="form-group row mb-4 ">
+        <label className="col-md-3 col-form-label badge-container">Front End Technology</label>
         <div className="col-md-6">
           <div className="input-group">
             <select
@@ -223,62 +223,7 @@ const StepTechnologyStack = ({
       </div>
 
       {/* Database */}
-      {/* <div className="form-group row mb-4">
-        <label className="col-md-3 col-form-label">Database</label>
-        <div className="col-md-6">
-          <div className="input-group">
-            <select
-              className={`form-select ${errors.database ? "is-invalid" : ""}`}
-              name="database"
-              value={
-                knownDatabases.includes(formData.database) ? formData.database : " "
-              }
-              onChange={onChange}
-            >
-              <option value="">Select a database</option>
-              {knownDatabases.map((db) => (
-                <option key={db} value={db}>{db}</option>
-              ))}
-              <option value="Other">OTHER</option>
-            </select>
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={() =>
-                addToStack("database", formData.database, setUsedDb, "database")
-              }
-            >
-              Add
-            </button>
-          </div>
-
-          {!knownDatabases.includes(formData.database) && (
-            <input
-              type="text"
-              className="form-control mt-2" style={{marginRight:"620px"}}
-              placeholder="Enter other database"
-              name="database"
-              value={formData.database || ""}
-              onChange={(e) =>
-                onChange({
-                  target: {
-                    name: "database",
-                    value: e.target.value,
-                  },
-                })
-              }
-            />
-          )}
-
-          {errors.database && (
-            <div className="invalid-feedback d-block">{errors.database}</div>
-          )}
-
-          <div className="mt-2" style={{marginRight:"620px"}}>
-            {renderStackBadges(usedDb, "database", setUsedDb)}
-          </div>
-        </div>
-      </div> */}
+    
   <div className="form-group row mb-4">
   <label className="col-md-3 col-form-label">Database</label>
   <div className="col-md-6">
@@ -313,8 +258,8 @@ const StepTechnologyStack = ({
 
     {formData.database === "Other" && (
       <input
-        type="text"
-        className="form-control mt-2"
+        type="text" 
+        className="form-control mt-2  badge-container"
         placeholder="Enter other database"
         name="otherDatabase"
         value={formData.otherDatabase || ""}
