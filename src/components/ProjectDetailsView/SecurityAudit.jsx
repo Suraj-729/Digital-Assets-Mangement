@@ -123,7 +123,7 @@ const SecurityAudit = ({ securityAudits }) => {
                               }
                               title="View VA Report"
                             >
-                              <i className="bi bi-file-earmark-text fs-5"></i>
+                              
                             </button>
                           </>
                         ) : (

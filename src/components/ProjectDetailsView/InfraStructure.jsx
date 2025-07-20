@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../../css/mvpStyle.css";
-import api from "../../Api"; // Adjust the import path as necessary
+import api, {baseURL} from "../../Api"; // Adjust the import path as necessary
 // const API = "http://localhost:5000"; // Your backend base URL
 
 const TechnologyAndInfrastructure = ({
@@ -23,23 +23,17 @@ const handleViewPdf = async (filename) => {
     return;
   }
 
-  const pdfPath = `${api}/va-reports/${filename}`;
+  const pdfPath = `${baseURL}va-reports/${filename}`;
   console.log("PDF View Requested:");
   console.log("  → Filename:", filename);
   console.log("  → Full PDF URL:", pdfPath);
 
   // Optional logging to backend
   try {
-    await fetch(`${api}/log-va-view`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        assetsId: project.assetsId, // Make sure your project object includes this
-        filename,
-        viewer: "Admin", // Replace with actual viewer info if available (e.g. from auth)
-      }),
+    await api.post("/log-va-view", {
+      assetsId: project.assetsId,
+      filename,
+      viewer: "Admin",
     });
   } catch (err) {
     console.error("Error logging VA view:", err);
