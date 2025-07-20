@@ -153,74 +153,80 @@ const StepTechnologyStack = ({
       <legend className="form-legend">Technology Stack</legend>
 
       {/* Front End */}
-      <div className="form-group row mb-4">
-        <label className="col-md-3 col-form-label">Front End Technology</label>
-        <div className="col-md-6">
-          <div className="input-group">
-            <select
-              className={`form-select ${errors.frontEnd ? "is-invalid" : ""}`}
-              name="frontEnd"
-              value={formData.frontEnd || ""}
-              onChange={onChange}
-            >
-              <option value="">Select a front-end technology</option>
-              <option value="Java">Java</option>
-              <option value=".Net 4.5 & below">.Net 4.5 & below</option>
-              <option value=".Net Core">.Net Core</option>
-              <option value="Node JS">Node JS</option>
-              <option value="PHP">PHP</option>
-              <option value="NEXT JS">NEXT JS</option>
-            </select>
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={() =>
-                addToStack("frontEnd", formData.frontEnd, setUsedTech, "frontEnd")
-              }
-            >
-              Add
-            </button>
-          </div>
-          {errors.frontEnd && (
-            <div className="invalid-feedback">{errors.frontEnd}</div>
-          )}
-          <div className="mt-2" style={{marginRight:"620px"}} >
-            {renderStackBadges(usedTech, "frontEnd", setUsedTech)}
-          </div>
-        </div>
-      </div>
+     <div className="form-group row mb-4">
+  <label className="col-md-3 col-form-label">Front End Technology</label>
+  <div className="col-md-6">
+    <div className="input-group">
+      <select
+        className={`form-select ${errors.frontEnd ? "is-invalid" : ""}`}
+        name="frontEnd"
+        value={formData.frontEnd || ""}
+        onChange={onChange}
+      >
+        <option value="">Select a front-end technology</option>
+        <option value="Java">Java</option>
+        <option value=".Net 4.5 & below">.Net 4.5 & below</option>
+        <option value=".Net Core">.Net Core</option>
+        <option value="Node JS">Node JS</option>
+        <option value="PHP">PHP</option>
+        <option value="NEXT JS">NEXT JS</option>
+      </select>
+      <button
+        className="btn btn-primary"
+        type="button"
+        onClick={() =>
+          addToStack("frontEnd", formData.frontEnd, setUsedTech, "frontEnd")
+        }
+      >
+        Add
+      </button>
+    </div>
+    {errors.frontEnd && (
+      <div className="invalid-feedback">{errors.frontEnd}</div>
+    )}
+
+    {/* ✅ Updated badge view to be consistent like Database style */}
+    <div className="badge-container mt-2">
+      {renderStackBadges(usedTech, "frontEnd", setUsedTech)}
+    </div>
+  </div>
+</div>
+
 
       {/* Framework */}
       <div className="form-group row mb-4">
-        <label className="col-md-3 col-form-label">Framework(s)</label>
-        <div className="col-md-6">
-          <div className="input-group">
-            <input
-              type="text"
-              className={`form-control ${errors.framework ? "is-invalid" : ""}`}
-              name="framework"
-              placeholder="Enter framework name"
-              value={formData.framework || ""}
-              onChange={onChange}
-            />
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={() =>
-                addToStack("framework", formData.framework, setUsedFrameworks, "framework")
-              }
-            >
-              Add
-            </button>
-          </div>
-          {errors.framework && (
-            <div className="invalid-feedback">{errors.framework}</div>
-          )}
-          <div className="mt-2" style={{marginRight:"620px"}}>
-            {renderStackBadges(usedFrameworks, "framework", setUsedFrameworks)}
-          </div>
-        </div>
-      </div>
+  <label className="col-md-3 col-form-label">Framework(s)</label>
+  <div className="col-md-6">
+    <div className="input-group">
+      <input
+        type="text"
+        className={`form-control ${errors.framework ? "is-invalid" : ""}`}
+        name="framework"
+        placeholder="Enter framework name"
+        value={formData.framework || ""}
+        onChange={onChange}
+      />
+      <button
+        className="btn btn-primary"
+        type="button"
+        onClick={() =>
+          addToStack("framework", formData.framework, setUsedFrameworks, "framework")
+        }
+      >
+        Add
+      </button>
+    </div>
+    {errors.framework && (
+      <div className="invalid-feedback">{errors.framework}</div>
+    )}
+
+    {/* BADGES IN ROW */}
+    <div className="badge-container mt-2">
+      {renderStackBadges(usedFrameworks, "framework", setUsedFrameworks)}
+    </div>
+  </div>
+</div>
+
 
       {/* Database */}
       {/* <div className="form-group row mb-4">
@@ -343,36 +349,39 @@ const StepTechnologyStack = ({
 
 
       {/* OS */}
-      <div className="form-group row mb-4">
-        <label className="col-md-3 col-form-label">Operating System</label>
-        <div className="col-md-6">
-          <div className="input-group">
-            <select
-              className={`form-select ${errors.os ? "is-invalid" : ""}`}
-              name="os"
-              value={formData.os || ""}
-              onChange={onChange}
-            >
-              <option value="">Select an OS</option>
-              <option value="Linux">Linux</option>
-              <option value="Windows">Windows</option>
-            </select>
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={() => addToStack("os", formData.os, setUsedOs, "os")}
-            >
-              Add
-            </button>
-          </div>
-          {errors.os && (
-            <div className="invalid-feedback">{errors.os}</div>
-          )}
-          <div className="mt-2" style={{marginRight:"620px"}}>
-            {renderStackBadges(usedOs, "os", setUsedOs)}
-          </div>
-        </div>
-      </div>
+     <div className="form-group row mb-4">
+  <label className="col-md-3 col-form-label">Operating System</label>
+  <div className="col-md-6">
+    <div className="input-group">
+      <select
+        className={`form-select ${errors.os ? "is-invalid" : ""}`}
+        name="os"
+        value={formData.os || ""}
+        onChange={onChange}
+      >
+        <option value="">Select an OS</option>
+        <option value="Linux">Linux</option>
+        <option value="Windows">Windows</option>
+      </select>
+      <button
+        className="btn btn-primary"
+        type="button"
+        onClick={() => addToStack("os", formData.os, setUsedOs, "os")}
+      >
+        Add
+      </button>
+    </div>
+    {errors.os && (
+      <div className="invalid-feedback">{errors.os}</div>
+    )}
+
+    {/* BADGES IN ROW */}
+    <div className="badge-container mt-2">
+      {renderStackBadges(usedOs, "os", setUsedOs)}
+    </div>
+  </div>
+</div>
+
 
       {/* OS Version */}
      {/* OS Version */}
@@ -401,11 +410,14 @@ const StepTechnologyStack = ({
     {errors.osVersion && (
       <div className="invalid-feedback">{errors.osVersion}</div>
     )}
-    <div className="mt-2" style={{ marginRight: "620px" }}>
+
+    {/* BADGES IN ROW */}
+    <div className="badge-container mt-2">
       {renderStackBadges(usedOsVersion, "osVersion", setUsedOsVersion)}
     </div>
   </div>
 </div>
+
 
 
       {/* Repository URL */}
