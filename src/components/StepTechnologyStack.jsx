@@ -421,62 +421,79 @@ const StepTechnologyStack = ({
 
 
       {/* Repository URL */}
-      <div className="form-group row mb-4">
-        <label className="col-md-3 col-form-label">Source Code Repository</label>
-        <div className="col-md-6">
-          <div className="input-group">
-            <input
-              type="text"
-              className={`form-control ${errors.repoUrl ? "is-invalid" : ""}`}
-              name="repoUrl"
-              placeholder="https://github.com/your-repo"
-              value={formData.repoUrl || ""}
-              onChange={onChange}
-            />
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={handleAddRepository}
-            >
-              Add
-            </button>
-          </div>
-          {errors.repoUrl && (
-            <div className="invalid-feedback">{errors.repoUrl}</div>
-          )}
-          <div className="mt-2" style={{marginRight:"620px"}}>
-            {usedRepo.map((repo) => (
-              <div key={repo} className="d-flex align-items-center mb-2">
-   <a
-      href={repo}
-      target="_blank"
-      rel="noopener noreferrer"
-      title={repo}
-      className="text-primary text-truncate"
+     <div className="form-group row mb-4">
+  <label className="col-md-3 col-form-label">Source Code Repository</label>
+  <div className="col-md-6">
+    <div className="input-group">
+      <input
+        type="text"
+        className={`form-control ${errors.repoUrl ? "is-invalid" : ""}`}
+        name="repoUrl"
+        placeholder="https://github.com/your-repo"
+        value={formData.repoUrl || ""}
+        onChange={onChange}
+      />
+      <button
+        className="btn btn-primary"
+        type="button"
+        onClick={handleAddRepository}
+      >
+        Add
+      </button>
+    </div>
+
+    {errors.repoUrl && (
+      <div className="invalid-feedback">{errors.repoUrl}</div>
+    )}
+
+    {/* ✅ Replaced marginRight style with flex row layout */}
+    <div className="mt-2 d-flex flex-wrap gap-2">
+  {usedRepo.map((repo) => (
+    <div
+      key={repo}
+      className="d-flex align-items-center mb-2"
       style={{
-        flexShrink: 1,
-        flexGrow: 1,
-        minWidth: 0,
-        textDecoration: "none",
+        backgroundColor: "#f1f1f1",
+        padding: "6px 10px",
+        borderRadius: "6px",
+        maxWidth: "100%",
+        overflow: "hidden",
       }}
     >
-                  {repo}
-                </a>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-danger ms-2"
-                  onClick={() =>
-                    window.confirm(`Are you sure you want to delete:\n${repo}?`) &&
-                    removeFromStack("repoUrl", repo, setUsedRepo)
-                  }
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <a
+        href={repo}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={repo}
+        className="text-primary"
+        style={{
+          textDecoration: "none",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          maxWidth: "60vw", // Use screen width instead of fixed px
+          display: "inline-block",
+        }}
+      >
+        {repo}
+      </a>
+      <button
+        type="button"
+        className="btn btn-sm btn-danger ms-2"
+        onClick={() =>
+          window.confirm(`Are you sure you want to delete:\n${repo}?`) &&
+          removeFromStack("repoUrl", repo, setUsedRepo)
+        }
+      >
+        Delete
+      </button>
+    </div>
+  ))}
+</div>
+
+  </div>
+</div>
+
 
       {/* Navigation Buttons */}
       <div
