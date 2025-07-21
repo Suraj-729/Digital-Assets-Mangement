@@ -287,7 +287,7 @@ const StepSecurityAudit = ({
                 className="btn btn-sm btn-link"
                 onClick={handleViewVAReport}
               >
-                View Uploaded VA Report
+                View Uploaded Security audit report
               </button>
             )}
           </div>

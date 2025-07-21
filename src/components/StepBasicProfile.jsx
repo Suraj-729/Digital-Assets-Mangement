@@ -217,7 +217,7 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
             <div className="p-3 border rounded box-1">
               {["nicOfficerName", "nicOfficerEmpCode", "nicOfficerMob", "nicOfficerEmail"].map((field, i) => {
                 const labels = ["Name:", "Emp Code:", "Mob:", "Email:"];
-                const types = ["text", "text", "number", "email"];
+                const types = ["text", "text", "text", "email"];
                 return (
                   <div className="row align-items-center text-right" key={field}>
                     <div className="col-sm-4 mb-2">
@@ -245,7 +245,7 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
             <div className="p-3 border rounded box-1">
               {["deptOfficerName", "deptOfficerDesignation", "deptOfficerMob", "deptOfficerEmail"].map((field, i) => {
                 const labels = ["Name:", "Designation:", "Mob:", "Email:"];
-                const types = ["text", "text", "number", "email"];
+                const types = ["text", "text", "text", "email"];
                 return (
                   <div className="row align-items-center text-right" key={field}>
                     <div className="col-sm-4 mb-2">
