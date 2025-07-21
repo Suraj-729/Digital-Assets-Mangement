@@ -268,8 +268,8 @@ const StepSecurityAudit = ({
               onChange={onChange}
             >
               <option value="">Select</option>
-              <option value="Agency 1">Agency 1</option>
-              <option value="Agency 2">Agency 2</option>
+              <option value="securely">securely</option>
+              <option value="pinaki">pinaki</option>
             </select>
           </div>
 

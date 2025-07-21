@@ -2195,3 +2195,14 @@ body.sidebar-collapsed #main {
 .badge-container .badge {
   margin-right: 10px;
 }
+
+
+.project-tabs-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-content {
+  flex-grow: 1;
+}
