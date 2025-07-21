@@ -151,6 +151,7 @@ import { useParams } from "react-router-dom";
 import api from "../../Api";
 import Header from "../layouts/HeaderDashboard";
 import Sidebar from "../layouts/SidebarDashboard";
+import Footer from "../layouts/FooterDashboard";
 import "../../css/mvpStyle.css";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -278,7 +279,7 @@ const ProjectTabs = () => {
     )}
   </AnimatePresence>
 </div>
-
+  <Footer />
     </div>
   );
 };

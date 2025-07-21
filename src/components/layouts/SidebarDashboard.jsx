@@ -8,7 +8,7 @@ const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
   const [projectsOpen, setProjectsOpen] = useState(false);
   // const location = useLocation();
   // const navigate = useNavigate();
- 
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const employeeId = localStorage.getItem("employeeId");
@@ -25,13 +25,12 @@ const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
 
       console.log("API response:", response.data);
 
-      if (response.status >= 200 && response.status < 300) 
-      {
+      if (response.status >= 200 && response.status < 300) {
         navigate("/dashboard", {
           state: {
             fetchedProjects: response.data,
             employeeId,
-          employeeType,
+            employeeType,
           },
         });
       } else {
@@ -77,47 +76,22 @@ const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
           </div>
           {projectsOpen && (
             <ul className="nav-content show" style={{ paddingLeft: "20px" }}>
-              <li>
-                {/* <div
-                  className="nav-link"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setFormToShow("addProject")}
-                >
-                  <i className="bi bi-circle"></i>
-                  <span>Add Projects</span>
-                </div> */}
-                <div
-                  className="nav-link"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setFormToShow("addProject");
-                    navigate("/dashboard/addProject");
-                  }}
-                >
-                  <i className="bi bi-circle"></i>
-                  <span>Add Projects</span>
-                </div>
-
-                {/* <div
-                  className="nav-link"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate("/add-project")}
-                >
-                  <i className="bi bi-circle"></i>
-                  <span>Add Projects</span>
-                </div> */}
-              </li>
-
-              {/* <li>
-                <div
-                  className="nav-link"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setFormToShow("projectDetails")}
-                >
-                  <i className="bi bi-circle"></i>
-                  <span>Project Details</span>
-                </div>
-              </li> */}
+              {/* Only show to NON-PM users */}
+              {employeeType !== "PM" && (
+                <li>
+                  <div
+                    className="nav-link"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      setFormToShow("addProject");
+                      navigate("/dashboard/addProject");
+                    }}
+                  >
+                    <i className="bi bi-circle"></i>
+                    <span>Add Projects</span>
+                  </div>
+                </li>
+              )}
             </ul>
           )}
         </li>

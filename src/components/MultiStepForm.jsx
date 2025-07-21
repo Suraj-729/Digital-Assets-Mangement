@@ -1,3 +1,4 @@
+
 // import React, { useState, useEffect } from "react";
 // import ProgressBar from "./ProgressBar";
 // import StepBasicProfile from "./StepBasicProfile";
@@ -21,6 +22,8 @@
 // const MultiStepForm = ({ editData, onEditComplete }) => {
 //   const navigate = useNavigate();
 
+  
+//   const [completedSteps, setCompletedSteps] = useState([true, false, false, false]);
 //   const [formData, setFormData] = useState({});
 //   const [gitUrls, setGitUrls] = useState([]);
 //   const [vaRecords, setVaRecords] = useState([]);
@@ -103,7 +106,7 @@
 //       auditingAgency: record.auditingAgency || "",
 //       auditDate: record.auditDate ? record.auditDate.slice(0, 10) : "",
 //       expireDate: record.expireDate ? record.expireDate.slice(0, 10) : "",
-//       nextExpireDate: record.tlsNextExpiry
+//       tlsNextExpiry: record.tlsNextExpiry
 //         ? record.tlsNextExpiry.slice(0, 10)
 //         : "",
 //       sslLabScore: record.sslLabScore || "",
@@ -130,9 +133,27 @@
 //     }));
 //   };
 
-//   const handleNext = () => setCurrentStep((prev) => prev + 1);
+//   // const handleNext = () => setCurrentStep((prev) => prev + 1);
+//  const handleNext = () => {
+//   const updatedSteps = [...completedSteps];
+//   updatedSteps[currentStep] = true; // ✅ Mark current step completed
+//   setCompletedSteps(updatedSteps);
+//   setCurrentStep(currentStep + 1);
+// };
+
 //   const handlePrevious = () => setCurrentStep((prev) => prev - 1);
-//   const handleStepClick = (stepIndex) => setCurrentStep(stepIndex);
+//   // const handleStepClick = (stepIndex) => setCurrentStep(stepIndex);
+//   const handleStepClick = (stepIndex) => {
+//   // Prevent clicking ahead without completing previous steps
+//   for (let i = 0; i < stepIndex; i++) {
+//     if (!completedSteps[i]) {
+//       toast.error("Please complete previous steps before proceeding.");
+//       return;
+//     }
+//   }
+//   setCurrentStep(stepIndex);
+// };
+
 
 //   const onAddGitUrl = () => {
 //     if (formData.gitUrl) {
@@ -214,7 +235,6 @@
 //           auditingAgency: record.auditingAgency,
 //           auditDate: record.auditDate ? new Date(record.auditDate) : null,
 //           expireDate: record.expireDate ? new Date(record.expireDate) : null,
-//             // nextExpireDate: record.nextExpireDate ? new Date(record.nextExpireDate) : null,
 //           tlsNextExpiry: record.tlsNextExpiry ? new Date(record.tlsNextExpiry) : null, // ✅ Keep consistent
 //           sslLabScore: record.sslLabScore,
 //           certificate: record.certificate,
@@ -357,10 +377,15 @@
 //   return (
     
 //    <div className={`form-container ${isSidebarOpen ? "compact-form" : "fullscreen-form"}`}>
-//        <Header onSidebarToggle={setSidebarOpen} />
+//   <Header onSidebarToggle={setSidebarOpen} />
+//   <Sidebar isSidebarOpen={isSidebarOpen} setFormToShow={setFormToShow} />
 
-//      <Sidebar isSidebarOpen={isSidebarOpen} 
-//      setFormToShow={setFormToShow}/>
+//   <div className="form-header">
+//     <h2 style={{ padding: "10px 20px", fontWeight: "700", fontSize: "1.7rem", }}>
+//       {editData ? "Edit Project" : "Add Project"}
+//     </h2>
+//   </div>
+
 
 //        {/* There is a work of ramsis to do the ui dymaic level  */}
 
@@ -393,6 +418,11 @@
 // };
 
 // export default MultiStepForm;
+
+
+
+
+
 import React, { useState, useEffect } from "react";
 import ProgressBar from "./ProgressBar";
 import StepBasicProfile from "./StepBasicProfile";
@@ -416,6 +446,8 @@ const steps = ["Basic Profile", "Security Audit", "Technology Stack", "Infrastru
 const MultiStepForm = ({ editData, onEditComplete }) => {
   const navigate = useNavigate();
 
+  
+  const [completedSteps, setCompletedSteps] = useState([true, false, false, false]);
   const [formData, setFormData] = useState({});
   const [gitUrls, setGitUrls] = useState([]);
   const [vaRecords, setVaRecords] = useState([]);
@@ -525,9 +557,27 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     }));
   };
 
-  const handleNext = () => setCurrentStep((prev) => prev + 1);
+  // const handleNext = () => setCurrentStep((prev) => prev + 1);
+ const handleNext = () => {
+  const updatedSteps = [...completedSteps];
+  updatedSteps[currentStep] = true; // ✅ Mark current step completed
+  setCompletedSteps(updatedSteps);
+  setCurrentStep(currentStep + 1);
+};
+
   const handlePrevious = () => setCurrentStep((prev) => prev - 1);
-  const handleStepClick = (stepIndex) => setCurrentStep(stepIndex);
+  // const handleStepClick = (stepIndex) => setCurrentStep(stepIndex);
+  const handleStepClick = (stepIndex) => {
+  // Prevent clicking ahead without completing previous steps
+  for (let i = 0; i < stepIndex; i++) {
+    if (!completedSteps[i]) {
+      toast.error("Please complete previous steps before proceeding.");
+      return;
+    }
+  }
+  setCurrentStep(stepIndex);
+};
+
 
   const onAddGitUrl = () => {
     if (formData.gitUrl) {

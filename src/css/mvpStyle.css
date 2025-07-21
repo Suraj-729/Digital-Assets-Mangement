@@ -2193,3 +2193,12 @@ body.sidebar-collapsed #main {
   align-items: center;
 }
 
+.project-tabs-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-content {
+  flex-grow: 1;
+}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+// import api from "../../Api";
 import api from "../../Api";
-import "../../css/mvpStyle.css";
 
 const SecurityAudit = ({ securityAudits }) => {
   const [showModal, setShowModal] = useState(false);
@@ -13,7 +13,7 @@ const SecurityAudit = ({ securityAudits }) => {
   const auditsArray = Array.isArray(securityAudits)
     ? securityAudits
     : securityAudits?.securityAudit || [];
-
+  
   // No data fallback
   if (!auditsArray.length) {
     return (
@@ -38,23 +38,14 @@ const SecurityAudit = ({ securityAudits }) => {
         });
   };
 
-  // const handleCertificateClick = (filename) => {
-  //   if (!filename) return;
-  //   setPdfUrl(`${API}/view-certificate/${filename}`); // ✅ correct GridFS route
-  //   setShowModal(true);
-  // };
-  // const handleVaReportClick = (filename) => {
-  //   if (!filename) return;
-  //   setPdfUrl(`${API}/view-va-report/${filename}`); // ✅ VA report endpoint
-  //   setShowModal(true);
-  // };
-
   const handleCertificateClick = (certificate) => {
     const filename =
       typeof certificate === "string" ? certificate : certificate?.filename;
     if (!filename) return;
 
-    setPdfUrl(`${api}/view-certificate/${filename}`);
+    // setPdfUrl(`${api}/view-certificate/${filename}`);
+    setPdfUrl(`${api.defaults.baseURL}view-certificate/${encodeURIComponent(filename)}`);
+
     setShowModal(true);
   };
 
@@ -132,7 +123,7 @@ const SecurityAudit = ({ securityAudits }) => {
                               }
                               title="View VA Report"
                             >
-                              <i className="bi bi-file-earmark-text fs-5"></i>
+                              
                             </button>
                           </>
                         ) : (
