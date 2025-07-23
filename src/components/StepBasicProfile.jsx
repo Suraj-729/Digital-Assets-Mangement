@@ -139,9 +139,7 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
                     onChange({ target: { name: "departmentName", value: capitalOnly } });
                   }}
                 />
-                {errors.departmentName && (
-                  <div className="invalid-feedback">{errors.departmentName}</div>
-                )}
+              
 
                 {errors.departmentName && <div className="invalid-feedback">{errors.departmentName}</div>}
               </div>
@@ -202,7 +200,8 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
                       : localStorage.getItem("HOD") || ""
                   }
                   onChange={onChange}
-                  disabled={employeeType === "HOD"}
+                  disabled={employeeType === "HOD" || employeeType === "PM"}
+
                 />
                 {errors.HOD && <div className="invalid-feedback">{errors.HOD}</div>}
               </div>

@@ -97,6 +97,7 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
         const url = `/dashboard/by-type/${employeeId}?employeeType=${employeeType}`;
         const response = await api.get(url, { withCredentials: true });
 
+        console.log(response.data);
         if (response.status >= 200 && response.status < 300) {
           setProjects(response.data);
         } else {
