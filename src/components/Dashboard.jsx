@@ -29,10 +29,7 @@ const Dashboard = () => {
 
   const [filteredProjects, setFilteredProjects] = useState([]);
 
-  // Get HOD and employeeId from localStorage
-  // const HOD = localStorage.getItem("HOD") || "N/A";
-  // const employeeId = localStorage.getItem("employeeId") || "N/A";
-  // const { employeeId, employeeType } = useParams();
+ 
   const HOD = localStorage.getItem("HOD") || "N/A";
   // const location = useLocation();
 const employeeId = location.state?.employeeId || localStorage.getItem("employeeId");
@@ -245,22 +242,7 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
     })} / ${date.getFullYear()}`;
   };
   
-  // const formatDate = (date) => {
-  //   if (!date || date === "NA" || date === null || date === "null") return "NA";
   
-  //   const d = new Date(date);
-  
-  //   if (isNaN(d.getTime())) {
-  //     console.warn("Invalid date format:", date);
-  //     return "NA";
-  //   }
-  
-  //   return d.toLocaleDateString("en-IN", {
-  //     day: "2-digit",
-  //     month: "short",
-  //     year: "numeric",
-  //   });
-  // };
   
 
   // Badge helpers

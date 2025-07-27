@@ -77,21 +77,37 @@ const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
           {projectsOpen && (
             <ul className="nav-content show" style={{ paddingLeft: "20px" }}>
               {/* Only show to NON-PM users */}
-              {employeeType !== "PM" && (
-                <li>
-                  <div
-                    className="nav-link"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setFormToShow("addProject");
-                      navigate("/dashboard/addProject");
-                    }}
-                  >
-                    <i className="bi bi-circle"></i>
-                    <span>Add Projects</span>
-                  </div>
-                </li>
-              )}
+            {employeeType === "HOD" && (
+  <li>
+    <div
+      className="nav-link"
+      style={{ cursor: "pointer" }}
+      onClick={() => {
+        navigate("/dashboard/addProjectByHOD");
+      }}
+    >
+      <i className="bi bi-circle"></i>
+      <span>Add Projects (HOD)</span>
+    </div>
+  </li>
+)}
+
+{employeeType === "PM" && (
+  <li>
+    <div
+      className="nav-link"
+      style={{ cursor: "pointer" }}
+      onClick={() => {
+        setFormToShow("addProject");
+        navigate("/dashboard/addProject");
+      }}
+    >
+      <i className="bi bi-circle"></i>
+      <span>Add Projects (PM)</span>
+    </div>
+  </li>
+)}
+
             </ul>
           )}
         </li>

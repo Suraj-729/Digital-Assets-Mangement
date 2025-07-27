@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import api from "../Api";
 import "../css/mvpStyle.css";
@@ -7,21 +5,23 @@ import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
-    userId: "",
+    email: "",
     password: "",
     confirmPassword: "",
     employeeId: "",
-    employeeType: ""
+    employeeType: "",
+    employeeName: "", // 👈 Added
   });
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -49,12 +49,13 @@ const RegisterPage = () => {
 
     try {
       const response = await api.post("/users/register", {
-        userId: formData.userId,
+        userId: formData.email,
         password: formData.password,
         employeeId: formData.employeeId,
-        employeeType: formData.employeeType
+        employeeType: formData.employeeType,
+        employeeName: formData.employeeName, // 👈 Include this
       });
-      
+
       console.log("Registration successful:", response.data);
       setSuccess(true);
       setTimeout(() => navigate("/damLogin"), 2000);
@@ -62,9 +63,11 @@ const RegisterPage = () => {
       console.error("Registration error:", {
         message: err.message,
         response: err.response?.data,
-        stack: err.stack
+        stack: err.stack,
       });
-      setError(err.response?.data?.error || "Registration failed. Please try again.");
+      setError(
+        err.response?.data?.error || "Registration failed. Please try again."
+      );
     }
   };
 
@@ -86,7 +89,7 @@ const RegisterPage = () => {
         <form onSubmit={handleSubmit}>
           <input
             type="email"
-            name="userId"
+            name="email"
             placeholder="Email Address"
             className="form-control"
             value={formData.userId}
@@ -116,6 +119,16 @@ const RegisterPage = () => {
             {/* Add more types as needed */}
           </select>
           <input
+            type="text"
+            name="employeeName"
+            placeholder="Employee Name"
+            className="form-control"
+            value={formData.employeeName}
+            onChange={handleChange}
+            required
+          />
+
+          <input
             type="password"
             name="password"
             placeholder="Password (min 8 characters)"
@@ -139,7 +152,10 @@ const RegisterPage = () => {
             Register
           </button>
           <div className="login-link">
-            <p>Already have an account? <span onClick={() => navigate("/damLogin")}>Login</span></p>
+            <p>
+              Already have an account?{" "}
+              <span onClick={() => navigate("/damLogin")}>Login</span>
+            </p>
           </div>
         </form>
       </div>

@@ -4,9 +4,6 @@ import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
 import { baseURL }   from "../Api";
 
-// import API from "../Api";
-
-// const API = "http://localhost:5000"; // Replace with actual backend base URL
 
 const StepInfrastructure = ({
   formData = {},
@@ -55,6 +52,12 @@ const StepInfrastructure = ({
     return Object.keys(newErrors).length === 0;
   };
 
+
+  const isVaDisabled =
+  formData.deployment === "Container as Service" ||
+  formData.deployment === "K8S as Service";
+
+
   const handleAddVa = () => {
     if (validate()) {
       onAddVa();
@@ -65,6 +68,14 @@ const StepInfrastructure = ({
       onChange({ target: { name: "dateOfVA", value: "" } });
       onChange({ target: { name: "vaScore", value: "" } });
       onChange({ target: { name: "vaReport", value: null } }); // ✅ Correct reset
+      const onChange = (e) => {
+  const { name, value } = e.target;
+  formData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+
       setErrors({});
     }
   };
@@ -81,11 +92,7 @@ const StepInfrastructure = ({
     onSubmit(e);
   };
 
-  // const handleViewPdf = (filename) => {
-  //   if (!filename) return;
-  //   setPdfUrl(`${api.defaults.baseURL}va-reports/${encodeURIComponent(filename)}`);
-  //   setShowModal(true);
-  // };
+
 const handleViewPdf = (filename) => {
   if (!filename || typeof filename !== "string") {
     console.error("Invalid filename provided for PDF view:", filename);
@@ -106,32 +113,9 @@ const handleViewPdf = (filename) => {
     setPdfUrl("");
   };
 
+  
 
-  //   if (!file || file.type !== "application/pdf") {
-  //     alert("Please select a valid PDF file.");
-  //     return;
-  //   }
 
-  //   const formData = new FormData();
-  //   formData.append("vaReport", file);
-
-  //   try {
-  //     const res = await fetch(`${API}/upload-va-report`, {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     if (!res.ok) throw new Error("Upload failed");
-  //     const result = await res.json();
-
-  //     // Update formData.vaReport with the uploaded filename
-  //     onChange({ target: { name: "vaReport", value: result.filename } });
-  //   } catch (err) {
-  //     console.error("VA report upload failed:", err);
-  //     alert("Failed to upload VA report");
-  //   }
-
-  // };
 
   const handleVaFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -305,6 +289,7 @@ const handleViewPdf = (filename) => {
               placeholder="Application server IP"
               value={formData.ipAddress}
               onChange={onChange}
+              disabled={isVaDisabled}
             />
             {errors.ipAddress && (
               <div className="invalid-feedback">{errors.ipAddress}</div>
@@ -319,6 +304,7 @@ const handleViewPdf = (filename) => {
               name="purposeOfUse"
               value={formData.purposeOfUse}
               onChange={onChange}
+              disabled={isVaDisabled}
             />
           </div>
 
@@ -330,6 +316,7 @@ const handleViewPdf = (filename) => {
               name="dateOfVA"
               value={formData.dateOfVA || ""}
               onChange={onChange}
+              disabled={isVaDisabled}
             />
             {errors.dateOfVA && (
               <div className="invalid-feedback">{errors.dateOfVA}</div>
@@ -344,6 +331,7 @@ const handleViewPdf = (filename) => {
               name="vaScore"
               value={formData.vaScore || ""}
               onChange={onChange}
+              disabled={isVaDisabled}
             />
             {errors.vaScore && (
               <div className="invalid-feedback">{errors.vaScore}</div>
@@ -358,6 +346,7 @@ const handleViewPdf = (filename) => {
               name="vaReport"
               accept="application/pdf"
               onChange={handleVaFileUpload}
+              disabled={isVaDisabled}
             />
             {errors.vaReport && (
               <div className="invalid-feedback">{errors.vaReport}</div>
@@ -441,22 +430,7 @@ const handleViewPdf = (filename) => {
           </table>
         </div>
 
-        {/* <div className="d-flex justify-content-between mt-3">
-          <input
-            type="button"
-            name="previous"
-            className="btn btn-primary"
-            value="Previous"
-            onClick={onPrevious}
-          />
-          <input
-            type="submit"
-            name="submit"
-            className="btn btn-primary"
-            value="Submit"
-            onClick={handleSubmit}
-          />
-        </div> */}
+      
         <div className="d-flex justify-content-between mt-3">
           <input
             type="button"

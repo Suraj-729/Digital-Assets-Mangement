@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import ProgressBar from "./ProgressBar";
 import StepBasicProfile from "./StepBasicProfile";
@@ -238,7 +237,7 @@ const onAddVa = () => {
 
 
 
-  const onDeleteVa = (idx) => setVaRecords(vaRecords.filter((_, i) => i !== idx));
+const onDeleteVa = (idx) => setVaRecords(vaRecords.filter((_, i) => i !== idx));
   
   const handleSubmit = async (e) => {
     e.preventDefault();
