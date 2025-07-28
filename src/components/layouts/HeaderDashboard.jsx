@@ -20,14 +20,25 @@ const Header = ({ onSidebarToggle }) => {
   useEffect(() => {
     async function fetchNotifications() {
       try {
-        const res = await api.get("/notifications/expiring-certificates", {
-          withCredentials: true,
-        });
-        setNotifications(res.data.notifications || []);
+        const employeeId = localStorage.getItem("employeeId");
+        if (!employeeId) {
+          console.warn("No employeeId found in localStorage.");
+          return;
+        }
+  
+        const res = await api.get(
+          `/notifications/expiring-certificates/by-employee/${employeeId}`,
+          {
+            withCredentials: true,
+          }
+        );
+  
+        setNotifications(res.data.expiring || []);
       } catch (error) {
         console.error("Error fetching notifications", error);
       }
     }
+  
     fetchNotifications();
   }, []);
 

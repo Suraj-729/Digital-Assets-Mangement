@@ -13,7 +13,8 @@ import { Navigate, useLocation } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
   const location = useLocation();
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+  // const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+  const isAuthenticated = sessionStorage.getItem("userId") !== null;
 
   // If not authenticated, redirect to login with state
   if (!isAuthenticated) {

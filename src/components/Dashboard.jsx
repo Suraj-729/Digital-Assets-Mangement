@@ -67,21 +67,22 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
     const checkSession = async () => {
       try {
         const res = await api.get("/session-check");
-        if (!res.data.loggedIn) {
+        if (!res.data.employeeId) {
           toast.error("Session expired. Please log in again.");
-          localStorage.clear();
           navigate("/damLogin");
         }
       } catch (err) {
         console.error("Session check failed:", err);
+        toast.error("Session expired. Please log in again.");
+        navigate("/damLogin");
       }
     };
-
-    checkSession(); // Check once when component loads
-
-    const interval = setInterval(checkSession, 3000000); // Every 30 seconds
-    return () => clearInterval(interval); // Cleanup
+  
+    checkSession();
+    const interval = setInterval(checkSession, 300000); // Every 5 minutes
+    return () => clearInterval(interval);
   }, []);
+  
 
   useEffect(() => {
     if (location.state?.fetchedProjects) {
