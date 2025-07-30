@@ -131,6 +131,7 @@ function StepTLSInfo({ formData, onChange, tlsRecord, setTlsRecord, onPrevious, 
 }}
                   >
                     <FaTrash />
+                    
                   </button>
                 </td>
               </tr>
