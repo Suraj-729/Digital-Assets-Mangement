@@ -23,7 +23,7 @@ const StepSecurityAudit = ({
     if (!formData.auditType) newErrors.auditType = "Audit Type is required.";
     if (!formData.agency) newErrors.agency = "Agency is required.";
     if (!formData.sslLabScore) newErrors.sslLabScore = "SSL Lab Score is required.";
-    if (!formData.tlsNextExpiry) newErrors.tlsNextExpiry = "TLS Expiry Date is required.";
+    // if (!formData.tlsNextExpiry) newErrors.tlsNextExpiry = "TLS Expiry Date is required.";
     if (!formData.certificate || !formData.certificate.filename)
       newErrors.certificate = "Certificate upload is required.";
     if (!vaReport || !vaReport.filename)
@@ -78,7 +78,7 @@ const StepSecurityAudit = ({
       auditDate: formData.auditDate,
       expireDate: formData.expireDate,
       typeOfAudit: formData.auditType,
-      tlsNextExpiry: formData.tlsNextExpiry,
+      // tlsNextExpiry: formData.tlsNextExpiry,
       auditingAgency: formData.agency,
       sslLabScore: formData.sslLabScore,
       certificate: formData.certificate,
@@ -89,7 +89,7 @@ const StepSecurityAudit = ({
 
     onChange({ target: { name: "auditDate", value: "" } });
     onChange({ target: { name: "expireDate", value: "" } });
-    onChange({ target: { name: "tlsNextExpiry", value: "" } });
+    // onChange({ target: { name: "tlsNextExpiry", value: "" } });
     onChange({ target: { name: "auditType", value: "" } });
     onChange({ target: { name: "agency", value: "" } });
     onChange({ target: { name: "sslLabScore", value: "" } });
@@ -268,8 +268,8 @@ const StepSecurityAudit = ({
               onChange={onChange}
             >
               <option value="">Select</option>
-              <option value="Agency 1">Agency 1</option>
-              <option value="Agency 2">Agency 2</option>
+              <option value="securely">securely</option>
+              <option value="pinaki">pinaki</option>
             </select>
           </div>
 
@@ -287,7 +287,7 @@ const StepSecurityAudit = ({
                 className="btn btn-sm btn-link"
                 onClick={handleViewVAReport}
               >
-                View Uploaded VA Report
+                View Uploaded Security audit report
               </button>
             )}
           </div>
@@ -307,7 +307,7 @@ const StepSecurityAudit = ({
             </select>
           </div>
 
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <label className="form-label"> TLS Expire Date</label>
             <input
               type="date"
@@ -316,7 +316,7 @@ const StepSecurityAudit = ({
               value={formData.tlsNextExpiry || ""}
               onChange={onChange}
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-4 text-center">

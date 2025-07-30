@@ -19,7 +19,7 @@ const StepInfrastructure = ({
   onVaFileChange,
   onDeleteVa,
   onPrevious,
-  onSubmit,
+   onNext,
 }) => {
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -69,17 +69,7 @@ const StepInfrastructure = ({
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (vaRecords.length === 0) {
-      const isValid = validate();
-      if (!isValid)
-        // toast.error("Please add at least one valid VA record before submitting.");
-
-        return;
-    }
-    onSubmit(e);
-  };
+  
 
   // const handleViewPdf = (filename) => {
   //   if (!filename) return;
@@ -174,6 +164,12 @@ const handleViewPdf = (filename) => {
       // toast.error(`Upload failed: ${error.message}`);
     }
   };
+
+  
+const isVAFieldsDisabled =
+  formData.deployment === "Container as Service" ||
+  formData.deployment === "K8S as Service";
+
 
   return (
     <fieldset>
@@ -305,6 +301,7 @@ const handleViewPdf = (filename) => {
               placeholder="Application server IP"
               value={formData.ipAddress}
               onChange={onChange}
+              disabled={isVAFieldsDisabled}
             />
             {errors.ipAddress && (
               <div className="invalid-feedback">{errors.ipAddress}</div>
@@ -319,6 +316,7 @@ const handleViewPdf = (filename) => {
               name="purposeOfUse"
               value={formData.purposeOfUse}
               onChange={onChange}
+              disabled={isVAFieldsDisabled}
             />
           </div>
 
@@ -330,6 +328,7 @@ const handleViewPdf = (filename) => {
               name="dateOfVA"
               value={formData.dateOfVA || ""}
               onChange={onChange}
+              disabled={isVAFieldsDisabled}
             />
             {errors.dateOfVA && (
               <div className="invalid-feedback">{errors.dateOfVA}</div>
@@ -344,6 +343,7 @@ const handleViewPdf = (filename) => {
               name="vaScore"
               value={formData.vaScore || ""}
               onChange={onChange}
+              disabled={isVAFieldsDisabled}
             />
             {errors.vaScore && (
               <div className="invalid-feedback">{errors.vaScore}</div>
@@ -358,6 +358,7 @@ const handleViewPdf = (filename) => {
               name="vaReport"
               accept="application/pdf"
               onChange={handleVaFileUpload}
+              disabled={isVAFieldsDisabled}
             />
             {errors.vaReport && (
               <div className="invalid-feedback">{errors.vaReport}</div>
@@ -365,13 +366,17 @@ const handleViewPdf = (filename) => {
           </div>
 
           <div className="col-md-4 d-flex align-items-end">
-            <button
-              className="btn btn-primary w-100"
-              type="button"
-              onClick={handleAddVa}
-            >
-              ADD
-            </button>
+           <button
+  className="btn btn-primary w-100"
+  type="button"
+  onClick={handleAddVa}
+  disabled={
+    formData.deployment === "Container as Service" ||
+    formData.deployment === "K8S as Service"
+  }
+>
+  ADD
+</button>
           </div>
         </div>
 
@@ -458,24 +463,43 @@ const handleViewPdf = (filename) => {
           />
         </div> */}
         <div className="d-flex justify-content-between mt-3">
-          <input
-            type="button"
-            name="previous"
-            className="previous action-button-previous btn btn-primary"
-            value="Previous"
-            onClick={onPrevious}
-            style={{ marginLeft: "425px" }}
-          />
-          <input
-            type="submit"
-            name="submit"
-            className="submit action-button btn btn-primary"
-            value="Submit"
-            onClick={handleSubmit}
-            style={{ marginRight: "425px" }}
-          />
-        </div>
+          <button
+          type="button"
+          className="btn btn-outline-primary"
+          onClick={onPrevious}
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#a8dced",
+          }}
+        >
+          Previous
+        </button>
+
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={onNext}
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#0099cc",
+          }}
+        >
+          Next
+        </button>
       </div>
+    </div>
 
       {/* PDF Modal */}
       {showModal && (
@@ -489,12 +513,10 @@ const handleViewPdf = (filename) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">VA Report PDF</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  aria-label="Close"
-                  onClick={closeModal}
-                ></button>
+                 <button type="button" className="btn btn-secondary" onClick={closeModal}>
+  Close
+</button>
+
               </div>
               <div className="modal-body" style={{ height: "80vh" }}>
                 <iframe

@@ -4,7 +4,7 @@ import React from "react";
 
 import PropTypes from "prop-types";
 import "../../css/mvpStyle.css";
-
+// import Footer from "../layouts/FooterDashboard";
 const BasicProfile = ({ project }) => {
   // If no project data is provided, show a loading state or empty fields
   if (!project) {
@@ -70,7 +70,11 @@ const BasicProfile = ({ project }) => {
         </div>
       </div>
     </div>
+    
   );
+//   <div className="footer-container">
+//   <Footer />
+// </div>
 };
 
 BasicProfile.propTypes = {
@@ -96,7 +100,10 @@ BasicProfile.propTypes = {
       })
     })
   })
+  
 };
+
+
 
 export default BasicProfile;
 

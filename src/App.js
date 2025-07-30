@@ -80,6 +80,7 @@ import RegisterPage from "./components/Register";
 import RouteTracker from "./components/RouteTracker";
 import MultiStepFormWrapper from "./components/MultiStepFormWrapper";
 import ProjectDetailsView from "./components/ProjectDetailsView/ProjectTab";
+import StepHodPage from "./components/StepHodpage";
 // import ProjectDetailsView from "./components/ProjectDetailsView/InfraStructure";
 import "./css/bootstrap/dist/css/bootstrap.min.css";
 import "./css/bootstrap-icons/font/bootstrap-icons.css";
@@ -103,6 +104,7 @@ function App() {
         <Route path="/damLogin" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
+        <Route path="/addProjectByHOD" element={<StepHodPage />} />
 
         {/* Protected Routes */}
         <Route
