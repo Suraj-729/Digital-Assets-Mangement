@@ -4,6 +4,8 @@ import StepBasicProfile from "./StepBasicProfile";
 import StepSecurityAudit from "./StepSecurityAudit";
 import StepTechnologyStack from "./StepTechnologyStack";
 import StepInfrastructure from "./StepInfrastructure";
+import StepTLSInfo from "./StepTLSInfo";
+import DRForm from "./StepDRInfo";
 import Header from "./layouts/HeaderDashboard";
 import Sidebar from "./layouts/SidebarDashboard";
 import { useNavigate } from "react-router-dom";
@@ -16,12 +18,12 @@ import { toast } from "react-toastify";
 // ✅ Added: Import motion and AnimatePresence
 import { motion, AnimatePresence } from "framer-motion";
 
-const steps = ["Basic Profile", "Security Audit", "Technology Stack", "Infrastructure"];
+const steps = ["Basic Profile", "Security Audit", "TLS Info", "Technology Stack", "Infrastructure", "DR Info"];
 
 const MultiStepForm = ({ editData, onEditComplete }) => {
   const navigate = useNavigate();
 
-  
+
   const [completedSteps, setCompletedSteps] = useState([true, false, false, false]);
   const [formData, setFormData] = useState({});
   const [gitUrls, setGitUrls] = useState([]);
@@ -40,94 +42,102 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   // const [currentStep, setCurrentStep] = useState(0);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [formToShow, setFormToShow] = useState(null);
-
+  const [tlsData, setTlsData] = useState([]);
+  const [drFormData, setDrFormData] = useState({
+    serverType: "",
+    dataCentre: "",
+    deployment: "",
+    location: "",
+  });
+  const [drGitUrls, setDrGitUrls] = useState([]);
+  const [drRecords, setDrRecords] = useState([]);
   useEffect(() => {
-  if (editData) {
-    const bp = editData.BP || editData;
-    const nodalNIC = bp.nodalOfficerNIC || {};
-    const nodalDept = bp.nodalOfficerDept || bp.nodalofficerDept || {};
-    const audits = editData.SA?.securityAudit || [];
-    const vaDataWithId = (editData.Infra?.vaRecords || []).map((record, index) => ({
-      ...record,
-      _id: record._id || `${index}-${Date.now()}`,
-    }));
+    if (editData) {
+      const bp = editData.BP || editData;
+      const nodalNIC = bp.nodalOfficerNIC || {};
+      const nodalDept = bp.nodalOfficerDept || bp.nodalofficerDept || {};
+      const audits = editData.SA?.securityAudit || [];
+      const vaDataWithId = (editData.Infra?.vaRecords || []).map((record, index) => ({
+        ...record,
+        _id: record._id || `${index}-${Date.now()}`,
+      }));
 
-    setFormData({
-      // Basic Profile
-      assetsId: editData.assetsId || bp.assetsId || "",
-      projectName: editData.projectName || bp.name || "",
-      prismId: bp.prismId || bp.prismid || "",
-      departmentName: bp.deptName || bp.departmentName || "",
-      url: bp.url || "",
-      publicIp: bp.publicIp || bp.public_ip || "",
-      HOD: bp.HOD || localStorage.getItem("HOD") || "",
-      // Nodal Officer from NIC
-      nicOfficerName: nodalNIC.name || "",
-      nicOfficerEmpCode: nodalNIC.empCode || "",
-      nicOfficerMob: nodalNIC.mobile || "",
-      nicOfficerEmail: nodalNIC.email || "",
-      // Nodal Officer from Department
-      deptOfficerName: nodalDept.name || "",
-      deptOfficerDesignation: nodalDept.designation || "",
-      deptOfficerMob: nodalDept.mobile || "",
-      deptOfficerEmail: nodalDept.email || "",
-      // Technology Stack
-      // framework: editData.TS?.framework || "",
-      // Infrastructure
-      typeOfServer: editData.Infra?.typeOfServer || "",
-      dataCentre: editData.Infra?.dataCentre || "",
-      deployment: editData.Infra?.deployment || "",
-      location: editData.Infra?.location || "",
-      // VA fields (for adding new VA record)
-      ipAddress: "",
-      purposeOfUse: "",
-      vaScore: "",
-      dateOfVA: "",
-      vaReport: null,
-      // Git URL (for adding new git url)
-      gitUrl: "",
-    });
+      setFormData({
+        // Basic Profile
+        assetsId: editData.assetsId || bp.assetsId || "",
+        projectName: editData.projectName || bp.name || "",
+        prismId: bp.prismId || bp.prismid || "",
+        departmentName: bp.deptName || bp.departmentName || "",
+        url: bp.url || "",
+        publicIp: bp.publicIp || bp.public_ip || "",
+        HOD: bp.HOD || localStorage.getItem("HOD") || "",
+        // Nodal Officer from NIC
+        nicOfficerName: nodalNIC.name || "",
+        nicOfficerEmpCode: nodalNIC.empCode || "",
+        nicOfficerMob: nodalNIC.mobile || "",
+        nicOfficerEmail: nodalNIC.email || "",
+        // Nodal Officer from Department
+        deptOfficerName: nodalDept.name || "",
+        deptOfficerDesignation: nodalDept.designation || "",
+        deptOfficerMob: nodalDept.mobile || "",
+        deptOfficerEmail: nodalDept.email || "",
+        // Technology Stack
+        // framework: editData.TS?.framework || "",
+        // Infrastructure
+        typeOfServer: editData.Infra?.typeOfServer || "",
+        dataCentre: editData.Infra?.dataCentre || "",
+        deployment: editData.Infra?.deployment || "",
+        location: editData.Infra?.location || "",
+        // VA fields (for adding new VA record)
+        ipAddress: "",
+        purposeOfUse: "",
+        vaScore: "",
+        dateOfVA: "",
+        vaReport: null,
+        // Git URL (for adding new git url)
+        gitUrl: "",
+      });
 
-    setUsedTech(editData.TS?.frontend ?? editData.TS?.frontEnd ?? []);
-    setUsedFrameworks(
-      Array.isArray(editData.TS?.framework)
-        ? editData.TS.framework
-        : editData.TS?.framework
-        ? [editData.TS.framework]
-        : []
-    );
-    setUsedDb(editData.TS?.database || []);
-    setUsedOs(editData.TS?.os || []);
-    setUsedOsVersion(editData.TS?.osVersion || []);
-    setUsedRepo(editData.TS?.repoUrls || []);
-    setGitUrls(editData.Infra?.gitUrls || []);
-    setVaRecords(editData.Infra?.vaRecords || []);
-    setVaRecords(vaDataWithId);
+      setUsedTech(editData.TS?.frontend ?? editData.TS?.frontEnd ?? []);
+      setUsedFrameworks(
+        Array.isArray(editData.TS?.framework)
+          ? editData.TS.framework
+          : editData.TS?.framework
+            ? [editData.TS.framework]
+            : []
+      );
+      setUsedDb(editData.TS?.database || []);
+      setUsedOs(editData.TS?.os || []);
+      setUsedOsVersion(editData.TS?.osVersion || []);
+      setUsedRepo(editData.TS?.repoUrls || []);
+      setGitUrls(editData.Infra?.gitUrls || []);
+      setVaRecords(editData.Infra?.vaRecords || []);
+      setVaRecords(vaDataWithId);
 
-    
 
-    // 🔥 Load full audit record list dynamically
-    const dynamicAuditRecords = audits.map((record) => ({
-      typeOfAudit: record.typeOfAudit || "",
-      auditingAgency: record.auditingAgency || "",
-      auditDate: record.auditDate ? record.auditDate.slice(0, 10) : "",
-      expireDate: record.expireDate ? record.expireDate.slice(0, 10) : "",
-      tlsNextExpiry: record.tlsNextExpiry
-        ? record.tlsNextExpiry.slice(0, 10)
-        : "",
-      sslLabScore: record.sslLabScore || "",
-      certificate: record.certificate || null,
-    }));
 
-    setAuditRecords(dynamicAuditRecords);
-  } else {
-    // Not editing
-    setFormData((prev) => ({
-      ...prev,
-      HOD: localStorage.getItem("HOD") || "",
-    }));
-  }
-}, [editData]);
+      // 🔥 Load full audit record list dynamically
+      const dynamicAuditRecords = audits.map((record) => ({
+        typeOfAudit: record.typeOfAudit || "",
+        auditingAgency: record.auditingAgency || "",
+        auditDate: record.auditDate ? record.auditDate.slice(0, 10) : "",
+        expireDate: record.expireDate ? record.expireDate.slice(0, 10) : "",
+        tlsNextExpiry: record.tlsNextExpiry
+          ? record.tlsNextExpiry.slice(0, 10)
+          : "",
+        sslLabScore: record.sslLabScore || "",
+        certificate: record.certificate || null,
+      }));
+
+      setAuditRecords(dynamicAuditRecords);
+    } else {
+      // Not editing
+      setFormData((prev) => ({
+        ...prev,
+        HOD: localStorage.getItem("HOD") || "",
+      }));
+    }
+  }, [editData]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -140,25 +150,28 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   };
 
   // const handleNext = () => setCurrentStep((prev) => prev + 1);
- const handleNext = () => {
-  const updatedSteps = [...completedSteps];
-  updatedSteps[currentStep] = true; // ✅ Mark current step completed
-  setCompletedSteps(updatedSteps);
-  setCurrentStep(currentStep + 1);
-};
+  const handleNext = () => {
+    const updatedSteps = [...completedSteps];
+    updatedSteps[currentStep] = true; // ✅ Mark current step completed
+    setCompletedSteps(updatedSteps);
+    setCurrentStep(currentStep + 1);
+  };
 
   const handlePrevious = () => setCurrentStep((prev) => prev - 1);
   // const handleStepClick = (stepIndex) => setCurrentStep(stepIndex);
+  //   const handleStepClick = (stepIndex) => {
+  //   // Prevent clicking ahead without completing previous steps
+  //   for (let i = 0; i < stepIndex; i++) {
+  //     if (!completedSteps[i]) {
+  //       toast.error("Please complete previous steps before proceeding.");
+  //       return;
+  //     }
+  //   }
+  //   setCurrentStep(stepIndex);
+  // };
   const handleStepClick = (stepIndex) => {
-  // Prevent clicking ahead without completing previous steps
-  for (let i = 0; i < stepIndex; i++) {
-    if (!completedSteps[i]) {
-      toast.error("Please complete previous steps before proceeding.");
-      return;
-    }
-  }
-  setCurrentStep(stepIndex);
-};
+    setCurrentStep(stepIndex);
+  };
 
 
   const onAddGitUrl = () => {
@@ -177,68 +190,41 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     }));
   };
 
+  const onAddVa = () => {
+    if (!formData.ipAddress) return;
 
-// const onAddVa = () => {
-//   if (!formData.ipAddress) {
-//     // toast.error("IP Address is required");
-//     return;
-//   }
+    const isDuplicate = vaRecords.some(
+      (record) => record.ipAddress === formData.ipAddress
+    );
+    if (isDuplicate) {
+      toast.error("Duplicate VA record");
+      return;
+    }
 
-//   const newRecord = {
-//     ipAddress: formData.ipAddress,
-//     purposeOfUse: formData.purposeOfUse || "Application Server",
-//     vaScore: formData.vaScore,
-//     dateOfVA: formData.dateOfVA,
-//     vaReport: formData.vaReport || null,  // ✅ Fix applied
-//   };
+    const newVa = {
+      ipAddress: formData.ipAddress,
+      purposeOfUse: formData.purposeOfUse || "Application Server",
+      vaScore: formData.vaScore,
+      dateOfVA: formData.dateOfVA,
+      vaReport: formData.vaReport || null,
+      _id: `${Date.now()}`, // ensure unique
+    };
 
-//   setVaRecords([...vaRecords, newRecord]);
+    setVaRecords([...vaRecords, newVa]);
 
-//   setFormData((prev) => ({
-//     ...prev,
-//     ipAddress: "",
-//     vaScore: "",
-//     dateOfVA: "",
-//     vaReport: null,
-//   }));
-// };
-
-
-const onAddVa = () => {
-  if (!formData.ipAddress) return;
-
-  const isDuplicate = vaRecords.some(
-    (record) => record.ipAddress === formData.ipAddress
-  );
-  if (isDuplicate) {
-    toast.error("Duplicate VA record");
-    return;
-  }
-
-  const newVa = {
-    ipAddress: formData.ipAddress,
-    purposeOfUse: formData.purposeOfUse || "Application Server",
-    vaScore: formData.vaScore,
-    dateOfVA: formData.dateOfVA,
-    vaReport: formData.vaReport || null,
-    _id: `${Date.now()}`, // ensure unique
+    setFormData((prev) => ({
+      ...prev,
+      ipAddress: "",
+      vaScore: "",
+      dateOfVA: "",
+      vaReport: null,
+    }));
   };
 
-  setVaRecords([...vaRecords, newVa]);
-
-  setFormData((prev) => ({
-    ...prev,
-    ipAddress: "",
-    vaScore: "",
-    dateOfVA: "",
-    vaReport: null,
-  }));
-};
 
 
+  const onDeleteVa = (idx) => setVaRecords(vaRecords.filter((_, i) => i !== idx));
 
-const onDeleteVa = (idx) => setVaRecords(vaRecords.filter((_, i) => i !== idx));
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -268,50 +254,39 @@ const onDeleteVa = (idx) => setVaRecords(vaRecords.filter((_, i) => i !== idx));
         },
       };
 
-      // const SA = {
-      //   securityAudit: auditRecords.map((record, idx) => ({
-      //     "Sl no": idx + 1,
-      //     typeOfAudit: record.typeOfAudit,
-      //     auditingAgency: record.auditingAgency,
-      //     auditDate: record.auditDate ? new Date(record.auditDate) : null,
-      //     expireDate: record.expireDate ? new Date(record.expireDate) : null,
-      //     tlsNextExpiry: record.tlsNextExpiry ? new Date(record.tlsNextExpiry) : null, // ✅ Keep consistent
-      //     sslLabScore: record.sslLabScore,
-      //     certificate: record.certificate,
-      //   })),
-      // };
-const SA = {
-  securityAudit: auditRecords.map((record, idx) => {
-    const now = new Date();
-    const expireDate = record.expireDate ? new Date(record.expireDate) : null;
-    const tlsNextExpiry = record.tlsNextExpiry ? new Date(record.tlsNextExpiry) : null;
 
-    // Calculate statuses
-    let auditStatus = "Completed";
-    let sslStatus = "Valid";
+      const SA = {
+        securityAudit: auditRecords.map((record, idx) => {
+          const now = new Date();
+          const expireDate = record.expireDate ? new Date(record.expireDate) : null;
+          const tlsNextExpiry = record.tlsNextExpiry ? new Date(record.tlsNextExpiry) : null;
 
-    if (expireDate && now > expireDate) {
-      auditStatus = "Expired";
-    }
+          // Calculate statuses
+          let auditStatus = "Completed";
+          let sslStatus = "Valid";
 
-    if (tlsNextExpiry && now > tlsNextExpiry) {
-      sslStatus = "Expired";
-    }
+          if (expireDate && now > expireDate) {
+            auditStatus = "Expired";
+          }
 
-    return {
-      "Sl no": idx + 1,
-      typeOfAudit: record.typeOfAudit,
-      auditingAgency: record.auditingAgency,
-      auditDate: record.auditDate ? new Date(record.auditDate) : null,
-      expireDate,
-      tlsNextExpiry,
-      sslLabScore: record.sslLabScore,
-      certificate: record.certificate,
-      auditStatus,
-      sslStatus
-    };
-  }),
-};
+          if (tlsNextExpiry && now > tlsNextExpiry) {
+            sslStatus = "Expired";
+          }
+
+          return {
+            "Sl no": idx + 1,
+            typeOfAudit: record.typeOfAudit,
+            auditingAgency: record.auditingAgency,
+            auditDate: record.auditDate ? new Date(record.auditDate) : null,
+            expireDate,
+            tlsNextExpiry,
+            sslLabScore: record.sslLabScore,
+            certificate: record.certificate,
+            auditStatus,
+            sslStatus
+          };
+        }),
+      };
 
       const TS = {
         frontend: usedTech,
@@ -336,10 +311,44 @@ const SA = {
           vaReport: record.vaReport,
         })),
       };
+ 
 
+
+      const TLS = {
+        tlsInfo: tlsData.map((entry, idx) => ({
+          slNo: idx + 1,
+          issueDate: entry.issueDate,
+          expiryDate: entry.expiryDate,
+          score: entry.score,
+          procuredFrom: entry.procuredFrom,
+        })),
+      };
+      
+     
+
+      const DR = {
+        DRInfo: {
+          drLocation: drFormData.location,
+          drStatus: drFormData.serverType,
+          lastDrTestDate: drFormData.vaDate || null, // or use a dedicated field
+          remarks: drFormData.remarks || "",         // Add a remarks field if needed
+        },
+        gitUrls: drGitUrls,
+        vaRecords: drRecords.map((record) => ({
+          ipAddress: record.ipAddress,
+          dbServerIp: record.dbServerIp,
+          purposeOfUse: record.purpose,
+          vaScore: record.vaScore,
+          dateOfVA: record.vaDate,
+          vaReport: record.vaReport,
+        })),
+      };
+      
       form.append("BP", JSON.stringify(BP));
       form.append("SA", JSON.stringify(SA));
       form.append("TS", JSON.stringify(TS));
+      form.append("TLS", JSON.stringify(TLS));
+      form.append("DR", JSON.stringify(DR));
       form.append("Infra", JSON.stringify(Infra));
       if (formData.certificate) {
         form.append("certificate", formData.certificate);
@@ -358,8 +367,8 @@ const SA = {
         );
         // alert("Asset successfully updated!");
         toast.success("Asset successfully updated!");
-        navigate("/dashboard"); 
-        window.location.reload();// ✅ Redirect to dashboard
+        navigate("/dashboard");
+        // window.location.reload();// ✅ Redirect to dashboard
 
       } else {
         // CREATE: new asset
@@ -368,9 +377,9 @@ const SA = {
         });
         // alert("Asset successfully created!");
         toast.success("Asset successfully created!");
-        navigate("/dashboard"); 
-        window.location.reload()
-        
+        navigate("/dashboard");
+        // window.location.reload()
+
       }
     } catch (err) {
       console.error("Submission error:", err);
@@ -403,6 +412,15 @@ const SA = {
         );
       case 2:
         return (
+          <StepTLSInfo
+            tlsData={tlsData}
+            setTlsData={setTlsData}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+          />
+        );
+      case 3:
+        return (
           <StepTechnologyStack
             formData={formData}
             onChange={handleChange}
@@ -419,10 +437,10 @@ const SA = {
             usedRepo={usedRepo}
             setUsedRepo={setUsedRepo}
             usedFrameworks={usedFrameworks}              // ✅ Add this
-  setUsedFrameworks={setUsedFrameworks} 
+            setUsedFrameworks={setUsedFrameworks}
           />
         );
-      case 3:
+      case 4:
         return (
           <StepInfrastructure
             formData={formData}
@@ -435,6 +453,19 @@ const SA = {
             onVaFileChange={onVaFileChange}
             onAddVa={onAddVa}
             onDeleteVa={onDeleteVa}
+            onNext={handleNext} // ✅ not onSubmit anymore
+          />
+        );
+      case 5:
+        return (
+          <DRForm
+            formData={drFormData}
+            setFormData={setDrFormData}
+            gitUrls={drGitUrls}
+            setGitUrls={setDrGitUrls}
+            records={drRecords}
+            setRecords={setDrRecords}
+            onPrevious={handlePrevious}
             onSubmit={handleSubmit}
           />
         );
@@ -442,28 +473,28 @@ const SA = {
         return null;
     }
   };
- 
-     {/* There is a work of ramsis to do the ui dymaic level  */}
+
+  {/* There is a work of ramsis to do the ui dymaic level  */ }
 
 
   return (
-    
-   <div className={`form-container ${isSidebarOpen ? "compact-form" : "fullscreen-form"}`}>
-  <Header onSidebarToggle={setSidebarOpen} />
-  <Sidebar isSidebarOpen={isSidebarOpen} setFormToShow={setFormToShow} />
 
-  <div className="form-header">
-    <h2 style={{ padding: "10px 20px", fontWeight: "700", fontSize: "1.7rem", }}>
-      {editData ? "Edit Project" : "Add Project"}
-    </h2>
-  </div>
+    <div className={`form-container ${isSidebarOpen ? "compact-form" : "fullscreen-form"}`}>
+      <Header onSidebarToggle={setSidebarOpen} />
+      <Sidebar isSidebarOpen={isSidebarOpen} setFormToShow={setFormToShow} />
 
-
-       {/* There is a work of ramsis to do the ui dymaic level  */}
+      <div className="form-header">
+        <h2 style={{ padding: "10px 20px", fontWeight: "700", fontSize: "1.7rem", }}>
+          {editData ? "Edit Project" : "Add Project"}
+        </h2>
+      </div>
 
 
+      {/* There is a work of ramsis to do the ui dymaic level  */}
 
-      
+
+
+
 
       <form id="msform" onSubmit={handleSubmit}>
         <ProgressBar
