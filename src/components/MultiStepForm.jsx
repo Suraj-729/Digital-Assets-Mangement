@@ -51,19 +51,107 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   });
   const [drGitUrls, setDrGitUrls] = useState([]);
   const [drRecords, setDrRecords] = useState([]);
+  // useEffect(() => {
+  //   if (editData) {
+  //     const bp = editData.BP || editData;
+  //     const nodalNIC = bp.nodalOfficerNIC || {};
+  //     const nodalDept = bp.nodalOfficerDept || bp.nodalofficerDept || {};
+  //     const audits = editData.SA?.securityAudit || [];
+  //     const vaDataWithId = (editData.Infra?.vaRecords || []).map((record, index) => ({
+  //       ...record,
+  //       _id: record._id || `${index}-${Date.now()}`,
+  //     }));
+
+  //     setFormData({
+  //       // Basic Profile
+  //       assetsId: editData.assetsId || bp.assetsId || "",
+  //       projectName: editData.projectName || bp.name || "",
+  //       prismId: bp.prismId || bp.prismid || "",
+  //       departmentName: bp.deptName || bp.departmentName || "",
+  //       url: bp.url || "",
+  //       publicIp: bp.publicIp || bp.public_ip || "",
+  //       HOD: bp.HOD || localStorage.getItem("HOD") || "",
+  //       // Nodal Officer from NIC
+  //       nicOfficerName: nodalNIC.name || "",
+  //       nicOfficerEmpCode: nodalNIC.empCode || "",
+  //       nicOfficerMob: nodalNIC.mobile || "",
+  //       nicOfficerEmail: nodalNIC.email || "",
+  //       // Nodal Officer from Department
+  //       deptOfficerName: nodalDept.name || "",
+  //       deptOfficerDesignation: nodalDept.designation || "",
+  //       deptOfficerMob: nodalDept.mobile || "",
+  //       deptOfficerEmail: nodalDept.email || "",
+  //       // Technology Stack
+  //       // framework: editData.TS?.framework || "",
+  //       // Infrastructure
+  //       typeOfServer: editData.Infra?.typeOfServer || "",
+  //       dataCentre: editData.Infra?.dataCentre || "",
+  //       deployment: editData.Infra?.deployment || "",
+  //       location: editData.Infra?.location || "",
+  //       // VA fields (for adding new VA record)
+  //       ipAddress: "",
+  //       purposeOfUse: "",
+  //       vaScore: "",
+  //       dateOfVA: "",
+  //       vaReport: null,
+  //       // Git URL (for adding new git url)
+  //       gitUrl: "",
+  //     });
+
+  //     setUsedTech(editData.TS?.frontend ?? editData.TS?.frontEnd ?? []);
+  //     setUsedFrameworks(
+  //       Array.isArray(editData.TS?.framework)
+  //         ? editData.TS.framework
+  //         : editData.TS?.framework
+  //           ? [editData.TS.framework]
+  //           : []
+  //     );
+  //     setUsedDb(editData.TS?.database || []);
+  //     setUsedOs(editData.TS?.os || []);
+  //     setUsedOsVersion(editData.TS?.osVersion || []);
+  //     setUsedRepo(editData.TS?.repoUrls || []);
+  //     setGitUrls(editData.Infra?.gitUrls || []);
+  //     setVaRecords(editData.Infra?.vaRecords || []);
+  //     setVaRecords(vaDataWithId);
+
+
+
+  //     // 🔥 Load full audit record list dynamically
+  //     const dynamicAuditRecords = audits.map((record) => ({
+  //       typeOfAudit: record.typeOfAudit || "",
+  //       auditingAgency: record.auditingAgency || "",
+  //       auditDate: record.auditDate ? record.auditDate.slice(0, 10) : "",
+  //       expireDate: record.expireDate ? record.expireDate.slice(0, 10) : "",
+  //       tlsNextExpiry: record.tlsNextExpiry
+  //         ? record.tlsNextExpiry.slice(0, 10)
+  //         : "",
+  //       sslLabScore: record.sslLabScore || "",
+  //       certificate: record.certificate || null,
+  //     }));
+
+  //     setAuditRecords(dynamicAuditRecords);
+  //   } else {
+  //     // Not editing
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       HOD: localStorage.getItem("HOD") || "",
+  //     }));
+  //   }
+  // }, [editData]);
   useEffect(() => {
     if (editData) {
       const bp = editData.BP || editData;
       const nodalNIC = bp.nodalOfficerNIC || {};
       const nodalDept = bp.nodalOfficerDept || bp.nodalofficerDept || {};
       const audits = editData.SA?.securityAudit || [];
+  
       const vaDataWithId = (editData.Infra?.vaRecords || []).map((record, index) => ({
         ...record,
         _id: record._id || `${index}-${Date.now()}`,
       }));
-
+  
+      // Set main form data
       setFormData({
-        // Basic Profile
         assetsId: editData.assetsId || bp.assetsId || "",
         projectName: editData.projectName || bp.name || "",
         prismId: bp.prismId || bp.prismid || "",
@@ -71,52 +159,92 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         url: bp.url || "",
         publicIp: bp.publicIp || bp.public_ip || "",
         HOD: bp.HOD || localStorage.getItem("HOD") || "",
-        // Nodal Officer from NIC
         nicOfficerName: nodalNIC.name || "",
         nicOfficerEmpCode: nodalNIC.empCode || "",
         nicOfficerMob: nodalNIC.mobile || "",
         nicOfficerEmail: nodalNIC.email || "",
-        // Nodal Officer from Department
         deptOfficerName: nodalDept.name || "",
         deptOfficerDesignation: nodalDept.designation || "",
         deptOfficerMob: nodalDept.mobile || "",
         deptOfficerEmail: nodalDept.email || "",
-        // Technology Stack
-        // framework: editData.TS?.framework || "",
-        // Infrastructure
         typeOfServer: editData.Infra?.typeOfServer || "",
         dataCentre: editData.Infra?.dataCentre || "",
         deployment: editData.Infra?.deployment || "",
         location: editData.Infra?.location || "",
-        // VA fields (for adding new VA record)
         ipAddress: "",
         purposeOfUse: "",
         vaScore: "",
         dateOfVA: "",
         vaReport: null,
-        // Git URL (for adding new git url)
         gitUrl: "",
       });
-
+  
+      // Set technology stack
       setUsedTech(editData.TS?.frontend ?? editData.TS?.frontEnd ?? []);
       setUsedFrameworks(
         Array.isArray(editData.TS?.framework)
           ? editData.TS.framework
           : editData.TS?.framework
-            ? [editData.TS.framework]
-            : []
+          ? [editData.TS.framework]
+          : []
       );
       setUsedDb(editData.TS?.database || []);
       setUsedOs(editData.TS?.os || []);
       setUsedOsVersion(editData.TS?.osVersion || []);
       setUsedRepo(editData.TS?.repoUrls || []);
       setGitUrls(editData.Infra?.gitUrls || []);
-      setVaRecords(editData.Infra?.vaRecords || []);
       setVaRecords(vaDataWithId);
-
-
-
-      // 🔥 Load full audit record list dynamically
+  
+      // Set DR info
+      const dr = editData.DR || {};
+      const drInfo = dr.DRInfo || {};
+  
+      setDrInfo({
+        drLocation: drInfo.drLocation || "",
+        drStatus: drInfo.drStatus || "",
+        lastDrTestDate: drInfo.lastDrTestDate
+          ? drInfo.lastDrTestDate.slice(0, 10)
+          : "",
+        remarks: drInfo.remarks || "",
+        gitUrls: dr.gitUrls || [],
+        vaRecords: (dr.vaRecords || []).map((record) => ({
+          ipAddress: record.ipAddress || "",
+          dbServerIp: record.dbServerIp || "",
+          purposeOfUse: record.purposeOfUse || "",
+          vaScore: record.vaScore || "",
+          dateOfVA: record.dateOfVA ? record.dateOfVA.slice(0, 10) : "",
+          vaReport: null, // file field
+        })),
+      });
+  
+      // Set TLS info
+      const tlsInfo = (editData.TLS?.tlsInfo || []).map((record) => {
+        const issueDate = record.issueDate ? new Date(record.issueDate) : null;
+        const expiryDate = record.expiryDate ? new Date(record.expiryDate) : null;
+  
+        let certStatus = "Valid";
+        if (expiryDate && new Date() > expiryDate) {
+          certStatus = "Expired";
+        } else if (expiryDate) {
+          const warningPeriod = new Date();
+          warningPeriod.setDate(warningPeriod.getDate() + 30);
+          if (expiryDate < warningPeriod) {
+            certStatus = "Expiring Soon";
+          }
+        }
+  
+        return {
+          domainName: record.domainName || "",
+          certProvider: record.certProvider || "",
+          issueDate,
+          expiryDate,
+          certStatus,
+        };
+      });
+  
+      setTlsInfo(tlsInfo);
+  
+      // Set Security Audits
       const dynamicAuditRecords = audits.map((record) => ({
         typeOfAudit: record.typeOfAudit || "",
         auditingAgency: record.auditingAgency || "",
@@ -128,7 +256,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         sslLabScore: record.sslLabScore || "",
         certificate: record.certificate || null,
       }));
-
+  
       setAuditRecords(dynamicAuditRecords);
     } else {
       // Not editing
@@ -138,6 +266,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       }));
     }
   }, [editData]);
+  
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 
-const StepTLSInfo = ({ onPrevious, onNext }) => {
+const StepTLSInfo = ({ onPrevious, onNext , tlsData, setTlsData}) => {
 
-  const [tlsData, setTlsData] = useState([]);
+  // const [tlsData, setTlsData] = useState([]);
   const [tlsIssueDate, setTlsIssueDate] = useState("");
   const [tlsExpiryDate, setTlsExpiryDate] = useState("");
   const [tlsScore, setTlsScore] = useState("");
