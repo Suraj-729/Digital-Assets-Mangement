@@ -5,21 +5,66 @@ import { toast } from "react-toastify";
 const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [projects, setProjects] = useState([]);
 
   // Autofill fields for PM
-useEffect(() => {
+  // useEffect(() => {
+  //   if (employeeType === "PM") {
+  //     const empCode = formData.empCode || localStorage.getItem("employeeId");
+
+  //     if (!empCode) return;
+
+  //     setLoading(true);
+
+  //     fetch(`http://localhost:5000/project-assignments/${empCode}`)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         if (data && data.length > 0) {
+  //           const project = data[0];
+  //           onChange({ target: { name: "projectName", value: project.projectName || "" } });
+  //           onChange({ target: { name: "departmentName", value: project.deptName || "" } });
+  //           onChange({ target: { name: "HOD", value: project.HOD || "" } });
+  //           onChange({ target: { name: "nicOfficerName", value: project.projectManagerName || "" } });
+  //           onChange({ target: { name: "nicOfficerEmpCode", value: project.empCode || "" } });
+  //         } else {
+  //           toast.warning("No project data found for your empCode.");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //         toast.error("Failed to fetch project assignment data.");
+  //       })
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [employeeType]);
+
+  useEffect(() => {
+  console.log("useEffect triggered - employeeType:", employeeType);
+
   if (employeeType === "PM") {
     const empCode = formData.empCode || localStorage.getItem("employeeId");
+    console.log("Resolved empCode:", empCode);
 
-    if (!empCode) return;
+    if (!empCode) {
+      console.warn("No employee code found, aborting fetch.");
+      return;
+    }
 
     setLoading(true);
+    console.log("Fetching data for empCode:", empCode);
 
     fetch(`http://localhost:5000/project-assignments/${empCode}`)
-      .then((res) => res.json())
+      .then((res) => {
+        console.log("Received response from server:", res);
+        return res.json();
+      })
       .then((data) => {
+        console.log("Parsed data:", data);
+
         if (data && data.length > 0) {
           const project = data[0];
+          console.log("Using first project from data:", project);
+
           onChange({ target: { name: "projectName", value: project.projectName || "" } });
           onChange({ target: { name: "departmentName", value: project.deptName || "" } });
           onChange({ target: { name: "HOD", value: project.HOD || "" } });
@@ -30,12 +75,48 @@ useEffect(() => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Error fetching project assignment data:", err);
         toast.error("Failed to fetch project assignment data.");
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        console.log("Fetch complete, turning off loading state.");
+        setLoading(false);
+      });
   }
 }, [employeeType]);
+
+
+  useEffect(() => {
+    if (employeeType === "PM") {
+      const empCode = formData.empCode || localStorage.getItem("employeeId");
+      if (!empCode) return;
+      setLoading(true);
+      fetch(`http://localhost:5000/project-assignments/by-pm/${empCode}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setProjects(data || []);
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error("Failed to fetch project assignment data.");
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [employeeType, formData.empCode]);
+
+  const handleProjectSelect = (e) => {
+    const selectedProject = projects.find((p) => p.projectName === e.target.value);
+    if (selectedProject) {
+      onChange({ target: { name: "projectName", value: selectedProject.projectName } });
+      onChange({ target: { name: "departmentName", value: selectedProject.deptName || "" } });
+      onChange({ target: { name: "HOD", value: selectedProject.HOD || "" } });
+      onChange({ target: { name: "nicOfficerName", value: selectedProject.projectManagerName || "" } });
+      onChange({ target: { name: "nicOfficerEmpCode", value: selectedProject.empCode || "" } });
+    } else {
+      onChange({ target: { name: "projectName", value: "" } });
+    }
+  };
+
 
 
   const validate = () => {
@@ -116,14 +197,30 @@ useEffect(() => {
                 <label className="form-label">Project Name:</label>
               </div>
               <div className="col-sm-8">
-                <input
-                  type="text"
-                  className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
-                  name="projectName"
-                  value={formData.projectName || ""}
-                  onChange={onChange}
-                  disabled={employeeType === "PM"}
-                />
+                {employeeType === "PM" ? (
+                  <select
+                    className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
+                    name="projectName"
+                    value={formData.projectName || ""}
+                    onChange={handleProjectSelect}
+                    disabled={loading}
+                  >
+                    <option value="">Select Project</option>
+                    {projects.map((project) => (
+                      <option key={project.projectName} value={project.projectName}>
+                        {project.projectName}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
+                    name="projectName"
+                    value={formData.projectName || ""}
+                    onChange={onChange}
+                  />
+                )}
                 {errors.projectName && <div className="invalid-feedback">{errors.projectName}</div>}
               </div>
             </div>
