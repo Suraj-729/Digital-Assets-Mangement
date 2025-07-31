@@ -31,6 +31,7 @@ RUN npm install --production && npm install -g serve
 # Copy the rest of the files
 COPY . .
 
+
 # Build the React app
 RUN npm run build
 
