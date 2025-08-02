@@ -77,8 +77,8 @@ const SecurityAudit = ({ securityAudits }) => {
                 <th>Agency</th>
                 <th>Certificate</th>
                 {/* <th>va </th> */}
-                <th>SSL Lab Score</th>
-                <th>TLS  Expiry Date</th>
+               
+        
               </tr>
             </thead>
             <tbody>
@@ -131,8 +131,8 @@ const SecurityAudit = ({ securityAudits }) => {
                         )}
                       </td>
 
-                      <td>{audit.sslLabScore || "N/A"}</td>
-                      <td>{formatDate(audit.tlsNextExpiry)}</td>
+                    
+                     
                     </tr>
                   );
                 })

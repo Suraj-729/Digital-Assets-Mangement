@@ -212,7 +212,20 @@ const DRForm = ({
 
       <div className="row mb-4">
         <div className="col-md-4">
-          <button className="btn btn-info w-100" onClick={handleAddRecord}>
+          <button className="btn btn-info w-100"  type="button"onClick={handleAddRecord}
+          style={{
+            
+              color: "white",
+              border: "none",
+              padding: "8px 70px",
+              borderRadius: "6px",
+              fontWeight: "bold",
+              fontSize: "14px",
+              letterSpacing: "0.5px",
+              marginLeft: "420px"
+            }}>
+
+
             Add Record
           </button>
         </div>
@@ -273,10 +286,35 @@ const DRForm = ({
 
       {/* Navigation Buttons */}
       <div className="d-flex justify-content-between mt-4">
-        <button className="btn btn-secondary" onClick={onPrevious}>
+        {/* <button className="btn btn-secondary" onClick={onPrevious}> */}
+        <button className="btn btn-secondary" onClick={onPrevious}
+         style={{
+              width: "100px",
+              fontWeight: "bold",
+              color: "white",
+              border: "0 none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              padding: "10px 5px",
+              background: "#a8dced",
+              marginLeft: "470px"
+            }}>
+
           Previous
         </button>
-        <button className="btn btn-success" onClick={onSubmit}>
+        {/* <button className="btn btn-success" onClick={onSubmit}> */}
+        <button className="btn btn-success" onClick={onSubmit}
+        style={{
+              width: "100px",
+              fontWeight: "bold",
+              color: "white",
+              border: "0 none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              padding: "10px 5px",
+              background: "#0099cc",
+              marginRight: "470px"
+            }}>
           Submit
         </button>
       </div>

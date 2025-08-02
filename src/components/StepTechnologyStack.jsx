@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
-
+import api from "../Api"
 const StepTechnologyStack = ({
   formData = {},
   onChange,
@@ -17,11 +17,25 @@ const StepTechnologyStack = ({
   setUsedOsVersion,
   usedRepo,
   setUsedRepo,
-  usedFrameworks,            // ✅ Accept from props
-  setUsedFrameworks, 
+  usedFrameworks, // ✅ Accept from props
+  setUsedFrameworks,
 }) => {
   const [errors, setErrors] = useState({});
   const [dbOptions, setDbOptions] = useState([]);
+  const [osData, setOsData] = useState([]);
+  const [filteredVersions, setFilteredVersions] = useState([]);
+  const [frameworkData, setFrameworkData] = useState([]);
+  const [filteredFrameworkVersions, setFilteredFrameworkVersions] = useState([]);
+  const [frontendData, setFrontendData] = useState([]);
+  // const [filteredVersions, setFilteredVersions] = useState([]);
+
+
+
+  useEffect(() => {
+    api.get("/getOs")
+      .then((res) => setOsData(res.data))
+      .catch((err) => console.error("Failed to load OS data", err));
+  }, []);
 
   useEffect(() => {
     fetch("http://localhost:5000/databases")
@@ -32,6 +46,38 @@ const StepTechnologyStack = ({
         toast.error("Failed to fetch database list.");
       });
   }, []);
+  useEffect(() => {
+    if (formData.os) {
+      const versions = osData
+        .filter(item => item.os === formData.os)
+        .map(item => item.version);
+      setFilteredVersions(versions);
+    } else {
+      setFilteredVersions([]);
+    }
+  }, [formData.os, osData]);
+
+
+  // Fetch framework data from backend
+
+  // Filter versions when framework name changes
+useEffect(() => {
+    api.get("/frontend")
+      .then((res) => setFrontendData(res.data))
+      .catch((err) => console.error("Failed to fetch frontend tech", err));
+  }, []);
+
+  // Update filtered versions when a tech is selected
+  useEffect(() => {
+    if (formData.frontEnd) {
+      const versions = frontendData
+        .filter(item => item.technology === formData.frontEnd)
+        .map(item => item.version);
+      setFilteredVersions(versions);
+    } else {
+      setFilteredVersions([]);
+    }
+  }, [formData.frontEnd, frontendData]);
 
   // const [usedFrameworks, setUsedFrameworks] = useState([]);
 
@@ -164,293 +210,313 @@ const StepTechnologyStack = ({
       <legend className="form-legend">Technology Stack</legend>
 
       {/* Front End */}
-     <div className="form-group row mb-4">
-  <label className="col-md-3 col-form-label">Front End Technology</label>
-  <div className="col-md-6">
-    <div className="input-group">
-      <select
-        className={`form-select ${errors.frontEnd ? "is-invalid" : ""}`}
-        name="frontEnd"
-        value={formData.frontEnd || ""}
-        onChange={onChange}
-      >
-        <option value="">Select a front-end technology</option>
-        <option value="Java">Java</option>
-        <option value=".Net 4.5 & below">.Net 4.5 & below</option>
-        <option value=".Net Core">.Net Core</option>
-        <option value="Node JS">Node JS</option>
-        <option value="PHP">PHP</option>
-        <option value="NEXT JS">NEXT JS</option>
-      </select>
-      <button
-        className="btn btn-primary"
-        type="button"
-        onClick={() =>
-          addToStack("frontEnd", formData.frontEnd, setUsedTech, "frontEnd")
-        }
-      >
-        Add
-      </button>
-    </div>
-    {errors.frontEnd && (
-      <div className="invalid-feedback">{errors.frontEnd}</div>
-    )}
+       <div className="form-group row mb-4">
+      <label className="col-md-3 col-form-label fw-bold">Front End Technology</label>
+      <div className="col-md-6">
+        {/* Technology Dropdown */}
+        <div className="input-group mb-2">
+          <select
+            className={`form-select ${errors.frontEnd ? "is-invalid" : ""}`}
+            name="frontEnd"
+            value={formData.frontEnd || ""}
+            onChange={onChange}
+          >
+            <option value="">Select a front-end technology</option>
+            {[...new Set(frontendData.map(item => item.technology))].map((tech, idx) => (
+              <option key={idx} value={tech}>{tech}</option>
+            ))}
+          </select>
+        </div>
 
-    {/* ✅ Updated badge view to be consistent like Database style */}
-    <div className="badge-container mt-2">
-      {renderStackBadges(usedTech, "frontEnd", setUsedTech)}
-    </div>
-  </div>
-</div>
+        {/* Version Dropdown */}
+        {filteredVersions.length > 0 && (
+          <div className="input-group mb-2">
+            <select
+              className={`form-select ${errors.frontEndVersion ? "is-invalid" : ""}`}
+              name="frontEndVersion"
+              value={formData.frontEndVersion || ""}
+              onChange={onChange}
+            >
+              <option value="">Select a version</option>
+              {filteredVersions.map((ver, idx) => (
+                <option key={idx} value={ver}>{ver}</option>
+              ))}
+            </select>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={() =>
+                addToStack(
+                  "frontEnd",
+                  `${formData.frontEnd} ${formData.frontEndVersion}`,
+                  setUsedTech,
+                  "frontEnd"
+                )
+              }
+              disabled={!formData.frontEnd || !formData.frontEndVersion}
+            >
+              Add
+            </button>
+          </div>
+        )}
 
+        {/* Validation */}
+        {errors.frontEnd && <div className="invalid-feedback">{errors.frontEnd}</div>}
+        {errors.frontEndVersion && <div className="invalid-feedback">{errors.frontEndVersion}</div>}
+
+        {/* BADGES */}
+        <div className="badge-container mt-2">
+          {renderStackBadges(usedTech, "frontEnd", setUsedTech)}
+        </div>
+      </div>
+    </div>
 
       {/* Framework */}
       <div className="form-group row mb-4">
-  <label className="col-md-3 col-form-label">Framework(s)</label>
-  <div className="col-md-6">
-    <div className="input-group">
-      <input
-        type="text"
-        className={`form-control ${errors.framework ? "is-invalid" : ""}`}
-        name="framework"
-        placeholder="Enter framework name"
-        value={formData.framework || ""}
-        onChange={onChange}
-      />
-      <button
-        className="btn btn-primary"
-        type="button"
-        onClick={() =>
-          addToStack("framework", formData.framework, setUsedFrameworks, "framework")
-        }
-      >
-        Add
-      </button>
-    </div>
-    {errors.framework && (
-      <div className="invalid-feedback">{errors.framework}</div>
-    )}
+        <label className="col-md-3 col-form-label">Framework(s)</label>
+        <div className="col-md-6">
+          <div className="input-group">
+            <input
+              type="text"
+              className={`form-control ${errors.framework ? "is-invalid" : ""}`}
+              name="framework"
+              placeholder="Enter framework name"
+              value={formData.framework || ""}
+              onChange={onChange}
+            />
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={() =>
+                addToStack(
+                  "framework",
+                  formData.framework,
+                  setUsedFrameworks,
+                  "framework"
+                )
+              }
+            >
+              Add
+            </button>
+          </div>
+          {errors.framework && (
+            <div className="invalid-feedback">{errors.framework}</div>
+          )}
 
-    {/* BADGES IN ROW */}
-    <div className="badge-container mt-2">
-      {renderStackBadges(usedFrameworks, "framework", setUsedFrameworks)}
-    </div>
-  </div>
-</div>
-
+          {/* BADGES IN ROW */}
+          <div className="badge-container mt-2">
+            {renderStackBadges(usedFrameworks, "framework", setUsedFrameworks)}
+          </div>
+        </div>
+      </div>
 
       {/* Database */}
-      
-  <div className="form-group row mb-4">
-  <label className="col-md-3 col-form-label">Database</label>
-  <div className="col-md-6">
-    <div className="input-group">
-      <select
-        className={`form-select ${errors.database ? "is-invalid" : ""}`}
-        name="database"
-        value={formData.database || ""}
-        onChange={onChange}
-      >
-        <option value="">Select a database</option>
-        {dbOptions.map((db, idx) => (
-          <option key={idx} value={`${db.DB} ${db.Version}`}>
-            {db.DB} {db.Version}
-          </option>
-        ))}
-        <option value="Other">OTHER</option>
-      </select>
-      <button
-        className="btn btn-primary"
-        type="button"
-        onClick={() =>
-          addToStack(
-            "database",
-            formData.database === "Other" ? formData.otherDatabase : formData.database,
-            setUsedDb,
-            "database"
-          )
-        }
-      >
-        Add
-      </button>
-    </div>
 
-    {formData.database === "Other" && (
-      <input
-        type="text"
-        className="form-control mt-2"
-        placeholder="Enter other database"
-        name="otherDatabase"
-        value={formData.otherDatabase || ""}
-        onChange={(e) =>
-          onChange({
-            target: {
-              name: "otherDatabase",
-              value: e.target.value,
-            },
-          })
-        }
-      />
-    )}
+      <div className="form-group row mb-4">
+        <label className="col-md-3 col-form-label">Database</label>
+        <div className="col-md-6">
+          <div className="input-group">
+            <select
+              className={`form-select ${errors.database ? "is-invalid" : ""}`}
+              name="database"
+              value={formData.database || ""}
+              onChange={onChange}
+            >
+              <option value="">Select a database</option>
+              {dbOptions.map((db, idx) => (
+                <option key={idx} value={`${db.DB} ${db.Version}`}>
+                  {db.DB} {db.Version}
+                </option>
+              ))}
+              <option value="Other">OTHER</option>
+            </select>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={() =>
+                addToStack(
+                  "database",
+                  formData.database === "Other"
+                    ? formData.otherDatabase
+                    : formData.database,
+                  setUsedDb,
+                  "database"
+                )
+              }
+            >
+              Add
+            </button>
+          </div>
 
-    {errors.database && (
-      <div className="invalid-feedback d-block">{errors.database}</div>
-    )}
+          {formData.database === "Other" && (
+            <input
+              type="text"
+              className="form-control mt-2"
+              placeholder="Enter other database"
+              name="otherDatabase"
+              value={formData.otherDatabase || ""}
+              onChange={(e) =>
+                onChange({
+                  target: {
+                    name: "otherDatabase",
+                    value: e.target.value,
+                  },
+                })
+              }
+            />
+          )}
 
-    <div className="badge-container mt-2">
-      {renderStackBadges(usedDb, "database", setUsedDb)}
-    </div>
-  </div>
-</div>
+          {errors.database && (
+            <div className="invalid-feedback d-block">{errors.database}</div>
+          )}
 
-
+          <div className="badge-container mt-2">
+            {renderStackBadges(usedDb, "database", setUsedDb)}
+          </div>
+        </div>
+      </div>
 
       {/* OS */}
-     <div className="form-group row mb-4">
-  <label className="col-md-3 col-form-label">Operating System</label>
-  <div className="col-md-6">
-    <div className="input-group">
-      <select
-        className={`form-select ${errors.os ? "is-invalid" : ""}`}
-        name="os"
-        value={formData.os || ""}
-        onChange={onChange}
-      >
-        <option value="">Select an OS</option>
-        <option value="Linux">Linux</option>
-        <option value="Windows">Windows</option>
-      </select>
-      <button
-        className="btn btn-primary"
-        type="button"
-        onClick={() => addToStack("os", formData.os, setUsedOs, "os")}
-      >
-        Add
-      </button>
-    </div>
-    {errors.os && (
-      <div className="invalid-feedback">{errors.os}</div>
-    )}
+ <div className="form-group row mb-4">
+      <label className="col-md-3 col-form-label">Operating System</label>
+      <div className="col-md-6">
+        <div className="input-group mb-2">
+          <select
+            className={`form-select ${errors.os ? "is-invalid" : ""}`}
+            name="os"
+            value={formData.os || ""}
+            onChange={onChange}
+          >
+            <option value="">Select OS</option>
+            {[...new Set(osData.map(item => item.os))].map((osName, idx) => (
+              <option key={idx} value={osName}>{osName}</option>
+            ))}
+          </select>
+        </div>
 
-    {/* BADGES IN ROW */}
-    <div className="badge-container mt-2">
-      {renderStackBadges(usedOs, "os", setUsedOs)}
-    </div>
-  </div>
-</div>
+        {/* Version Dropdown (only if OS is selected) */}
+        {filteredVersions.length > 0 && (
+          <div className="input-group mb-2">
+            <select
+              className={`form-select ${errors.osVersion ? "is-invalid" : ""}`}
+              name="osVersion"
+              value={formData.osVersion || ""}
+              onChange={onChange}
+            >
+              <option value="">Select OS Version</option>
+              {filteredVersions.map((version, idx) => (
+                <option key={idx} value={version}>{version}</option>
+              ))}
+            </select>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={() =>
+                addToStack(
+                  "os",
+                  `${formData.os} ${formData.osVersion}`,
+                  setUsedOs,
+                  "os"
+                )
+              }
+              disabled={!formData.os || !formData.osVersion}
+            >
+              Add
+            </button>
+          </div>
+        )}
 
+        {errors.os && <div className="invalid-feedback">{errors.os}</div>}
+        {errors.osVersion && <div className="invalid-feedback">{errors.osVersion}</div>}
+
+        {/* Render badges */}
+        <div className="badge-container mt-2">
+          {renderStackBadges(usedOs, "os", setUsedOs)}
+        </div>
+      </div>
+    </div>
 
       {/* OS Version */}
-     {/* OS Version */}
-<div className="form-group row mb-4">
-  <label className="col-md-3 col-form-label">OS Version</label>
-  <div className="col-md-6">
-    <div className="input-group">
-      <input
-        type="text"
-        className={`form-control ${errors.osVersion ? "is-invalid" : ""}`}
-        name="osVersion"
-        placeholder="Enter OS version"
-        value={formData.osVersion || ""}
-        onChange={onChange}
-      />
-      <button
-        className="btn btn-primary"
-        type="button"
-        onClick={() =>
-          addToStack("osVersion", formData.osVersion, setUsedOsVersion, "osVersion")
-        }
-      >
-        Add
-      </button>
-    </div>
-    {errors.osVersion && (
-      <div className="invalid-feedback">{errors.osVersion}</div>
-    )}
-
-    {/* BADGES IN ROW */}
-    <div className="badge-container mt-2">
-      {renderStackBadges(usedOsVersion, "osVersion", setUsedOsVersion)}
-    </div>
-  </div>
-</div>
-
-
+      {/* OS Version */}
+      <div className="form-group row mb-4">
+        
+      </div>
 
       {/* Repository URL */}
-     <div className="form-group row mb-4">
-  <label className="col-md-3 col-form-label">Source Code Repository</label>
-  <div className="col-md-6">
-    <div className="input-group">
-      <input
-        type="text"
-        className={`form-control ${errors.repoUrl ? "is-invalid" : ""}`}
-        name="repoUrl"
-        placeholder="https://github.com/your-repo"
-        value={formData.repoUrl || ""}
-        onChange={onChange}
-      />
-      <button
-        className="btn btn-primary"
-        type="button"
-        onClick={handleAddRepository}
-      >
-        Add
-      </button>
-    </div>
+      <div className="form-group row mb-4">
+        <label className="col-md-3 col-form-label">
+          Source Code Repository
+        </label>
+        <div className="col-md-6">
+          <div className="input-group">
+            <input
+              type="text"
+              className={`form-control ${errors.repoUrl ? "is-invalid" : ""}`}
+              name="repoUrl"
+              placeholder="https://github.com/your-repo"
+              value={formData.repoUrl || ""}
+              onChange={onChange}
+            />
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={handleAddRepository}
+            >
+              Add
+            </button>
+          </div>
 
-    {errors.repoUrl && (
-      <div className="invalid-feedback">{errors.repoUrl}</div>
-    )}
+          {errors.repoUrl && (
+            <div className="invalid-feedback">{errors.repoUrl}</div>
+          )}
 
-    {/* ✅ Replaced marginRight style with flex row layout */}
-    <div className="mt-2 d-flex flex-wrap gap-2">
-  {usedRepo.map((repo) => (
-    <div
-      key={repo}
-      className="d-flex align-items-center mb-2"
-      style={{
-        backgroundColor: "#f1f1f1",
-        padding: "6px 10px",
-        borderRadius: "6px",
-        maxWidth: "100%",
-        overflow: "hidden",
-      }}
-    >
-      <a
-        href={repo}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={repo}
-        className="text-primary"
-        style={{
-          textDecoration: "none",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          maxWidth: "60vw", // Use screen width instead of fixed px
-          display: "inline-block",
-        }}
-      >
-        {repo}
-      </a>
-      <button
-        type="button"
-        className="btn btn-sm btn-danger ms-2"
-        onClick={() =>
-          window.confirm(`Are you sure you want to delete:\n${repo}?`) &&
-          removeFromStack("repoUrl", repo, setUsedRepo)
-        }
-      >
-        Delete
-      </button>
-    </div>
-  ))}
-</div>
-
-  </div>
-</div>
-
+          {/* ✅ Replaced marginRight style with flex row layout */}
+          <div className="mt-2 d-flex flex-wrap gap-2">
+            {usedRepo.map((repo) => (
+              <div
+                key={repo}
+                className="d-flex align-items-center mb-2"
+                style={{
+                  backgroundColor: "#f1f1f1",
+                  padding: "6px 10px",
+                  borderRadius: "6px",
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                }}
+              >
+                <a
+                  href={repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={repo}
+                  className="text-primary"
+                  style={{
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "60vw", // Use screen width instead of fixed px
+                    display: "inline-block",
+                  }}
+                >
+                  {repo}
+                </a>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-danger ms-2"
+                  onClick={() =>
+                    window.confirm(
+                      `Are you sure you want to delete:\n${repo}?`
+                    ) && removeFromStack("repoUrl", repo, setUsedRepo)
+                  }
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Navigation Buttons */}
       <div
