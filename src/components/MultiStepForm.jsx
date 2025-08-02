@@ -58,8 +58,8 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     dataCentre: "",
     deployment: "",
     location: "",
+    vaRecords: [], // Initialize with an empty array
   });
-  const [drGitUrls, setDrGitUrls] = useState([]);
   const [drRecords, setDrRecords] = useState([]);
 
   useEffect(() => {
@@ -121,55 +121,65 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       setGitUrls(editData.Infra?.gitUrls || []);
       setVaRecords(vaDataWithId);
 
-      // Set DR info
-      const dr = editData.DR || {};
-      const drInfo = dr.DRInfo || {};
+       // DR Info
+    const dr = editData.DR || {};
+    const drVaRecords = (dr.vaRecords || []).map((record) => ({
+      ipAddress: record.ipAddress || "",
+      dbServerIp: record.dbServerIp || "",
+      purpose: record.purpose || "",
+      vaScore: record.vaScore || "",
+      vaDate: record.vaDate ? record.vaDate.slice(0, 10) : "",
+    
+      // ✅ Check if vaReport is a string or needs a placeholder
+      vaReport: typeof record.vaReport === "string"
+        ? record.vaReport
+        : record.vaReport?.filename || "", // Fallback if stored as file object
+    }));
 
-      setDrFormData({
-        drLocation: drInfo.drLocation || "",
-        drStatus: drInfo.drStatus || "",
-        lastDrTestDate: drInfo.lastDrTestDate
-          ? drInfo.lastDrTestDate.slice(0, 10)
-          : "",
-        remarks: drInfo.remarks || "",
-        gitUrls: dr.gitUrls || [],
-        vaRecords: (dr.vaRecords || []).map((record) => ({
-          ipAddress: record.ipAddress || "",
-          dbServerIp: record.dbServerIp || "",
-          purposeOfUse: record.purposeOfUse || "",
-          vaScore: record.vaScore || "",
-          dateOfVA: record.dateOfVA ? record.dateOfVA.slice(0, 10) : "",
-          vaReport: null, // file field
-        })),
-      });
+    setDrFormData({
+      serverType: dr.serverType || "",
+      dataCentre: dr.dataCentre || "",
+      deployment: dr.deployment || "",
+      location: dr.location || "",
+      vaRecords: drVaRecords,
+    });
 
+    console.log("DR Data Set for Editing:", drVaRecords);
+    console.log("DRForm received drFormData:", drFormData);
       // Set TLS info
       const tlsInfo = (editData.TLS?.tlsInfo || []).map((record) => {
-        const issueDate = record.issueDate ? new Date(record.issueDate) : null;
-        const expiryDate = record.expiryDate ? new Date(record.expiryDate) : null;
-
+        const issueDate = record.issueDate
+          ? new Date(record.issueDate).toISOString().split("T")[0]
+          : "";
+        const expiryDate = record.expiryDate
+          ? new Date(record.expiryDate).toISOString().split("T")[0]
+          : "";
+      
         let certStatus = "Valid";
-        if (expiryDate && new Date() > expiryDate) {
+        if (expiryDate && new Date() > new Date(expiryDate)) {
           certStatus = "Expired";
         } else if (expiryDate) {
           const warningPeriod = new Date();
           warningPeriod.setDate(warningPeriod.getDate() + 30);
-          if (expiryDate < warningPeriod) {
+          if (new Date(expiryDate) < warningPeriod) {
             certStatus = "Expiring Soon";
           }
         }
-
+      
         return {
-          domainName: record.domainName || "",
-          certProvider: record.certProvider || "",
+          procuredFrom: record.procuredFrom || "", //  optional: if you're using this
+          score: record.score || "",               //  optional: if you're using this
           issueDate,
           expiryDate,
           certStatus,
         };
       });
+      
 
       // FIX: Use setTlsData instead of tlsInfo()
       setTlsData(tlsInfo);
+      console.log("TLS Data Set for Editing:", tlsInfo);
+
 
       // Set Security Audits
       const dynamicAuditRecords = audits.map((record) => ({
@@ -177,10 +187,10 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         auditingAgency: record.auditingAgency || "",
         auditDate: record.auditDate ? record.auditDate.slice(0, 10) : "",
         expireDate: record.expireDate ? record.expireDate.slice(0, 10) : "",
-        tlsNextExpiry: record.tlsNextExpiry
-          ? record.tlsNextExpiry.slice(0, 10)
-          : "",
-        sslLabScore: record.sslLabScore || "",
+        // tlsNextExpiry: record.tlsNextExpiry
+        //   ? record.tlsNextExpiry.slice(0, 10)
+        //   : "",
+        // sslLabScore: record.sslLabScore || "",
         certificate: record.certificate || null,
       }));
 
@@ -391,8 +401,8 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       const TLS = {
         tlsInfo: tlsData.map((entry, idx) => ({
           slNo: idx + 1,
-          domainName: entry.domainName || "", // <-- Add this
-          certProvider: entry.certProvider || "", // <-- Add this
+          // domainName: entry.domainName || "", // <-- Add this
+          // certProvider: entry.certProvider || "", // <-- Add this
           issueDate: entry.issueDate,
           expiryDate: entry.expiryDate,
           score: entry.score,
@@ -401,20 +411,17 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       };
 
       const DR = {
-        DRInfo: {
-          drLocation: drFormData.location,
-          drStatus: drFormData.serverType,
-          lastDrTestDate: drFormData.vaDate || null,
-          remarks: drFormData.remarks || "",
-        },
-        gitUrls: drGitUrls,
+        serverType: drFormData.serverType || "",
+        dataCentre: drFormData.dataCentre || "",
+        deployment: drFormData.deployment || "",
+        location: drFormData.location || "",
         vaRecords: drRecords.map((record) => ({
-          ipAddress: record.ipAddress,
-          dbServerIp: record.dbServerIp,
-          purposeOfUse: record.purposeOfUse || "", // <-- Use purposeOfUse
-          vaScore: record.vaScore,
-          dateOfVA: record.vaDate,
-          vaReport: record.vaReport,
+          ipAddress: record.ipAddress || "",
+          dbServerIp: record.dbServerIp || "",
+          purpose: record.purpose || "",
+          vaScore: record.vaScore || "",
+          vaDate: record.vaDate || "",
+          vaReport: record.vaReport || null, // file or base64 or ObjectId depending on backend
         })),
       };
 
@@ -529,11 +536,12 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         );
       case 5:
         return (
+        
           <DRForm
             formData={drFormData}
             setFormData={setDrFormData}
-            gitUrls={drGitUrls}
-            setGitUrls={setDrGitUrls}
+            // gitUrls={drGitUrls}
+            // setGitUrls={setDrGitUrls}
             records={drRecords}
             setRecords={setDrRecords}
             onPrevious={handlePrevious}

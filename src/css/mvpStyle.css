@@ -1685,7 +1685,7 @@ h6 {
   list-style-type: none;
   color: #ffffff;
   text-transform: none;
-  font-size: 16px;
+  /* font-size: 16px; */
   width: 25%;
   float: left;
   position: relative;
@@ -1693,7 +1693,7 @@ h6 {
   font-weight: 600;
   background: #444444;
   padding: 10px;
-  font-size: 20px;
+  /* font-size: %; */
 }
 
 #progressbar li:before {

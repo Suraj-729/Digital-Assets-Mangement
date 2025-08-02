@@ -39,7 +39,7 @@ function App() {
         <Route path="/damLogin" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
-        <Route path="/addProjectByHOD" element={<StepHodPage />} />
+        <Route path="/dashboard/addProjectByHOD" element={<StepHodPage />} />
         {/* Protected Routes */}
         <Route
           path="/dashboard"
