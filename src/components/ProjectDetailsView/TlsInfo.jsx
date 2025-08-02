@@ -21,8 +21,7 @@ const TlsInfo = ({ tlsRecords }) => {
               <th>Expiry Date</th>
               <th>Score</th>
               <th>Certificate Procured From</th>
-              <th>Domain Name</th>
-              <th>Certificate Provider</th>
+              
             </tr>
           </thead>
           <tbody>
@@ -33,8 +32,7 @@ const TlsInfo = ({ tlsRecords }) => {
                 <td>{record.expiryDate || "N/A"}</td>
                 <td>{record.score || "N/A"}</td>
                 <td>{record.procuredFrom || "N/A"}</td>
-                <td>{record.domainName || "N/A"}</td>
-                <td>{record.certProvider || "N/A"}</td>
+                
               </tr>
             ))}
           </tbody>

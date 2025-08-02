@@ -1693,7 +1693,7 @@ h6 {
   font-weight: 600;
   background: #444444;
   padding: 10px;
-  /* font-size: %; */
+  font-size: 19px;
 }
 
 #progressbar li:before {
@@ -2206,3 +2206,5 @@ body.sidebar-collapsed #main {
 .tab-content {
   flex-grow: 1;
 }
+
+

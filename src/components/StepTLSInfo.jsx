@@ -5,7 +5,7 @@ import { FaTrash } from "react-icons/fa";
 
 const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
   const [tlsIssueDate, setTlsIssueDate] = useState("");
-  const [tlsExpiryDate, setTlsExpiryDate] = useState("");
+  const [tlsNextExpiry, setTlsExpiryDate] = useState("");
   const [tlsScore, setTlsScore] = useState("");
   const [tlsProcuredFrom, setTlsProcuredFrom] = useState("");
 
@@ -21,14 +21,14 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
   }, [tlsData]);
 
   const handleAddRecord = () => {
-    if (!tlsIssueDate || !tlsExpiryDate || !tlsScore || !tlsProcuredFrom) {
+    if (!tlsIssueDate || !setTlsExpiryDate || !tlsScore || !tlsProcuredFrom) {
       alert("Please fill all fields");
       return;
     }
 
     const newRecord = {
       issueDate: tlsIssueDate,
-      expiryDate: tlsExpiryDate,
+      expiryDate: tlsNextExpiry,
       score: tlsScore,
       procuredFrom: tlsProcuredFrom,
     };
@@ -46,27 +46,27 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
     <div className="container mt-4">
       <h3 className="text-center mb-4">TLS Information</h3>
 
-      {/* First Row */}
-      <div className="row mb-3 align-items-center">
-        <div className="col-md-2 text-end">Certificate Issue Date:</div>
-        <div className="col-md-4">
-          <input
-            type="date"
-            className="form-control"
-            value={tlsIssueDate}
-            onChange={(e) => setTlsIssueDate(e.target.value)}
-          />
-        </div>
-        <div className="col-md-2 text-end">TLS Expiry Date:</div>
-        <div className="col-md-4">
-          <input
-            type="date"
-            className="form-control"
-            value={tlsExpiryDate}
-            onChange={(e) => setTlsExpiryDate(e.target.value)}
-          />
-        </div>
-      </div>
+  {/* First Row */}
+  <div className="row mb-3 align-items-center">
+    <div className="col-md-2 text-end ">Certificate Issue Date:</div>
+    <div className="col-md-4">
+      <input
+        type="date"
+        className="form-control"
+        value={tlsIssueDate}
+        onChange={(e) => setTlsIssueDate(e.target.value)}
+      />
+    </div>
+    <div className="col-md-2 text-end ">TLS Expiry Date:</div>
+    <div className="col-md-4">
+      <input
+        type="date"
+        className="form-control"
+        value={setTlsExpiryDate}
+        onChange={(e) => setTlsExpiryDate(e.target.value)}
+      />
+    </div>
+  </div>
 
       {/* Second Row */}
       <div className="row mb-3 align-items-center">
@@ -196,3 +196,4 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
 };
 
 export default StepTLSInfo;
+

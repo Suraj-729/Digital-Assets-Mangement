@@ -23,18 +23,18 @@ const DrInfo = ({ drData }) => {
           <p>Deployment: <b>{drData.deployment || "N/A"}</b></p>
         </div>
         <div className="col-md-3">
-          <p>Location: <b>{drData.location || "N/A"}</b></p>
+          <p>Location: <b>{drData.drLocation || "N/A"}</b></p>
         </div>
       </div>
-      <h5>Git URLs</h5>
-      <ul>
+      {/* <h5>Git URLs</h5> */}
+      {/* <ul>
         {(drData.gitUrls || []).map((url, idx) => (
           <li key={idx}>
             <a href={url} target="_blank" rel="noopener noreferrer">{url}</a>
           </li>
         ))}
         {(!drData.gitUrls || drData.gitUrls.length === 0) && <li>No Git URLs</li>}
-      </ul>
+      </ul> */}
       <h5>VA Records</h5>
       <div className="table-responsive">
         <table className="table table-bordered text-center">

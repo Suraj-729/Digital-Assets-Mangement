@@ -115,30 +115,7 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
   }, [employeeId, employeeType]);
 
 
-  // const handleProjectNameClick = async (projectName) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.get(
-  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-  //     );
 
-  //     if (response.status >= 200 && response.status < 300) {
-  //       console.log("Project details response:", response.data);
-  //       setSelectedProject(response.data);
-  //       setFormToShow("projectDetails");
-  //     } else {
-  //       throw new Error(`Request failed with status ${response.status}`);
-  //       // toast.error(`Failed to load project details. Status: ${response.status}`);
-
-  //     }
-  //   } catch (err) {
-  //     setError(err.message);
-  //     // toast.error(`Error loading project details: ${err.message}`);
-
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleProjectNameClick = async (projectName) => {
     try {
       setLoading(true);
@@ -450,9 +427,9 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                             </select>
                           </div>
 
-
+                    {/*the filter enviorment*/}
                          
-
+{/* 
                           <div className="col-md-3">
                             <label className="form-label">Filter Value</label>
 
@@ -523,8 +500,92 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                               Reset Filter
                             </button>
                           </div>
+                        </div> */}
+
+                        <div className="col-md-3">
+                            <label className="form-label">Filter Value</label>
+
+                            {filterType === "prismid" ? (
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter Prism ID"
+                                value={filterValue}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
+
+                                  if (!value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
+
+                                  try {
+                                    const res = await api.get(
+                                      `/dashboard/filter/prismid/${value}`
+                                    );
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    setFilteredProjects([]);
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <select
+                                className="form-select"
+                                value={filterValue}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
+
+                                  if (!filterType || !value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
+
+                                  try {
+                                    let url;
+                                    if (filterType === "department") {
+                                      url = `/dashboard/filter/department/${encodeURIComponent(
+                                        value
+                                      )}/employee/${employeeId}`; // <-- Modified URL for department filter
+                                    } else {
+                                      url = `/dashboard/filter/${filterType}/${value}`;
+                                    }
+                                    const res = await api.get(url);
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    setFilteredProjects([]);
+                                  }
+                                }}
+                                disabled={!filterType}
+                              >
+                                <option value="">-- Select Value --</option>
+                                {getFilterOptions(filterType).map((val) => (
+                                  <option key={val} value={val}>
+                                    {val}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                          </div>
+
+                          <div className="col-md-3 d-flex align-items-end">
+                            <button
+                              className="btn btn-secondary w-100"
+                              onClick={() => {
+                                setFilterType("");
+                                setFilterValue("");
+                                setFilteredProjects(projects);
+                              }}
+                            >
+                              Reset Filter
+                            </button>
+                          </div>
                         </div>
 
+
+                    {/*the filter enviorment*/}
 
                         {filteredProjects.length === 0 ? (
                           <div
