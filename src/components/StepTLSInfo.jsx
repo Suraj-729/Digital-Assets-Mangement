@@ -1,43 +1,50 @@
-import React, { useState } from "react";
+
+
+import React, { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 
-function StepTLSInfo({ formData, onChange, tlsRecord, setTlsRecord, onPrevious, onNext }) {
-
-
-  const [tlsData, setTlsData] = useState([]);
+const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
   const [tlsIssueDate, setTlsIssueDate] = useState("");
-  const [tlsExpiryDate, setTlsExpiryDate] = useState("");
+  const [tlsNextExpiry, setTlsExpiryDate] = useState("");
   const [tlsScore, setTlsScore] = useState("");
   const [tlsProcuredFrom, setTlsProcuredFrom] = useState("");
 
+  // ✅ Pre-fill form if editing an existing record (first one as default)
+  useEffect(() => {
+    if (tlsData?.length > 0) {
+      const first = tlsData[0];
+      setTlsIssueDate(first.issueDate?.slice(0, 10) || "");
+      setTlsExpiryDate(first.expiryDate?.slice(0, 10) || "");
+      setTlsScore(first.score || "");
+      setTlsProcuredFrom(first.procuredFrom || "");
+    }
+  }, [tlsData]);
+
   const handleAddRecord = () => {
-  
-  if (!tlsIssueDate || !tlsExpiryDate || !tlsScore || !tlsProcuredFrom) {
-    alert("Please fill all fields");
-    return;
-  }
+    if (!tlsIssueDate || !setTlsExpiryDate || !tlsScore || !tlsProcuredFrom) {
+      alert("Please fill all fields");
+      return;
+    }
 
-  const newRecord = {
-    issueDate: tlsIssueDate,
-    expiryDate: tlsExpiryDate,
-    score: tlsScore,
-    procuredFrom: tlsProcuredFrom,
+    const newRecord = {
+      issueDate: tlsIssueDate,
+      expiryDate: tlsNextExpiry,
+      score: tlsScore,
+      procuredFrom: tlsProcuredFrom,
+    };
+
+    setTlsData([...tlsData, newRecord]);
+
+    // Reset form
+    setTlsIssueDate("");
+    setTlsExpiryDate("");
+    setTlsScore("");
+    setTlsProcuredFrom("");
   };
-
-  const updatedTlsData = [...tlsData, newRecord];
-  setTlsData(updatedTlsData);
-  setTlsRecord(updatedTlsData); // ✅ Sync with parent
-
-  setTlsIssueDate("");
-  setTlsExpiryDate("");
-  setTlsScore("");
-  setTlsProcuredFrom("");
-};
-
 
   return (
     <div className="container mt-4">
-  <h3 className="text-center mb-4">TLS Information</h3>
+      <h3 className="text-center mb-4">TLS Information</h3>
 
   {/* First Row */}
   <div className="row mb-3 align-items-center">
@@ -55,48 +62,50 @@ function StepTLSInfo({ formData, onChange, tlsRecord, setTlsRecord, onPrevious, 
       <input
         type="date"
         className="form-control"
-        value={tlsExpiryDate}
+        value={setTlsExpiryDate}
         onChange={(e) => setTlsExpiryDate(e.target.value)}
       />
     </div>
   </div>
 
-  {/* Second Row */}
-  <div className="row mb-3 align-items-center">
-    <div className="col-md-2 text-end">TLS Lab Score:</div>
-<div className="col-md-4">
-  <select
-    className="form-select"
-    value={tlsScore}
-    onChange={(e) => setTlsScore(e.target.value)}
-  >
-    <option value="">Select Score</option>
-    <option value="A+">A+</option>
-    <option value="A">A</option>
-    <option value="B">B</option>
-  </select>
-</div>
+      {/* Second Row */}
+      <div className="row mb-3 align-items-center">
+        <div className="col-md-2 text-end">TLS Lab Score:</div>
+        <div className="col-md-4">
+          <select
+            className="form-select"
+            value={tlsScore}
+            onChange={(e) => setTlsScore(e.target.value)}
+          >
+            <option value="">Select Score</option>
+            <option value="A+">A+</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+          </select>
+        </div>
 
-    <div className="col-md-2 text-end ">Certificate Procured From:</div>
-    <div className="col-md-4">
-      <input
-        type="text"
-        className="form-control"
-        value={tlsProcuredFrom}
-        onChange={(e) => setTlsProcuredFrom(e.target.value)}
-        placeholder="Enter source name"
-      />
-    </div>
-  </div>
+        <div className="col-md-2 text-end">Certificate Procured From:</div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            className="form-control"
+            value={tlsProcuredFrom}
+            onChange={(e) => setTlsProcuredFrom(e.target.value)}
+            placeholder="Enter source name"
+          />
+        </div>
+      </div>
+
+      {/* Add Button */}
       <div className="text-center mb-4">
         <button
-  type="button"
-  className="btn btn-primary"
-  style={{ backgroundColor: "#0099cc", color: "white", border: "none" }}
-  onClick={handleAddRecord}
->
-  ADD RECORD
-</button>
+          type="button"
+          className="btn btn-primary"
+          style={{ backgroundColor: "#0099cc", color: "white", border: "none" }}
+          onClick={handleAddRecord}
+        >
+          ADD RECORD
+        </button>
       </div>
 
       {/* Table */}
@@ -113,11 +122,11 @@ function StepTLSInfo({ formData, onChange, tlsRecord, setTlsRecord, onPrevious, 
             </tr>
           </thead>
           <tbody>
-            {tlsData.map((record, index) => (
+            {tlsData?.map((record, index) => (
               <tr key={index}>
                 <td>{index + 1}</td>
-                <td>{record.issueDate}</td>
-                <td>{record.expiryDate}</td>
+                <td>{record.issueDate?.slice(0, 10)}</td>
+                <td>{record.expiryDate?.slice(0, 10)}</td>
                 <td>{record.score}</td>
                 <td>{record.procuredFrom}</td>
                 <td>
@@ -125,13 +134,12 @@ function StepTLSInfo({ formData, onChange, tlsRecord, setTlsRecord, onPrevious, 
                     type="button"
                     className="btn btn-outline-danger"
                     onClick={() => {
-                     const updatedData = tlsData.filter((_, i) => i !== index);
-  setTlsData(updatedData);
-  setTlsRecord(updatedData); // ✅ Sync with parent
-}}
+                      const updatedData = [...tlsData];
+                      updatedData.splice(index, 1);
+                      setTlsData(updatedData);
+                    }}
                   >
                     <FaTrash />
-                    
                   </button>
                 </td>
               </tr>
@@ -145,7 +153,6 @@ function StepTLSInfo({ formData, onChange, tlsRecord, setTlsRecord, onPrevious, 
         style={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
           gap: "20px",
           marginTop: "30px",
         }}
@@ -160,7 +167,6 @@ function StepTLSInfo({ formData, onChange, tlsRecord, setTlsRecord, onPrevious, 
             color: "white",
             border: "0 none",
             borderRadius: "10px",
-            cursor: "pointer",
             padding: "10px 5px",
             background: "#a8dced",
           }}
@@ -178,7 +184,6 @@ function StepTLSInfo({ formData, onChange, tlsRecord, setTlsRecord, onPrevious, 
             color: "white",
             border: "0 none",
             borderRadius: "10px",
-            cursor: "pointer",
             padding: "10px 5px",
             background: "#0099cc",
           }}

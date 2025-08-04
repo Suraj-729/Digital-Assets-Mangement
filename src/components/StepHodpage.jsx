@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
@@ -17,6 +18,7 @@ const StepHodPage = () => {
 
   const [managers, setManagers] = useState([]);
   const [errors, setErrors] = useState({});
+  const [formToShow, setFormToShow] = useState(null);
 
   const departments = ["IT", "HR", "Finance", "Electronics", "Planning"];
 
@@ -96,7 +98,9 @@ useEffect(() => {
   <>
     <Header />
     <div className="d-flex">
-      <Sidebar />
+     <Sidebar setFormToShow={(form) => setFormToShow(form)} isSidebarOpen={true} />
+
+
       <div
         className="container-fluid p-5"
         style={{ marginLeft: "260px", minHeight: "100vh", backgroundColor: "#f8f9fa" }}
@@ -196,3 +200,4 @@ useEffect(() => {
 );
 }
 export default StepHodPage;
+
