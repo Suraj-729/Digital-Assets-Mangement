@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useLocation } from "react-router-dom";
 import "../../css/mvpStyle.css";
 import { toast } from "react-toastify";
+
 import api from "../../Api";
 const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
   // const [groupHeadsOpen, setGroupHeadsOpen] = useState(false);
@@ -13,8 +14,8 @@ const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
   const [loading, setLoading] = useState(false);
   const employeeId = localStorage.getItem("employeeId");
   const employeeType = localStorage.getItem("employeeType");
-  
-
+ const location = useLocation();
+ const formToShow = location.state?.formToShow;
   // Get employeeType and trim whitespace
   // const employeeType = (localStorage.getItem("employeeType") || "").trim();
   const handleDashboardClick = async () => {
@@ -98,10 +99,24 @@ const Sidebar = ({ setFormToShow, isSidebarOpen }) => {
                   <div
                     className="nav-link"
                     style={{ cursor: "pointer" }}
+                    // onClick={() => {
+                    //   setFormToShow("addProject");
+                    //   navigate("/dashboard/addProject", {
+                    //     state: { formToShow: "addProject" },
+                    //   });
+                    // }}
                     onClick={() => {
-                      setFormToShow("addProject");
-                      navigate("/dashboard/addProject");
-                    }}
+  // Only trigger if not already on addProject page
+  if (!location.pathname.includes("EDITProject")) {
+    setFormToShow("addProject");
+    navigate("/dashboard/addProject", {
+      state: { formToShow: "addProject" },
+    });
+  }
+}}
+
+
+
                   >
                     <i className="bi bi-circle"></i>
                     <span>Add Projects (PM)</span>
