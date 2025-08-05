@@ -1,11 +1,123 @@
-
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
 
 const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => {
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [projects, setProjects] = useState([]);
+
+  // Autofill fields for PM
+  // useEffect(() => {
+  //   if (employeeType === "PM") {
+  //     const empCode = formData.empCode || localStorage.getItem("employeeId");
+
+  //     if (!empCode) return;
+
+  //     setLoading(true);
+
+  //     fetch(`http://localhost:5000/project-assignments/${empCode}`)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         if (data && data.length > 0) {
+  //           const project = data[0];
+  //           onChange({ target: { name: "projectName", value: project.projectName || "" } });
+  //           onChange({ target: { name: "departmentName", value: project.deptName || "" } });
+  //           onChange({ target: { name: "HOD", value: project.HOD || "" } });
+  //           onChange({ target: { name: "nicOfficerName", value: project.projectManagerName || "" } });
+  //           onChange({ target: { name: "nicOfficerEmpCode", value: project.empCode || "" } });
+  //         } else {
+  //           toast.warning("No project data found for your empCode.");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //         toast.error("Failed to fetch project assignment data.");
+  //       })
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [employeeType]);
+
+  useEffect(() => {
+  console.log("useEffect triggered - employeeType:", employeeType);
+
+  if (employeeType === "PM") {
+    const empCode = formData.empCode || localStorage.getItem("employeeId");
+    console.log("Resolved empCode:", empCode);
+
+    if (!empCode) {
+      console.warn("No employee code found, aborting fetch.");
+      return;
+    }
+
+    setLoading(true);
+    console.log("Fetching data for empCode:", empCode);
+
+    fetch(`http://localhost:5000/project-assignments/${empCode}`)
+      .then((res) => {
+        console.log("Received response from server:", res);
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Parsed data:", data);
+
+        if (data && data.length > 0) {
+          const project = data[0];
+          console.log("Using first project from data:", project);
+
+          onChange({ target: { name: "projectName", value: project.projectName || "" } });
+          onChange({ target: { name: "departmentName", value: project.deptName || "" } });
+          onChange({ target: { name: "HOD", value: project.HOD || "" } });
+          onChange({ target: { name: "nicOfficerName", value: project.projectManagerName || "" } });
+          onChange({ target: { name: "nicOfficerEmpCode", value: project.empCode || "" } });
+        } else {
+          toast.warning("No project data found for your empCode.");
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching project assignment data:", err);
+        toast.error("Failed to fetch project assignment data.");
+      })
+      .finally(() => {
+        console.log("Fetch complete, turning off loading state.");
+        setLoading(false);
+      });
+  }
+}, [employeeType]);
+
+
+  useEffect(() => {
+    if (employeeType === "PM") {
+      const empCode = formData.empCode || localStorage.getItem("employeeId");
+      if (!empCode) return;
+      setLoading(true);
+      fetch(`http://localhost:5000/project-assignments/by-pm/${empCode}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setProjects(data || []);
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error("Failed to fetch project assignment data.");
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [employeeType, formData.empCode]);
+
+  const handleProjectSelect = (e) => {
+    const selectedProject = projects.find((p) => p.projectName === e.target.value);
+    if (selectedProject) {
+      onChange({ target: { name: "projectName", value: selectedProject.projectName } });
+      onChange({ target: { name: "departmentName", value: selectedProject.deptName || "" } });
+      onChange({ target: { name: "HOD", value: selectedProject.HOD || "" } });
+      onChange({ target: { name: "nicOfficerName", value: selectedProject.projectManagerName || "" } });
+      onChange({ target: { name: "nicOfficerEmpCode", value: selectedProject.empCode || "" } });
+    } else {
+      onChange({ target: { name: "projectName", value: "" } });
+    }
+  };
+
+
 
   const validate = () => {
     const newErrors = {};
@@ -85,19 +197,30 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
                 <label className="form-label">Project Name:</label>
               </div>
               <div className="col-sm-8">
-                <input
-                  type="text"
-                  className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
-                  name="projectName"
-                  value={formData.projectName || ""}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    // Prevent input if any number is present
-                    if (/^[^0-9]*$/.test(value)) {
-                      onChange(e);
-                    }
-                  }}
-                />
+                {employeeType === "PM" ? (
+                  <select
+                    className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
+                    name="projectName"
+                    value={formData.projectName || ""}
+                    onChange={handleProjectSelect}
+                    disabled={loading}
+                  >
+                    <option value="">Select Project</option>
+                    {projects.map((project) => (
+                      <option key={project.projectName} value={project.projectName}>
+                        {project.projectName}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
+                    name="projectName"
+                    value={formData.projectName || ""}
+                    onChange={onChange}
+                  />
+                )}
                 {errors.projectName && <div className="invalid-feedback">{errors.projectName}</div>}
               </div>
             </div>
@@ -134,13 +257,9 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
                   className={`form-control ${errors.departmentName ? "is-invalid" : ""}`}
                   name="departmentName"
                   value={formData.departmentName || ""}
-                  onChange={(e) => {
-                    const capitalOnly = e.target.value.toUpperCase().replace(/[^A-Z]/g, "");
-                    onChange({ target: { name: "departmentName", value: capitalOnly } });
-                  }}
+                  onChange={onChange}
+                  disabled={employeeType === "PM"}
                 />
-              
-
                 {errors.departmentName && <div className="invalid-feedback">{errors.departmentName}</div>}
               </div>
             </div>
@@ -194,14 +313,9 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
                   type="char"
                   className={`form-control ${errors.HOD ? "is-invalid" : ""}`}
                   name="HOD"
-                  value={
-                    formData.HOD !== undefined && formData.HOD !== ""
-                      ? formData.HOD
-                      : localStorage.getItem("HOD") || ""
-                  }
+                  value={formData.HOD || ""}
                   onChange={onChange}
                   disabled={employeeType === "HOD" || employeeType === "PM"}
-
                 />
                 {errors.HOD && <div className="invalid-feedback">{errors.HOD}</div>}
               </div>
@@ -214,27 +328,33 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
           <div className="col-md-6">
             <h5 className="sub-heading-1">Nodal Officer from NIC:</h5>
             <div className="p-3 border rounded box-1">
-              {["nicOfficerName", "nicOfficerEmpCode", "nicOfficerMob", "nicOfficerEmail"].map((field, i) => {
-                const labels = ["Name:", "Emp Code:", "Mob:", "Email:"];
-                const types = ["text", "text", "text", "email"];
-                return (
-                  <div className="row align-items-center text-right" key={field}>
-                    <div className="col-sm-4 mb-2">
-                      <label className="form-label">{labels[i]}</label>
+              {["nicOfficerName", "nicOfficerEmpCode", "nicOfficerMob", "nicOfficerEmail"].map(
+                (field, i) => {
+                  const labels = ["Name:", "Emp Code:", "Mob:", "Email:"];
+                  const types = ["text", "text", "text", "email"];
+                  // Disable Name and Emp Code when PM
+                  const disableField =
+                    (field === "nicOfficerName" || field === "nicOfficerEmpCode") && employeeType === "PM";
+                  return (
+                    <div className="row align-items-center text-right" key={field}>
+                      <div className="col-sm-4 mb-2">
+                        <label className="form-label">{labels[i]}</label>
+                      </div>
+                      <div className="col-sm-8 mb-2">
+                        <input
+                          type={types[i]}
+                          className={`form-control ${errors[field] ? "is-invalid" : ""}`}
+                          name={field}
+                          value={formData[field] || ""}
+                          onChange={onChange}
+                          disabled={disableField}
+                        />
+                        {errors[field] && <div className="invalid-feedback">{errors[field]}</div>}
+                      </div>
                     </div>
-                    <div className="col-sm-8 mb-2">
-                      <input
-                        type={types[i]}
-                        className={`form-control ${errors[field] ? "is-invalid" : ""}`}
-                        name={field}
-                        value={formData[field] || ""}
-                        onChange={onChange}
-                      />
-                      {errors[field] && <div className="invalid-feedback">{errors[field]}</div>}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                }
+              )}
             </div>
           </div>
 
@@ -274,6 +394,7 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
         className="next action-button btn btn-success"
         value="Next"
         onClick={handleNextClick}
+        disabled={loading}
       />
     </fieldset>
   );

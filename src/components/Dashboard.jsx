@@ -29,10 +29,7 @@ const Dashboard = () => {
 
   const [filteredProjects, setFilteredProjects] = useState([]);
 
-  // Get HOD and employeeId from localStorage
-  // const HOD = localStorage.getItem("HOD") || "N/A";
-  // const employeeId = localStorage.getItem("employeeId") || "N/A";
-  // const { employeeId, employeeType } = useParams();
+ 
   const HOD = localStorage.getItem("HOD") || "N/A";
   // const location = useLocation();
 const employeeId = location.state?.employeeId || localStorage.getItem("employeeId");
@@ -118,30 +115,7 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
   }, [employeeId, employeeType]);
 
 
-  // const handleProjectNameClick = async (projectName) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.get(
-  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-  //     );
 
-  //     if (response.status >= 200 && response.status < 300) {
-  //       console.log("Project details response:", response.data);
-  //       setSelectedProject(response.data);
-  //       setFormToShow("projectDetails");
-  //     } else {
-  //       throw new Error(`Request failed with status ${response.status}`);
-  //       // toast.error(`Failed to load project details. Status: ${response.status}`);
-
-  //     }
-  //   } catch (err) {
-  //     setError(err.message);
-  //     // toast.error(`Error loading project details: ${err.message}`);
-
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleProjectNameClick = async (projectName) => {
     try {
       setLoading(true);
@@ -245,22 +219,7 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
     })} / ${date.getFullYear()}`;
   };
   
-  // const formatDate = (date) => {
-  //   if (!date || date === "NA" || date === null || date === "null") return "NA";
   
-  //   const d = new Date(date);
-  
-  //   if (isNaN(d.getTime())) {
-  //     console.warn("Invalid date format:", date);
-  //     return "NA";
-  //   }
-  
-  //   return d.toLocaleDateString("en-IN", {
-  //     day: "2-digit",
-  //     month: "short",
-  //     year: "numeric",
-  //   });
-  // };
   
 
   // Badge helpers
@@ -469,12 +428,11 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                           </div>
 
 
-                         
 
-                          <div className="col-md-3">
+                        <div className="col-md-3">
                             <label className="form-label">Filter Value</label>
 
-                            {filterType === "prismid" ? (
+                            {/* {filterType === "prismid" ? (
                               <input
                                 type="text"
                                 className="form-control"
@@ -490,14 +448,46 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                                   }
 
                                   try {
-                                    const res = await api.get(`/dashboard/filter/prismid/${value}`);
+                                    const res = await api.get(
+                                      `/dashboard/filter/prismid/${value}`
+                                    );
                                     setFilteredProjects(res.data);
                                   } catch (err) {
                                     setFilteredProjects([]);
                                   }
                                 }}
                               />
-                            ) : (
+                            ) : */}
+                            {filterType === "prismid" ? (
+  <input
+    type="text"
+    className="form-control"
+    placeholder="Enter Prism ID"
+    value={filterValue}
+    onChange={async (e) => {
+      const value = e.target.value;
+      setFilterValue(value);
+
+      if (!value) {
+        setFilteredProjects(projects);
+        return;
+      }
+
+      try {
+        const res = await api.get(
+          `/dashboard/filter/prismid/${encodeURIComponent(
+            value
+          )}/employee/${employeeId}`
+        );
+        setFilteredProjects(res.data);
+      } catch (err) {
+        setFilteredProjects([]);
+      }
+    }}
+  />
+) :
+
+                            (
                               <select
                                 className="form-select"
                                 value={filterValue}
@@ -511,7 +501,19 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                                   }
 
                                   try {
-                                    const res = await api.get(`/dashboard/filter/${filterType}/${value}`);
+                                    let url;
+                                    if (filterType === "department") {
+                                      url = `/dashboard/filter/department/${encodeURIComponent(
+                                        value
+                                      )}/employee/${employeeId}`;
+                                    } else if (filterType === "datacenter") {
+                                      url = `/dashboard/filter/datacenter/${encodeURIComponent(
+                                        value
+                                      )}/employee/${employeeId}`;
+                                    } else {
+                                      url = `/dashboard/filter/${filterType}/${value}`;
+                                    }
+                                    const res = await api.get(url);
                                     setFilteredProjects(res.data);
                                   } catch (err) {
                                     setFilteredProjects([]);
@@ -543,6 +545,8 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                           </div>
                         </div>
 
+
+                    {/*the filter enviorment*/}
 
                         {filteredProjects.length === 0 ? (
                           <div

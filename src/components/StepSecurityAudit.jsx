@@ -22,8 +22,8 @@ const StepSecurityAudit = ({
     if (!formData.expireDate) newErrors.expireDate = "Expire Date is required.";
     if (!formData.auditType) newErrors.auditType = "Audit Type is required.";
     if (!formData.agency) newErrors.agency = "Agency is required.";
-    if (!formData.sslLabScore) newErrors.sslLabScore = "SSL Lab Score is required.";
-    if (!formData.tlsNextExpiry) newErrors.tlsNextExpiry = "TLS Expiry Date is required.";
+    // if (!formData.sslLabScore) newErrors.sslLabScore = "SSL Lab Score is required.";
+    // if (!formData.tlsNextExpiry) newErrors.tlsNextExpiry = "TLS Expiry Date is required.";
     if (!formData.certificate || !formData.certificate.filename)
       newErrors.certificate = "Certificate upload is required.";
     if (!vaReport || !vaReport.filename)
@@ -78,9 +78,9 @@ const StepSecurityAudit = ({
       auditDate: formData.auditDate,
       expireDate: formData.expireDate,
       typeOfAudit: formData.auditType,
-      tlsNextExpiry: formData.tlsNextExpiry,
+      // tlsNextExpiry: formData.tlsNextExpiry,
       auditingAgency: formData.agency,
-      sslLabScore: formData.sslLabScore,
+      // sslLabScore: formData.sslLabScore,
       certificate: formData.certificate,
       vaReport: vaReport,
     };
@@ -89,10 +89,10 @@ const StepSecurityAudit = ({
 
     onChange({ target: { name: "auditDate", value: "" } });
     onChange({ target: { name: "expireDate", value: "" } });
-    onChange({ target: { name: "tlsNextExpiry", value: "" } });
+    // onChange({ target: { name: "tlsNextExpiry", value: "" } });
     onChange({ target: { name: "auditType", value: "" } });
     onChange({ target: { name: "agency", value: "" } });
-    onChange({ target: { name: "sslLabScore", value: "" } });
+    // onChange({ target: { name: "sslLabScore", value: "" } });
     onChange({ target: { name: "certificate", value: null } });
     setVaReport(null);
     setErrors({});
@@ -292,7 +292,7 @@ const StepSecurityAudit = ({
             )}
           </div>
 
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <label className="form-label">SSL Lab Score</label>
             <select
               className={`form-select ${errors.sslLabScore ? "is-invalid" : ""}`}
@@ -305,9 +305,9 @@ const StepSecurityAudit = ({
               <option value="A">A</option>
               <option value="B">B</option>
             </select>
-          </div>
+          </div> */}
 
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <label className="form-label"> TLS Expire Date</label>
             <input
               type="date"
@@ -316,7 +316,7 @@ const StepSecurityAudit = ({
               value={formData.tlsNextExpiry || ""}
               onChange={onChange}
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-4 text-center">
@@ -338,6 +338,7 @@ const StepSecurityAudit = ({
               <th>Type</th>
               <th>Agency</th>
               <th>Date of Audit</th>
+              <th>EXPIRE DATE</th>
               <th>View</th>
               <th>Delete</th>
             </tr>
@@ -350,6 +351,7 @@ const StepSecurityAudit = ({
                   <td>{record.typeOfAudit}</td>
                   <td>{record.auditingAgency}</td>
                   <td>{record.auditDate}</td>
+                  <td>{record.expireDate}</td>
                   <td>
                     <button
                       type="button"
