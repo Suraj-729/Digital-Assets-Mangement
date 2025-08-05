@@ -432,7 +432,7 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                         <div className="col-md-3">
                             <label className="form-label">Filter Value</label>
 
-                            {filterType === "prismid" ? (
+                            {/* {filterType === "prismid" ? (
                               <input
                                 type="text"
                                 className="form-control"
@@ -457,7 +457,37 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                                   }
                                 }}
                               />
-                            ) : (
+                            ) : */}
+                            {filterType === "prismid" ? (
+  <input
+    type="text"
+    className="form-control"
+    placeholder="Enter Prism ID"
+    value={filterValue}
+    onChange={async (e) => {
+      const value = e.target.value;
+      setFilterValue(value);
+
+      if (!value) {
+        setFilteredProjects(projects);
+        return;
+      }
+
+      try {
+        const res = await api.get(
+          `/dashboard/filter/prismid/${encodeURIComponent(
+            value
+          )}/employee/${employeeId}`
+        );
+        setFilteredProjects(res.data);
+      } catch (err) {
+        setFilteredProjects([]);
+      }
+    }}
+  />
+) :
+
+                            (
                               <select
                                 className="form-select"
                                 value={filterValue}
@@ -475,7 +505,11 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                                     if (filterType === "department") {
                                       url = `/dashboard/filter/department/${encodeURIComponent(
                                         value
-                                      )}/employee/${employeeId}`; // <-- Modified URL for department filter
+                                      )}/employee/${employeeId}`;
+                                    } else if (filterType === "datacenter") {
+                                      url = `/dashboard/filter/datacenter/${encodeURIComponent(
+                                        value
+                                      )}/employee/${employeeId}`;
                                     } else {
                                       url = `/dashboard/filter/${filterType}/${value}`;
                                     }
