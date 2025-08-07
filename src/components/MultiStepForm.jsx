@@ -7,7 +7,7 @@ import StepTLSInfo from "./StepTLSInfo";
 
 import StepTechnologyStack from "./StepTechnologyStack";
 import StepInfrastructure from "./StepInfrastructure";
-import StepTLSInfo from "./StepTLSInfo";
+
 import DRForm from "./StepDRInfo";
 import Header from "./layouts/HeaderDashboard";
 import Sidebar from "./layouts/SidebarDashboard";
@@ -125,19 +125,19 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       setVaRecords(vaDataWithId);
 
        // DR Info
-    const dr = editData.DR || {};
-    const drVaRecords = (dr.vaRecords || []).map((record) => ({
-      ipAddress: record.ipAddress || "",
-      dbServerIp: record.dbServerIp || "",
-      purpose: record.purpose || "",
-      vaScore: record.vaScore || "",
-      vaDate: record.vaDate ? record.vaDate.slice(0, 10) : "",
-    
-      // ✅ Check if vaReport is a string or needs a placeholder
-      vaReport: typeof record.vaReport === "string"
-        ? record.vaReport
-        : record.vaReport?.filename || "", // Fallback if stored as file object
-    }));
+   const dr = editData.DR || {};
+const drVaRecords = (dr.vaRecords || []).map((record) => ({
+  ipAddress: record.ipAddress || "",
+  dbServerIp: record.dbServerIp || "",
+  purpose: record.purposeOfUse || "", // ✅ Fixed name
+  vaScore: record.vaScore || "",
+  vaDate: record.dateOfVA ? record.dateOfVA.slice(0, 10) : "",
+     vaReport:
+    typeof record.vaReport === "string"
+      ? record.vaReport
+      : record.vaReport?.filename || "",
+}));
+
 
     setDrFormData({
       serverType: dr.serverType || "",

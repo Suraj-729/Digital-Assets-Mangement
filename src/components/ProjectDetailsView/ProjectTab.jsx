@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import BasicProfile from "./BasicProfile";
 import SecurityAudit from "./SecurityAudit";
-import TLSInfo from "./TLSInfo";
 import TechnologyAndInfrastructure from "./InfraStructure";
-import TlsInfo from "./TlsInfo";
-import DrInfo from "./DrInfo";
+import TlsInfo from "./TLSInfo";
+import DrInfo from "./DRInfo";
 import { useParams } from "react-router-dom";
 import api from "../../Api";
 import Header from "../layouts/HeaderDashboard";
@@ -16,9 +15,8 @@ import { motion, AnimatePresence } from "framer-motion";
 const TAB_CONFIG = [
   { id: "basic", label: "Basic Profile", icon: "BasicProfile.png" },
   { id: "tls", label: "TLS Info", icon: "ssl.png" },           // Add TLS tab
-  { id: "dr", label: "DR Info", icon: "dr.png" },              // Add DR tab
+                // Add DR tab
   { id: "security", label: "Security Audit", icon: "security-audit.png" },
-  { id: "tls", label: "TLS Info", icon: "tls.png" },
   { id: "tech", label: "Technology Stack", icon: "TechnologyStack.png" },
   { id: "infra", label: "Infrastructure", icon: "infrastructure.png" },
   { id: "dr", label: "DR Info", icon: "dr.png" },

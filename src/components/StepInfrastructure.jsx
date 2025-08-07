@@ -966,6 +966,7 @@ const isVAFieldsDisabled =
             cursor: "pointer",
             padding: "10px 5px",
             background: "#a8dced",
+            marginLeft: "470px"
           }}
         >
           Previous
@@ -983,6 +984,8 @@ const isVAFieldsDisabled =
             borderRadius: "10px",
             cursor: "pointer",
             padding: "10px 5px",
+
+            marginRight: "470px",
             background: "#0099cc",
           }}
         >

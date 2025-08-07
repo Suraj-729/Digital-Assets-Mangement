@@ -33,7 +33,7 @@ const DRForm = ({
       [name]: value,
     }));
   };
-
+ 
   const handleVaFormChange = (e) => {
     const { name, value, files } = e.target;
     setVaForm((prev) => ({
@@ -171,7 +171,7 @@ const DRForm = ({
           <input
             type="text"
             className="form-control"
-            name="purpose"
+             name="purpose"
             value={vaForm.purpose}
             onChange={handleVaFormChange}
           />
@@ -215,8 +215,9 @@ const DRForm = ({
       </div>
 
       <div className="row mb-4">
-        <div className="col-md-4"
-         style={{
+        <div className="col-md-4">
+          <button className="btn btn-info w-100"  type="button"onClick={handleAddRecord}
+          style={{
             
               color: "white",
               border: "none",
@@ -227,7 +228,8 @@ const DRForm = ({
               letterSpacing: "0.5px",
               marginLeft: "420px"
             }}>
-          <button className="btn btn-info w-100" onClick={handleAddRecord}>
+
+
             Add Record
           </button>
         </div>
@@ -287,8 +289,8 @@ const DRForm = ({
       </table>
 
       {/* Navigation Buttons */}
-      <div className="d-flex justify-content-between mt-4"
-      >
+      <div className="d-flex justify-content-between mt-4">
+        {/* <button className="btn btn-secondary" onClick={onPrevious}> */}
         <button className="btn btn-secondary" onClick={onPrevious}
          style={{
               width: "100px",
@@ -301,8 +303,10 @@ const DRForm = ({
               background: "#a8dced",
               marginLeft: "470px"
             }}>
+
           Previous
         </button>
+        {/* <button className="btn btn-success" onClick={onSubmit}> */}
         <button className="btn btn-success" onClick={onSubmit}
         style={{
               width: "100px",

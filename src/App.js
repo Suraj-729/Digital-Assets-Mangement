@@ -20,7 +20,7 @@ import StepHodPage from "./components/StepHodpage";
 import "./css/bootstrap/dist/css/bootstrap.min.css";
 import "./css/bootstrap-icons/font/bootstrap-icons.css";
 import "./css/app.css";
-import StepHodPage from "./components/StepHodpage";
+
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

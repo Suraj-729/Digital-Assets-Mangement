@@ -1,12 +1,10 @@
 
-// // export default Header;
 // import React, { useEffect, useState, useRef } from "react";
 // import { Link, useNavigate } from "react-router-dom";
 // import "../../css/mvpStyle.css";
 // import api from "../../Api";
-// import MultiStepForm from "../MultiStepForm"; // Adjust the import based on your file structure
-// // import ThemeToggle from "./ThemeToggle"; // Adjust path if needed
-// // import ThemeToggle from "./"
+// import MultiStepForm from "../MultiStepForm";
+
 // const Header = ({ onSidebarToggle }) => {
 //   const [notifications, setNotifications] = useState([]);
 //   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -20,18 +18,22 @@
 //   useEffect(() => {
 //     async function fetchNotifications() {
 //       try {
-//         const res = await api.get("/audit-expiry/", {
+//         const employeeId = localStorage.getItem("employeeId");
+//         if (!employeeId) return;
+
+//         const res = await api.get(`/audit-expiry/${employeeId}`, {
 //           withCredentials: true,
 //         });
+
 //         setNotifications(res.data.notifications || []);
 //       } catch (error) {
 //         console.error("Error fetching notifications", error);
 //       }
 //     }
+
 //     fetchNotifications();
 //   }, []);
 
-//   // Close profile dropdown when clicking outside
 //   useEffect(() => {
 //     function handleClickOutside(event) {
 //       if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -85,15 +87,8 @@
 //         ></i>
 //       </div>
 
-
 //       <nav className="header-nav ms-auto">
 //         <ul className="d-flex align-items-center">
-//           <li className="nav-item d-block d-lg-none">
-//             {/* <Link className="nav-link nav-icon search-bar-toggle" to="#">
-//               <i className="bi bi-search"></i>
-//             </Link> */}
-//           </li>
-
 //           {/* Notifications */}
 //           <li className="nav-item dropdown">
 //             <Link
@@ -114,100 +109,117 @@
 //               )}
 //             </Link>
 
-            
-//               {dropdownOpen && (
-//  <ul
-//   className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications show"
-//   style={{
-//     maxHeight: "400px",
-//     overflowY: "auto",
-//     borderRadius: "12px",
-//     padding: "0px",
-//     boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
-//     width: "360px",
-//     background: "#fff",
-//   }}
-// >
+//             {dropdownOpen && (
+//               <ul
+//                 className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications show"
+//                 style={{
+//                   maxHeight: "400px",
+//                   overflowY: "auto",
+//                   borderRadius: "12px",
+//                   padding: "0px",
+//                   boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
+//                   width: "360px",
+//                   background: "#fff",
+//                 }}
+//               >
+//                 <li
+//                   className="dropdown-header d-flex justify-content-between align-items-center"
+//                   style={{
+//                     padding: "12px 16px",
+//                     borderBottom: "1px solid #eee",
+//                     fontWeight: "600",
+//                     fontSize: "1rem",
+//                     background: "#f5f5f5",
+//                   }}
+//                 >
+//                   <span>
+//                     🔔 You have {notifications.length} new
+//                     notification{notifications.length !== 1 ? "s" : ""}
+//                   </span>
+//                   <button
+//                     className="btn btn-sm btn-outline-danger"
+//                     onClick={() => setDropdownOpen(false)}
+//                     title="Close"
+//                     style={{
+//                       padding: "2px 8px",
+//                       fontSize: "0.9rem",
+//                       borderRadius: "50%",
+//                     }}
+//                   >
+//                     ✕
+//                   </button>
+//                 </li>
 
-//              <li
-//   className="dropdown-header d-flex justify-content-between align-items-center"
-//   style={{
-//     padding: "12px 16px",
-//     borderBottom: "1px solid #eee",
-//     fontWeight: "600",
-//     fontSize: "1rem",
-//     background: "#f5f5f5",
-//   }}
-// >
-//   <span>🔔 You have {notifications.length} new notification{notifications.length !== 1 ? "s" : ""}</span>
-//   <button
-//     className="btn btn-sm btn-outline-danger"
-//     onClick={() => setDropdownOpen(false)}
-//     title="Close"
-//     style={{
-//       padding: "2px 8px",
-//       fontSize: "0.9rem",
-//       borderRadius: "50%",
-//     }}
-//   >
-//     ✕
-//   </button>
-// </li>
+//                 {notifications.map((note, idx) => (
+//                   <li
+//                     key={idx}
+//                     className="notification-item"
+//                     style={{
+//                       display: "flex",
+//                       gap: "12px",
+//                       padding: "12px 16px",
+//                       alignItems: "flex-start",
+//                       background: "#fff",
+//                       borderBottom: "1px solid #eee",
+//                       transition: "background 0.2s ease-in-out",
+//                       cursor: "pointer",
+//                     }}
+//                     onMouseEnter={(e) =>
+//                       (e.currentTarget.style.background = "#f9f9f9")
+//                     }
+//                     onMouseLeave={(e) =>
+//                       (e.currentTarget.style.background = "#fff")
+//                     }
+//                   >
+//                     <div style={{ flexShrink: 0 }}>
+//                       <i
+//                         className="bi bi-exclamation-triangle-fill"
+//                         style={{
+//                           fontSize: "1.6rem",
+//                           color: "#f39c12",
+//                           marginTop: "4px",
+//                         }}
+//                       ></i>
+//                     </div>
 
-//             {notifications.map((note, idx) => (
-//   <li
-//     key={idx}
-//     className="notification-item"
-//     style={{
-//       display: "flex",
-//       gap: "12px",
-//       padding: "12px 16px",
-//       alignItems: "flex-start",
-//       background: "#fff",
-//       borderBottom: "1px solid #eee",
-//       transition: "background 0.2s ease-in-out",
-//       cursor: "pointer",
-//     }}
-//     onMouseEnter={(e) => e.currentTarget.style.background = "#f9f9f9"}
-//     onMouseLeave={(e) => e.currentTarget.style.background = "#fff"}
-//   >
-//     <div style={{ flexShrink: 0 }}>
-//       <i
-//         className="bi bi-exclamation-triangle-fill"
-//         style={{
-//           fontSize: "1.6rem",
-//           color: "#f39c12",
-//           marginTop: "4px",
-//         }}
-//       ></i>
-//     </div>
-
-//     <div style={{ flexGrow: 1 }}>
-//       <div style={{ fontWeight: "600", fontSize: "1rem", color: "#333" }}>
-//         {note.projectName}
-//       </div>
-//       <div style={{ fontSize: "0.9rem", color: "#555", marginTop: "2px" }}>
-//         {note.message}
-//       </div>
-//       <div
-//         style={{
-//           fontSize: "0.8rem",
-//           color:
-//             note.daysLeft <= 2
-//               ? "#e74c3c"
-//               : note.daysLeft <= 7
-//               ? "#f39c12"
-//               : "#2ecc71",
-//           fontWeight: "bold",
-//           marginTop: "4px",
-//         }}
-//       >
-//         {note.daysLeft} day{note.daysLeft !== 1 ? "s" : ""} remaining
-//       </div>
-//     </div>
-//   </li>
-// ))}
-
+//                     <div style={{ flexGrow: 1 }}>
+//                       <div
+//                         style={{
+//                           fontWeight: "600",
+//                           fontSize: "1rem",
+//                           color: "#333",
+//                         }}
+//                       >
+//                         {note.projectName || `Asset ${note.assetsId}`}
+//                       </div>
+//                       <div
+//                         style={{
+//                           fontSize: "0.9rem",
+//                           color: "#555",
+//                           marginTop: "2px",
+//                         }}
+//                       >
+//                         {note.message}
+//                       </div>
+//                       <div
+//                         style={{
+//                           fontSize: "0.8rem",
+//                           color:
+//                             note.daysLeft <= 2
+//                               ? "#e74c3c"
+//                               : note.daysLeft <= 7
+//                               ? "#f39c12"
+//                               : "#2ecc71",
+//                           fontWeight: "bold",
+//                           marginTop: "4px",
+//                         }}
+//                       >
+//                         {note.daysLeft} day{note.daysLeft !== 1 ? "s" : ""}{" "}
+//                         remaining
+//                       </div>
+//                     </div>
+//                   </li>
+//                 ))}
 
 //                 <li>
 //                   <hr className="dropdown-divider" />
@@ -242,9 +254,6 @@
 //               />
 //               <span className="d-none d-md-block dropdown-toggle ps-2">
 //                 NIC BBSR
-
-//                 {/* <i className="bi bi-caret-down-fill" style={{ fontSize: 12, marginLeft: 4 }}></i> */}
-
 //               </span>
 //             </Link>
 
@@ -284,7 +293,7 @@
 //         </ul>
 //       </nav>
 
-//       {/* Example: In your main dashboard or wherever you render the form */}
+//       {/* Form Rendered via Header (if needed) */}
 //       {formToShow === "addProject" && <MultiStepForm key="add" />}
 //       {formToShow === "projectDetails" && (
 //         <MultiStepForm key="edit" editData={selectedProjectData} />
@@ -294,7 +303,6 @@
 // };
 
 // export default Header;
-
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../css/mvpStyle.css";
@@ -321,7 +329,15 @@ const Header = ({ onSidebarToggle }) => {
           withCredentials: true,
         });
 
-        setNotifications(res.data.notifications || []);
+        // Flatten messages
+        const flatNotifs = (res.data.notifications || []).flatMap((n) =>
+          n.messages.map((msg) => ({
+            assetId: n.assetId,
+            ...msg,
+          }))
+        );
+
+        setNotifications(flatNotifs);
       } catch (error) {
         console.error("Error fetching notifications", error);
       }
@@ -359,7 +375,6 @@ const Header = ({ onSidebarToggle }) => {
 
   const toggleDropdown = () => setDropdownOpen((open) => !open);
   const toggleProfileDropdown = () => setProfileDropdownOpen((open) => !open);
-
   const toggleSidebar = () => {
     const newSidebarState = !isSidebarOpen;
     setSidebarOpen(newSidebarState);
@@ -390,8 +405,6 @@ const Header = ({ onSidebarToggle }) => {
             <Link
               className="nav-link nav-icon"
               to="#"
-              aria-haspopup="true"
-              aria-expanded={dropdownOpen}
               onClick={(e) => {
                 e.preventDefault();
                 toggleDropdown();
@@ -414,7 +427,7 @@ const Header = ({ onSidebarToggle }) => {
                   borderRadius: "12px",
                   padding: "0px",
                   boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
-                  width: "360px",
+                  width: "400px",
                   background: "#fff",
                 }}
               >
@@ -457,7 +470,6 @@ const Header = ({ onSidebarToggle }) => {
                       alignItems: "flex-start",
                       background: "#fff",
                       borderBottom: "1px solid #eee",
-                      transition: "background 0.2s ease-in-out",
                       cursor: "pointer",
                     }}
                     onMouseEnter={(e) =>
@@ -469,10 +481,15 @@ const Header = ({ onSidebarToggle }) => {
                   >
                     <div style={{ flexShrink: 0 }}>
                       <i
-                        className="bi bi-exclamation-triangle-fill"
+                        className={`bi ${
+                          note.status === "Expired"
+                            ? "bi-exclamation-octagon-fill"
+                            : "bi-exclamation-triangle-fill"
+                        }`}
                         style={{
                           fontSize: "1.6rem",
-                          color: "#f39c12",
+                          color:
+                            note.status === "Expired" ? "#e74c3c" : "#f39c12",
                           marginTop: "4px",
                         }}
                       ></i>
@@ -486,7 +503,17 @@ const Header = ({ onSidebarToggle }) => {
                           color: "#333",
                         }}
                       >
-                        {note.projectName || `Asset ${note.assetsId}`}
+                        {note.assetId} — {note.type}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.85rem",
+                          color:
+                            note.status === "Expired" ? "#e74c3c" : "#f39c12",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {note.status}
                       </div>
                       <div
                         style={{
@@ -496,22 +523,6 @@ const Header = ({ onSidebarToggle }) => {
                         }}
                       >
                         {note.message}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "0.8rem",
-                          color:
-                            note.daysLeft <= 2
-                              ? "#e74c3c"
-                              : note.daysLeft <= 7
-                              ? "#f39c12"
-                              : "#2ecc71",
-                          fontWeight: "bold",
-                          marginTop: "4px",
-                        }}
-                      >
-                        {note.daysLeft} day{note.daysLeft !== 1 ? "s" : ""}{" "}
-                        remaining
                       </div>
                     </div>
                   </li>
@@ -529,18 +540,9 @@ const Header = ({ onSidebarToggle }) => {
             <Link
               className="nav-link nav-profile d-flex align-items-center pe-0"
               to="#"
-              aria-haspopup="true"
-              aria-expanded={profileDropdownOpen}
-              tabIndex={0}
               onClick={(e) => {
                 e.preventDefault();
                 toggleProfileDropdown();
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  toggleProfileDropdown();
-                }
               }}
             >
               <img
@@ -557,8 +559,6 @@ const Header = ({ onSidebarToggle }) => {
               <ul
                 className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile show"
                 style={{ minWidth: 220, maxHeight: 350, overflowY: "auto" }}
-                role="menu"
-                aria-label="Profile menu"
               >
                 <li className="dropdown-header">
                   <h6>{localStorage.getItem("HOD")}</h6>
@@ -589,7 +589,7 @@ const Header = ({ onSidebarToggle }) => {
         </ul>
       </nav>
 
-      {/* Form Rendered via Header (if needed) */}
+      {/* Optional Form Section */}
       {formToShow === "addProject" && <MultiStepForm key="add" />}
       {formToShow === "projectDetails" && (
         <MultiStepForm key="edit" editData={selectedProjectData} />
@@ -599,3 +599,4 @@ const Header = ({ onSidebarToggle }) => {
 };
 
 export default Header;
+

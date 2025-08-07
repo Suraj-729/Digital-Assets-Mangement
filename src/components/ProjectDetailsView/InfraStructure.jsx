@@ -245,4 +245,3 @@ TechnologyAndInfrastructure.propTypes = {
 };
 
 export default TechnologyAndInfrastructure;
-

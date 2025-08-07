@@ -2404,14 +2404,12 @@ select {
   }
 }
 
-.col-md-4{
+.col-md-4 {
   font-size: 18px;
   text-align: left;
   display: block;
-  /* background-color: #000; */
-  color: #5d0a0a;
+  font-weight: bold; /* <-- added */
 }
-
 
 
 

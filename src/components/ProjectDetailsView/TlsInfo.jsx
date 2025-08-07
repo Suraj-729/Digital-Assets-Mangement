@@ -1,45 +1,40 @@
 import React from "react";
 
-const TlsInfo = ({ tlsRecords }) => {
-  if (!tlsRecords || tlsRecords.length === 0) {
-    return (
-      <div className="tab-pane fade show active profile-overview">
-        <div className="alert alert-info">No TLS records available.</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="tab-pane fade show active profile-overview">
-      <h4>TLS Information</h4>
-      <div className="table-responsive">
-        <table className="table table-bordered text-center">
-          <thead className="table-light">
-            <tr>
-              <th>S.No.</th>
-              <th>Issue Date</th>
-              <th>Expiry Date</th>
-              <th>Score</th>
-              <th>Certificate Procured From</th>
-              
+const TLSInfo = ({ tlsData }) => (
+  <div className="tls-info-container">
+    <table className="table table-bordered">
+      <thead>
+        <tr>
+          <th>S.No.</th>
+          <th>Issue Date</th>
+          <th>Expiry Date</th>
+          <th>Score</th>
+          <th>Certificate Procured From</th>
+         
+        </tr>
+      </thead>
+      <tbody>
+        {tlsData && tlsData.length > 0 ? (
+          tlsData.map((record, idx) => (
+            <tr key={idx}>
+              <td>{idx + 1}</td>
+              <td>{record.issueDate}</td>
+              <td>{record.expiryDate}</td>
+              <td>{record.score}</td>
+              <td>{record.certificateSource}</td>
+             
             </tr>
-          </thead>
-          <tbody>
-            {tlsRecords.map((record, idx) => (
-              <tr key={idx}>
-                <td>{idx + 1}</td>
-                <td>{record.issueDate || "N/A"}</td>
-                <td>{record.expiryDate || "N/A"}</td>
-                <td>{record.score || "N/A"}</td>
-                <td>{record.procuredFrom || "N/A"}</td>
-                
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
+          ))
+        ) : (
+          <tr>
+            <td colSpan="6" className="text-muted text-center">
+              No TLS records found.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+);
 
-export default TlsInfo;
+export default TLSInfo;
