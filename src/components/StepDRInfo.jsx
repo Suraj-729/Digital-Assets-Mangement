@@ -154,7 +154,7 @@ const DRForm = ({
             onChange={handleVaFormChange}
           />
         </div>
-
+{/* 
         <div className="col-md-4">
           <label>DB Server IP:</label>
           <input
@@ -164,7 +164,21 @@ const DRForm = ({
             value={vaForm.dbServerIp}
             onChange={handleVaFormChange}
           />
-        </div>
+        </div> */}
+        <div className="col-md-4">
+  <label>DB Server IP:</label>
+  <input
+    type="text"
+    className="form-control"
+    name="dbServerIp"
+    value={vaForm.dbServerIp}
+    onChange={handleVaFormChange}
+    pattern="^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$"
+    title="Enter a valid IPv4 address (e.g., 192.168.1.1)"
+    required
+  />
+</div>
+
 
         <div className="col-md-4">
           <label>Purpose:</label>
