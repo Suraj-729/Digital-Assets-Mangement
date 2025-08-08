@@ -37,15 +37,14 @@ const StepTechnologyStack = ({
       .catch((err) => console.error("Failed to load OS data", err));
   }, []);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/databases")
-      .then((res) => res.json())
-      .then((data) => setDbOptions(data || []))
-      .catch((err) => {
-        console.error(err);
-        toast.error("Failed to fetch database list.");
-      });
-  }, []);
+ useEffect(() => {
+  api.get("/databases")
+    .then((res) => setDbOptions(res.data || []))
+    .catch((err) => {
+      console.error("Failed to fetch database list", err);
+      toast.error("Failed to fetch database list.");
+    });
+}, []);
   useEffect(() => {
     if (formData.os) {
       const versions = osData

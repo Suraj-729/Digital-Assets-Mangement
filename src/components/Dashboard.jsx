@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Header from "../components/layouts/HeaderDashboard";
 import Sidebar from "../components/layouts/SidebarDashboard";
@@ -20,7 +19,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
   const [selectedProject, setSelectedProject] = useState(null);
   const [editProjectData, setEditProjectData] = useState(null);
   // const [filterType, setFilterType] = useState("department");
@@ -28,13 +26,21 @@ const Dashboard = () => {
   const [filterValue, setFilterValue] = useState(""); // actual selected value
 
   const [filteredProjects, setFilteredProjects] = useState([]);
+  // const employeeType = localStorage.getItem("employeeType") || "HOD";
 
- 
+
+// const employeeType = localStorage.getItem("employeeType") || "HOD";
+
+
+
+
+
   const HOD = localStorage.getItem("HOD") || "N/A";
   // const location = useLocation();
-const employeeId = location.state?.employeeId || localStorage.getItem("employeeId");
-const employeeType = location.state?.employeeType || localStorage.getItem("employeeType");
-
+  const employeeId =
+    location.state?.employeeId || localStorage.getItem("employeeId");
+  const employeeType =
+    location.state?.employeeType || localStorage.getItem("employeeType");
 
   const getFilterOptions = (type) => {
     if (type === "department") {
@@ -58,7 +64,6 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
   useEffect(() => {
     setFilteredProjects(projects);
   }, [projects]);
-
 
   useEffect(() => {
     const checkSession = async () => {
@@ -85,7 +90,6 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
       setProjects(location.state.fetchedProjects);
     }
   }, [location.state?.fetchedProjects]);
-
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -114,15 +118,13 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
     }
   }, [employeeId, employeeType]);
 
-
-
   const handleProjectNameClick = async (projectName) => {
     try {
       setLoading(true);
       const response = await api.get(
         `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
       );
-  
+
       if (response.status >= 200 && response.status < 300) {
         console.log("Project details response:", response.data);
         // You can store in global state if needed, or just navigate
@@ -137,41 +139,14 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
       setLoading(false);
     }
   };
-  // const handleEditProject = async (projectName) => {
-  //   try {
-  //     setLoading(true);
-  //     console.log("Fetching project details for edit:", projectName);
-  //     const response = await api.get(
-  //       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
-  //     );
-  //     console.log("API response for edit:", response);
-  //     if (response.status >= 200 && response.status < 300) {
-  //       console.log("Project data fetched for edit:", response.data);
-  //       setEditProjectData(response.data); // <-- This stores all previous data
-  //       setFormToShow("addProject"); // <-- This opens the form for editing
-  //     } else {
-  //       console.error(`Request failed with status ${response.status}`);
-  //       throw new Error(`Request failed with status ${response.status}`);
-  //       // toast.error(`Failed to load project for edit. Status: ${response.status}`);
 
-  //     }
-  //   } catch (err) {
-  //     console.error("Error fetching project for edit:", err);
-  //     setError(err.message);
-  //     // toast.error(`Error fetching project for edit: ${err.message}`);
-
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleEditProject = (projectName) => {
-    console.log("Edit clicked for", projectName); 
-     if (!projectName) return;
-     navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`, {
+    console.log("Edit clicked for", projectName);
+    if (!projectName) return;
+    navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`, {
       //  state: { from: location.pathname, projectName },
-
-      });
-     };
+    });
+  };
 
   // Add this function to handle Add Project click
   const handleAddProject = () => {
@@ -218,9 +193,6 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
       month: "long",
     })} / ${date.getFullYear()}`;
   };
-  
-  
-  
 
   // Badge helpers
   const statusBadge = (status) => {
@@ -261,7 +233,10 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
   // ✅ Static page for new users
   if (projects.length === 0 && formToShow !== "addProject") {
     return (
-      <div className="d-flex" style={{ minHeight: "100vh", flexDirection: "column" }}>
+      <div
+        className="d-flex"
+        style={{ minHeight: "100vh", flexDirection: "column" }}
+      >
         <Header />
         <div className="d-flex" style={{ flex: 1 }}>
           <Sidebar
@@ -275,24 +250,38 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
               <h1>Welcome to the Dashboard</h1>
               <nav>
                 <ol className="breadcrumb">
-                  <li className="breadcrumb-item"><a href="/">Home</a></li>
+                  <li className="breadcrumb-item">
+                    <a href="/">Home</a>
+                  </li>
                   <li className="breadcrumb-item active">Dashboard</li>
                 </ol>
               </nav>
             </div>
 
             <section className="section dashboard">
-              <div className="card mx-auto" style={{ maxWidth: 600, marginTop: "40px" }}>
+              <div
+                className="card mx-auto"
+                style={{ maxWidth: 600, marginTop: "40px" }}
+              >
                 <div className="card-body text-center">
                   <h4 className="card-title">No Projects Yet</h4>
-                  <p className="text-muted">You haven't added any projects. Click below to get started.</p>
-                  <button className="btn btn-primary mt-3" onClick={handleAddProject}>
+                  <p className="text-muted">
+                    You haven't added any projects. Click below to get started.
+                  </p>
+                  <button
+                    className="btn btn-primary mt-3"
+                    onClick={handleAddProject}
+                  >
                     Add Your First Project
                   </button>
                   <hr />
                   <div className="text-start mt-3">
-                    <p><strong>HOD:</strong> {HOD}</p>
-                    <p><strong>Employee ID:</strong> {employeeId}</p>
+                    <p>
+                      <strong>HOD:</strong> {HOD}
+                    </p>
+                    <p>
+                      <strong>Employee ID:</strong> {employeeId}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -406,7 +395,6 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                       style={{ paddingTop: "20px" }}
                     >
                       <div className="card-body pt-3">
-
                         <div className="row mb-4">
                           <div className="col-md-3">
                             <label className="form-label">Filter Type</label>
@@ -427,12 +415,10 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                             </select>
                           </div>
 
-
-
-                        <div className="col-md-3">
+                          <div className="col-md-3">
                             <label className="form-label">Filter Value</label>
 
-                            {/* {filterType === "prismid" ? (
+                            {filterType === "prismid" ? (
                               <input
                                 type="text"
                                 className="form-control"
@@ -449,7 +435,9 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
 
                                   try {
                                     const res = await api.get(
-                                      `/dashboard/filter/prismid/${value}`
+                                      `/dashboard/filter/prismid/${encodeURIComponent(
+                                        value
+                                      )}/employee/${employeeId}`
                                     );
                                     setFilteredProjects(res.data);
                                   } catch (err) {
@@ -457,68 +445,40 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                                   }
                                 }}
                               />
-                            ) : */}
-                            {filterType === "prismid" ? (
-  <input
-    type="text"
-    className="form-control"
-    placeholder="Enter Prism ID"
-    value={filterValue}
-    onChange={async (e) => {
-      const value = e.target.value;
-      setFilterValue(value);
-
-      if (!value) {
-        setFilteredProjects(projects);
-        return;
-      }
-
-      try {
-        const res = await api.get(
-          `/dashboard/filter/prismid/${encodeURIComponent(
-            value
-          )}/employee/${employeeId}`
-        );
-        setFilteredProjects(res.data);
-      } catch (err) {
-        setFilteredProjects([]);
-      }
-    }}
-  />
-) :
-
-                            (
+                            ) : (
                               <select
                                 className="form-select"
                                 value={filterValue}
-                                onChange={async (e) => {
-                                  const value = e.target.value;
-                                  setFilterValue(value);
+                              onChange={async (e) => {
+  const value = e.target.value;
+  setFilterValue(value);
 
-                                  if (!filterType || !value) {
-                                    setFilteredProjects(projects);
-                                    return;
-                                  }
+  if (!filterType || !value) {
+    setFilteredProjects(projects);
+    return;
+  }
 
-                                  try {
-                                    let url;
-                                    if (filterType === "department") {
-                                      url = `/dashboard/filter/department/${encodeURIComponent(
-                                        value
-                                      )}/employee/${employeeId}`;
-                                    } else if (filterType === "datacenter") {
-                                      url = `/dashboard/filter/datacenter/${encodeURIComponent(
-                                        value
-                                      )}/employee/${employeeId}`;
-                                    } else {
-                                      url = `/dashboard/filter/${filterType}/${value}`;
-                                    }
-                                    const res = await api.get(url);
-                                    setFilteredProjects(res.data);
-                                  } catch (err) {
-                                    setFilteredProjects([]);
-                                  }
-                                }}
+  const employeeType = localStorage.getItem("employeeType") || "HOD";
+
+  let url;
+  if (filterType === "department") {
+    url = `/dashboard/filter/department/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
+  } else if (filterType === "datacenter") {
+    url = `/dashboard/filter/datacenter/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
+  } else if (filterType === "prismid") {
+    url = `/dashboard/filter/prismid/${encodeURIComponent(value)}/employee/${employeeId}`;
+  } else {
+    url = `/dashboard/filter/${filterType}/${encodeURIComponent(value)}`;
+  }
+
+  try {
+    const res = await api.get(url);
+    setFilteredProjects(res.data);
+  } catch (err) {
+    setFilteredProjects([]);
+  }
+}}
+
                                 disabled={!filterType}
                               >
                                 <option value="">-- Select Value --</option>
@@ -545,8 +505,7 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                           </div>
                         </div>
 
-
-                    {/*the filter enviorment*/}
+                        {/*the filter enviorment*/}
 
                         {filteredProjects.length === 0 ? (
                           <div
@@ -660,12 +619,10 @@ const employeeType = location.state?.employeeType || localStorage.getItem("emplo
                                           {project.sslStatus || "N/A"}
                                         </span>
                                       </td>
+
+                                      <td>{formatDate(project.tlsNextExpiry)}</td>
                                       
-                                      {/* <td>{formatDate(project.nextExpireDate)}</td> */}
-                                      <td>
-                                        {formatDate(project.tlsNextExpiry)}
-                                      </td>
-                                      
+
                                       <td>
                                         <button
                                           className="btn btn-sm btn-outline-primary"
