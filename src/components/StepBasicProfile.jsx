@@ -1,70 +1,27 @@
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
+import api from "../Api";
 
 const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState([]);
 
-  // Autofill fields for PM
-  // useEffect(() => {
-  //   if (employeeType === "PM") {
-  //     const empCode = formData.empCode || localStorage.getItem("employeeId");
+  
 
-  //     if (!empCode) return;
-
-  //     setLoading(true);
-
-  //     fetch(`http://localhost:5000/project-assignments/${empCode}`)
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         if (data && data.length > 0) {
-  //           const project = data[0];
-  //           onChange({ target: { name: "projectName", value: project.projectName || "" } });
-  //           onChange({ target: { name: "departmentName", value: project.deptName || "" } });
-  //           onChange({ target: { name: "HOD", value: project.HOD || "" } });
-  //           onChange({ target: { name: "nicOfficerName", value: project.projectManagerName || "" } });
-  //           onChange({ target: { name: "nicOfficerEmpCode", value: project.empCode || "" } });
-  //         } else {
-  //           toast.warning("No project data found for your empCode.");
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         console.error(err);
-  //         toast.error("Failed to fetch project assignment data.");
-  //       })
-  //       .finally(() => setLoading(false));
-  //   }
-  // }, [employeeType]);
-
-  useEffect(() => {
-  console.log("useEffect triggered - employeeType:", employeeType);
-
+useEffect(() => {
   if (employeeType === "PM") {
     const empCode = formData.empCode || localStorage.getItem("employeeId");
-    console.log("Resolved empCode:", empCode);
-
-    if (!empCode) {
-      console.warn("No employee code found, aborting fetch.");
-      return;
-    }
+    if (!empCode) return;
 
     setLoading(true);
-    console.log("Fetching data for empCode:", empCode);
-
-    fetch(`http://localhost:5000/project-assignments/${empCode}`)
+    api.get(`/project-assignments/${empCode}`)
       .then((res) => {
-        console.log("Received response from server:", res);
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Parsed data:", data);
+        const data = res.data;
 
         if (data && data.length > 0) {
           const project = data[0];
-          console.log("Using first project from data:", project);
-
           onChange({ target: { name: "projectName", value: project.projectName || "" } });
           onChange({ target: { name: "departmentName", value: project.deptName || "" } });
           onChange({ target: { name: "HOD", value: project.HOD || "" } });
@@ -78,31 +35,31 @@ const StepBasicProfile = ({ formData = {}, onChange, onNext, employeeType }) => 
         console.error("Error fetching project assignment data:", err);
         toast.error("Failed to fetch project assignment data.");
       })
-      .finally(() => {
-        console.log("Fetch complete, turning off loading state.");
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   }
 }, [employeeType]);
 
 
+
+ 
+
   useEffect(() => {
-    if (employeeType === "PM") {
-      const empCode = formData.empCode || localStorage.getItem("employeeId");
-      if (!empCode) return;
-      setLoading(true);
-      fetch(`http://localhost:5000/project-assignments/by-pm/${empCode}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setProjects(data || []);
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error("Failed to fetch project assignment data.");
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [employeeType, formData.empCode]);
+  if (employeeType === "PM") {
+    const empCode = formData.empCode || localStorage.getItem("employeeId");
+    if (!empCode) return;
+
+    setLoading(true);
+    api.get(`/project-assignments/by-pm/${empCode}`)
+      .then((res) => {
+        setProjects(res.data || []);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to fetch project assignment data.");
+      })
+      .finally(() => setLoading(false));
+  }
+}, [employeeType, formData.empCode]);
 
   const handleProjectSelect = (e) => {
     const selectedProject = projects.find((p) => p.projectName === e.target.value);

@@ -72,7 +72,7 @@ const TechnologyAndInfrastructure = ({
                 <th>Framework</th>
                 <th>Database</th>
                 <th>OS</th>
-                <th>OS Version</th>
+                
                 <th>Repository URLs</th>
               </tr>
             </thead>
@@ -82,7 +82,7 @@ const TechnologyAndInfrastructure = ({
                 <td>{displayValue(project?.TS?.framework)}</td>
                 <td>{displayValue(project?.TS?.database)}</td>
                 <td>{displayValue(project?.TS?.os)}</td>
-                <td>{displayValue(project?.TS?.osVersion)}</td>
+                
                 <td>
                   {project?.TS?.repoUrls?.length > 0
                     ? project.TS.repoUrls.map((url, index) => (
