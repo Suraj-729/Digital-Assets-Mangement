@@ -420,31 +420,32 @@ const Dashboard = () => {
 
                             {filterType === "prismid" ? (
                               <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Enter Prism ID"
-                                value={filterValue}
-                                onChange={async (e) => {
-                                  const value = e.target.value;
-                                  setFilterValue(value);
+    type="text"
+    className="form-control"
+    placeholder="Enter Data Center"
+    value={filterValue}
+    onChange={async (e) => {
+      const value = e.target.value;
+      setFilterValue(value);
 
-                                  if (!value) {
-                                    setFilteredProjects(projects);
-                                    return;
-                                  }
+      if (!value) {
+        setFilteredProjects(projects);
+        return;
+      }
 
-                                  try {
-                                    const res = await api.get(
-                                      `/dashboard/filter/prismid/${encodeURIComponent(
-                                        value
-                                      )}/employee/${employeeId}`
-                                    );
-                                    setFilteredProjects(res.data);
-                                  } catch (err) {
-                                    setFilteredProjects([]);
-                                  }
-                                }}
-                              />
+      const employeeType = localStorage.getItem("employeeType") || "HOD";
+      const valueToSend = value.startsWith("/") ? value.slice(1) : value;
+
+      try {
+        const res = await api.get(
+  `/dashboard/filter/datacenter/${encodeURIComponent(valueToSend)}/employee/${employeeId}/employeeType/${employeeType}`
+);
+        setFilteredProjects(res.data);
+      } catch (err) {
+        setFilteredProjects([]);
+      }
+    }}
+  />
                             ) : (
                               <select
                                 className="form-select"
@@ -466,7 +467,7 @@ const Dashboard = () => {
   } else if (filterType === "datacenter") {
     url = `/dashboard/filter/datacenter/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
   } else if (filterType === "prismid") {
-    url = `/dashboard/filter/prismid/${encodeURIComponent(value)}/employee/${employeeId}`;
+    url = `/dashboard/filter/prismid/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
   } else {
     url = `/dashboard/filter/${filterType}/${encodeURIComponent(value)}`;
   }
