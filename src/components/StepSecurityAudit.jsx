@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
+import api from "../Api";
 
 const StepSecurityAudit = ({
   formData,
@@ -34,39 +35,36 @@ const StepSecurityAudit = ({
   };
 
   const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file || file.type !== "application/pdf") {
-      toast.error("Please select a valid PDF file.");
-      return;
-    }
+  const file = e.target.files[0];
+  if (!file || file.type !== "application/pdf") {
+    toast.error("Please select a valid PDF file.");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("certificate", file);
+  const formData = new FormData();
+  formData.append("certificate", file);
 
-    try {
-      const response = await fetch("http://localhost:5000/upload-certificate", {
-        method: "POST",
-        body: formData,
-      });
+  try {
+    const response = await api.post("/upload-certificate", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-      const result = await response.json();
+    toast.success("PDF uploaded successfully.");
+    onChange({
+      target: {
+        name: "certificate",
+        value: response.data.filename,
+      },
+    });
+  } catch (err) {
+    console.error("Upload error:", err);
+    const errorMessage = err.response?.data?.error || "Error uploading PDF.";
+    toast.error(errorMessage);
+  }
+};
 
-      if (response.ok) {
-        toast.success("PDF uploaded successfully.");
-        onChange({
-          target: {
-            name: "certificate",
-            value: result.filename,
-          },
-        });
-      } else {
-        toast.error("Failed to upload PDF: " + result.error);
-      }
-    } catch (err) {
-      console.error("Upload error:", err);
-      toast.error("Error uploading PDF.");
-    }
-  };
 
   const handleAddRecord = () => {
     if (!validateFields()) {
@@ -109,113 +107,105 @@ const StepSecurityAudit = ({
     setAuditRecords(updated);
   };
 
-  const handleVAReportUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file || file.type !== "application/pdf") {
-      alert("Only PDF files are allowed.");
-      return;
-    }
 
-    const formDataUpload = new FormData();
-    formDataUpload.append("vaReport", file);
 
-    try {
-      const res = await fetch("http://localhost:5000/upload-va-report", {
-        method: "POST",
-        body: formDataUpload,
-      });
 
-      const result = await res.json();
-      if (res.ok) {
-        onChange({
-          target: {
-            name: "certificate",
-            value: {
-              filename: result.filename,
-            },
-          },
-        });
-        setVaReport({ filename: result.filename });
-      } else {
-        alert("Upload failed: " + result.error);
-      }
-    } catch (err) {
-      console.error("Upload error:", err);
-      alert("Upload error occurred");
-    }
-  };
+const handleVAReportUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file || file.type !== "application/pdf") {
+    alert("Only PDF files are allowed.");
+    return;
+  }
+
+  const formDataUpload = new FormData();
+  formDataUpload.append("vaReport", file);
+
+  try {
+    const res = await api.post("/upload-va-report", formDataUpload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    const result = res.data;
+    onChange({
+      target: {
+        name: "certificate", // consider renaming this to "vaReport"
+        value: { filename: result.filename },
+      },
+    });
+    setVaReport({ filename: result.filename });
+  } catch (err) {
+    console.error("Upload error:", err);
+    const errorMsg = err.response?.data?.error || "Upload error occurred";
+    alert(errorMsg);
+  }
+};
 
   const handleViewVAReport = () => {
-    if (!vaReport?.filename) {
-      alert("No file to preview");
-      return;
-    }
+  if (!vaReport?.filename) {
+    alert("No file to preview");
+    return;
+  }
 
-    setPdfUrl(`http://localhost:5000/view-va-report/${vaReport.filename}`);
-    setShowModal(true);
-  };
+  setPdfUrl(`${api.defaults.baseURL}view-va-report/${vaReport.filename}`);
+  setShowModal(true);
+};
+
 
   const handleView = async (index) => {
-    try {
-      const record = auditRecords[index];
-      const certFilename = record?.certificate?.filename;
+  try {
+    const record = auditRecords[index];
+    const certFilename = record?.certificate?.filename;
 
-      if (!certFilename) {
-        alert("No certificate available for this record.");
-        return;
-      }
-
-      const previewUrl = `http://localhost:5000/view-va-report/${encodeURIComponent(certFilename)}`;
-
-      const verifyRes = await fetch(previewUrl);
-      if (!verifyRes.ok) {
-        alert("File not found on server.");
-        return;
-      }
-
-      setPdfUrl(previewUrl);
-      setShowModal(true);
-    } catch (err) {
-      console.error("Error viewing certificate:", err);
-      alert("Error displaying certificate");
-    }
-  };
-
-  const handleCertificateUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file || file.type !== "application/pdf") {
-      alert("Only PDF files are allowed.");
+    if (!certFilename) {
+      alert("No certificate available for this record.");
       return;
     }
 
-    const formDataUpload = new FormData();
-    formDataUpload.append("certificate", file);
+    // Check if file exists
+    await api.get(`/view-va-report/${encodeURIComponent(certFilename)}`, {
+      responseType: "blob",
+    });
 
-    try {
-      const res = await fetch("http://localhost:5000/upload-certificate", {
-        method: "POST",
-        body: formDataUpload,
-      });
+    // Build the preview URL using api config
+    const previewUrl = `${api.defaults.baseURL}view-va-report/${encodeURIComponent(certFilename)}`;
+    setPdfUrl(previewUrl);
+    setShowModal(true);
+  } catch (err) {
+    console.error("Error viewing certificate:", err);
+    alert("File not found or cannot be displayed.");
+  }
+};
 
-      const result = await res.json();
 
-      if (res.ok) {
-        onChange({
-          target: {
-            name: "certificate",
-            value: {
-              filename: result.filename,
-            },
-          },
-        });
-      } else {
-        alert("Certificate upload failed: " + result.error);
-      }
-    } catch (err) {
-      console.error("Certificate upload error:", err);
-      alert("Certificate upload failed");
-    }
-  };
+
+
+  const handleCertificateUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file || file.type !== "application/pdf") {
+    alert("Only PDF files are allowed.");
+    return;
+  }
+
+  const formDataUpload = new FormData();
+  formDataUpload.append("certificate", file);
+
+  try {
+    const res = await api.post("/upload-certificate", formDataUpload);
+
+    const result = res.data;
+    onChange({
+      target: {
+        name: "certificate",
+        value: { filename: result.filename },
+      },
+    });
+  } catch (err) {
+    console.error("Certificate upload error:", err);
+    alert("Certificate upload failed");
+  }
+};
 
   return (
     <fieldset>
