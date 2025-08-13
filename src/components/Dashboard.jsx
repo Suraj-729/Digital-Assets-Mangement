@@ -438,8 +438,8 @@ const Dashboard = () => {
 
       try {
         const res = await api.get(
-  `/dashboard/filter/datacenter/${encodeURIComponent(valueToSend)}/employee/${employeeId}/employeeType/${employeeType}`
-);
+  `/dashboard/filter/prismid/${encodeURIComponent(valueToSend)}/employee/${employeeId}/employeeType/${employeeType}`
+        ); // ✅ Correct endpoint for prismid
         setFilteredProjects(res.data);
       } catch (err) {
         setFilteredProjects([]);
