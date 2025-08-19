@@ -25,6 +25,9 @@ const DrInfo = ({ drData }) => {
         <div className="col-md-3">
           <p>Location: <b>{drData.drLocation || "N/A"}</b></p>
         </div>
+        <div className="col-md-3">
+          <p>ANTIVIRUS: <b>{drData.antivirus || "N/A"}</b></p>
+        </div>
       </div>
       {/* <h5>Git URLs</h5> */}
       {/* <ul>

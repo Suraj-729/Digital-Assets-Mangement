@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
-import { baseURL }   from "../Api";
+import { baseURL } from "../Api";
 
 
 
@@ -18,7 +18,7 @@ const StepInfrastructure = ({
   onVaFileChange,
   onDeleteVa,
   onPrevious,
-   onNext,
+  onNext,
 }) => {
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +28,7 @@ const StepInfrastructure = ({
   // ✅ Validation logic from your code
   const validate = () => {
     const newErrors = {};
-    const { ipAddress, dateOfVA, vaScore, vaReport } = formData;
+    const { ipAddress, dateOfVA, vaScore, vaReport, dbServer } = formData;
 
     if (!ipAddress || !/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ipAddress)) {
       newErrors.ipAddress = "Valid IP address is required";
@@ -39,6 +39,10 @@ const StepInfrastructure = ({
       newErrors.dateOfVA = "Date of VA is required";
       // toast.error("Date of VA is required");
     }
+    if (!dbServer || !/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(dbServer)) {
+      newErrors.dbServer = "Valid DB Server IP address is required";
+    }
+
 
     if (!vaScore || isNaN(vaScore) || vaScore < 0 || vaScore > 100) {
       newErrors.vaScore = "Valid VA Score (0–100) is required";
@@ -63,31 +67,28 @@ const StepInfrastructure = ({
       onChange({ target: { name: "ipAddress", value: "" } });
       onChange({ target: { name: "dateOfVA", value: "" } });
       onChange({ target: { name: "vaScore", value: "" } });
+      onChange({ target: { name: "dbServer", value: "" } });
       onChange({ target: { name: "vaReport", value: null } }); // ✅ Correct reset
       setErrors({});
     }
   };
 
-  
 
-  // const handleViewPdf = (filename) => {
-  //   if (!filename) return;
-  //   setPdfUrl(`${api.defaults.baseURL}va-reports/${encodeURIComponent(filename)}`);
-  //   setShowModal(true);
-  // };
-const handleViewPdf = (filename) => {
-  if (!filename || typeof filename !== "string") {
-    console.error("Invalid filename provided for PDF view:", filename);
-    return;
-  }
 
-  const cleanFilename = encodeURIComponent(filename.trim());
-  const url = `${baseURL}view-certificate/${cleanFilename}`;
-  console.log("PDF URL set to:", url);
 
-  setPdfUrl(url);
-  setShowModal(true);
-};
+  const handleViewPdf = (filename) => {
+    if (!filename || typeof filename !== "string") {
+      console.error("Invalid filename provided for PDF view:", filename);
+      return;
+    }
+
+    const cleanFilename = encodeURIComponent(filename.trim());
+    const url = `${baseURL}view-certificate/${cleanFilename}`;
+    console.log("PDF URL set to:", url);
+
+    setPdfUrl(url);
+    setShowModal(true);
+  };
 
 
   const closeModal = () => {
@@ -96,31 +97,8 @@ const handleViewPdf = (filename) => {
   };
 
 
-  //   if (!file || file.type !== "application/pdf") {
-  //     alert("Please select a valid PDF file.");
-  //     return;
-  //   }
 
-  //   const formData = new FormData();
-  //   formData.append("vaReport", file);
 
-  //   try {
-  //     const res = await fetch(`${API}/upload-va-report`, {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     if (!res.ok) throw new Error("Upload failed");
-  //     const result = await res.json();
-
-  //     // Update formData.vaReport with the uploaded filename
-  //     onChange({ target: { name: "vaReport", value: result.filename } });
-  //   } catch (err) {
-  //     console.error("VA report upload failed:", err);
-  //     alert("Failed to upload VA report");
-  //   }
-
-  // };
 
   const handleVaFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -235,52 +213,20 @@ const handleViewPdf = (filename) => {
               <option value="Delhi">Delhi</option>
             </select>
           </div>
-
-          <div className="col-md-8">
-            <label className="form-label">Git URL:</label>
-            <div className="d-flex">
-              <input
-                type="text"
-                className="form-control"
-                name="gitUrl"
-                placeholder="Enter Git URL"
-                value={formData.gitUrl || ""}
-                onChange={onChange}
-              />
-              <button
-                className="btn btn-primary ms-2"
-                type="button"
-                // onClick={onAddGitUrl}
-                onClick={() => {
-                  if (!formData.gitUrl?.trim()) {
-                    // toast.error("Please enter a Git URL");
-                    return;
-                  }
-                  onAddGitUrl();
-                  // toast.success("Git URL added");
-                }}
-              >
-                ADD
-              </button>
-            </div>
-            <div className="mt-2">
-              {gitUrls.map((url, idx) => (
-                <div key={idx}>
-                  {url}{" "}
-                  <Link
-                    className="text-danger"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onDeleteGitUrl(idx);
-                      // toast.info("Git URL deleted");
-                    }}
-                  >
-                    Delete
-                  </Link>
-                </div>
-              ))}
-            </div>
+          <div className="col-md-4">
+            <label className="form-label">ANTIVIRUS:</label>
+            <select
+              className="form-select"
+              name="antivirus"
+              value={formData.antivirus || ""}
+              onChange={onChange}
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
           </div>
+
         </div>
 
         {/* VA Fields */}
@@ -297,6 +243,22 @@ const handleViewPdf = (filename) => {
             />
             {errors.ipAddress && (
               <div className="invalid-feedback">{errors.ipAddress}</div>
+            )}
+          </div>
+          <div className="col-md-4">
+            <label>DB Server IP:</label>
+            <input
+              type="text"
+              className="form-control"
+              name="dbServer"
+              value={formData.dbServer}
+              onChange={onChange}
+              pattern="^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$"
+              title="Enter a valid IPv4 address (e.g., 192.168.1.1)"
+              required
+            />
+            {errors.dbServer && (
+              <div className="invalid-feedback">{errors.dbServer}</div>
             )}
           </div>
 
@@ -371,6 +333,7 @@ const handleViewPdf = (filename) => {
               <tr>
                 <th>S.No.</th>
                 <th>IP Address</th>
+                <th>DB Server IP</th>
                 <th>Purpose of Use</th>
                 <th>VA Score</th>
                 <th>Date of VA</th>
@@ -383,6 +346,7 @@ const handleViewPdf = (filename) => {
                   <tr key={idx}>
                     <td>{idx + 1}</td>
                     <td>{record.ipAddress || "N/A"}</td>
+                    <td>{record.dbServer || "N/A"}</td>
                     <td>{record.purposeOfUse || "Application Server"}</td>
                     <td>{record.vaScore || "N/A"}</td>
                     <td>
@@ -448,45 +412,45 @@ const handleViewPdf = (filename) => {
         </div> */}
         <div className="d-flex justify-content-between mt-3">
           <button
-          type="button"
-          className="btn btn-outline-primary"
-          onClick={onPrevious}
-          style={{
-            width: "100px",
-            fontWeight: "bold",
-            color: "white",
-            border: "0 none",
-            borderRadius: "10px",
-            cursor: "pointer",
-            padding: "10px 5px",
-            background: "#a8dced",
-            marginLeft: "470px"
-          }}
-        >
-          Previous
-        </button>
+            type="button"
+            className="btn btn-outline-primary"
+            onClick={onPrevious}
+            style={{
+              width: "100px",
+              fontWeight: "bold",
+              color: "white",
+              border: "0 none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              padding: "10px 5px",
+              background: "#a8dced",
+              marginLeft: "470px"
+            }}
+          >
+            Previous
+          </button>
 
-        <button
-          type="button"
-          className="btn btn-success"
-          onClick={onNext}
-          style={{
-            width: "100px",
-            fontWeight: "bold",
-            color: "white",
-            border: "0 none",
-            borderRadius: "10px",
-            cursor: "pointer",
-            padding: "10px 5px",
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={onNext}
+            style={{
+              width: "100px",
+              fontWeight: "bold",
+              color: "white",
+              border: "0 none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              padding: "10px 5px",
 
-            marginRight: "470px",
-            background: "#0099cc",
-          }}
-        >
-          Next
-        </button>
+              marginRight: "470px",
+              background: "#0099cc",
+            }}
+          >
+            Next
+          </button>
+        </div>
       </div>
-    </div>
 
       {/* PDF Modal */}
       {showModal && (
@@ -500,9 +464,9 @@ const handleViewPdf = (filename) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">VA Report PDF</h5>
-                 <button type="button" className="btn btn-secondary" onClick={closeModal}>
-  Close
-</button>
+                <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                  Close
+                </button>
 
               </div>
               <div className="modal-body" style={{ height: "80vh" }}>

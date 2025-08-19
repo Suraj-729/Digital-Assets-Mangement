@@ -33,7 +33,7 @@ const DRForm = ({
       [name]: value,
     }));
   };
- 
+
   const handleVaFormChange = (e) => {
     const { name, value, files } = e.target;
     setVaForm((prev) => ({
@@ -138,6 +138,19 @@ const DRForm = ({
             <option value="DEL">DEL</option>
           </select>
         </div>
+        <div className="col-md-4">
+            <label className="form-label">ANTIVIRUS:</label>
+            <select
+              className="form-select"
+              name="antivirus"
+              value={formData.antivirus || ""}
+              onChange={handleChange}
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
       </div>
 
       <hr />
@@ -154,7 +167,7 @@ const DRForm = ({
             onChange={handleVaFormChange}
           />
         </div>
-{/* 
+        {/* 
         <div className="col-md-4">
           <label>DB Server IP:</label>
           <input
@@ -166,18 +179,18 @@ const DRForm = ({
           />
         </div> */}
         <div className="col-md-4">
-  <label>DB Server IP:</label>
-  <input
-    type="text"
-    className="form-control"
-    name="dbServerIp"
-    value={vaForm.dbServerIp}
-    onChange={handleVaFormChange}
-    pattern="^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$"
-    title="Enter a valid IPv4 address (e.g., 192.168.1.1)"
-    required
-  />
-</div>
+          <label>DB Server IP:</label>
+          <input
+            type="text"
+            className="form-control"
+            name="dbServerIp"
+            value={vaForm.dbServerIp}
+            onChange={handleVaFormChange}
+            pattern="^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$"
+            title="Enter a valid IPv4 address (e.g., 192.168.1.1)"
+            required
+          />
+        </div>
 
 
         <div className="col-md-4">
@@ -226,9 +239,9 @@ const DRForm = ({
 
       <div className="row mb-4">
         <div className="col-md-4">
-          <button className="btn btn-info w-100"  type="button"onClick={handleAddRecord}
-          style={{
-            
+          <button className="btn btn-info w-100" type="button" onClick={handleAddRecord}
+            style={{
+
               color: "white",
               border: "none",
               padding: "8px 70px",
@@ -302,33 +315,33 @@ const DRForm = ({
       <div className="d-flex justify-content-between mt-4">
         {/* <button className="btn btn-secondary" onClick={onPrevious}> */}
         <button className="btn btn-secondary" onClick={onPrevious}
-         style={{
-              width: "100px",
-              fontWeight: "bold",
-              color: "white",
-              border: "0 none",
-              borderRadius: "10px",
-              cursor: "pointer",
-              padding: "10px 5px",
-              background: "#a8dced",
-              marginLeft: "470px"
-            }}>
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#a8dced",
+            marginLeft: "470px"
+          }}>
 
           Previous
         </button>
         {/* <button className="btn btn-success" onClick={onSubmit}> */}
         <button className="btn btn-success" onClick={onSubmit}
-        style={{
-              width: "100px",
-              fontWeight: "bold",
-              color: "white",
-              border: "0 none",
-              borderRadius: "10px",
-              cursor: "pointer",
-              padding: "10px 5px",
-              background: "#0099cc",
-              marginRight: "470px"
-            }}>
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#0099cc",
+            marginRight: "470px"
+          }}>
           Submit
         </button>
       </div>
