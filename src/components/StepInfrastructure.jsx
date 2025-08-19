@@ -1,11 +1,8 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
-import { baseURL }   from "../Api";
-
-
+import { baseURL } from "../Api";
 
 const StepInfrastructure = ({
   formData = {},
@@ -18,7 +15,7 @@ const StepInfrastructure = ({
   onVaFileChange,
   onDeleteVa,
   onPrevious,
-   onNext,
+  onNext,
 }) => {
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -68,33 +65,29 @@ const StepInfrastructure = ({
     }
   };
 
-  
-
   // const handleViewPdf = (filename) => {
   //   if (!filename) return;
   //   setPdfUrl(`${api.defaults.baseURL}va-reports/${encodeURIComponent(filename)}`);
   //   setShowModal(true);
   // };
-const handleViewPdf = (filename) => {
-  if (!filename || typeof filename !== "string") {
-    console.error("Invalid filename provided for PDF view:", filename);
-    return;
-  }
+  const handleViewPdf = (filename) => {
+    if (!filename || typeof filename !== "string") {
+      console.error("Invalid filename provided for PDF view:", filename);
+      return;
+    }
 
-  const cleanFilename = encodeURIComponent(filename.trim());
-  const url = `${baseURL}view-certificate/${cleanFilename}`;
-  console.log("PDF URL set to:", url);
+    const cleanFilename = encodeURIComponent(filename.trim());
+    const url = `${baseURL}view-certificate/${cleanFilename}`;
+    console.log("PDF URL set to:", url);
 
-  setPdfUrl(url);
-  setShowModal(true);
-};
-
+    setPdfUrl(url);
+    setShowModal(true);
+  };
 
   const closeModal = () => {
     setShowModal(false);
     setPdfUrl("");
   };
-
 
   //   if (!file || file.type !== "application/pdf") {
   //     alert("Please select a valid PDF file.");
@@ -141,7 +134,6 @@ const handleViewPdf = (filename) => {
     try {
       // const response = await fetch(`${API}/upload-va-report`, {
       const response = await fetch(`${baseURL}upload-va-report`, {
-
         method: "POST",
         body: formData,
       });
@@ -171,7 +163,7 @@ const handleViewPdf = (filename) => {
         <div className="row g-3">
           {/* Type of Server */}
           <div className="col-md-4">
-            <label className="form-label">Type of Server:</label>
+            <label className="form-label">Type of Server Deployment:</label>
             <select
               className="form-select"
               name="typeOfServer"
@@ -204,7 +196,7 @@ const handleViewPdf = (filename) => {
 
           {/* Deployment */}
           <div className="col-md-4">
-            <label className="form-label">Deployment:</label>
+            <label className="form-label">Type of application deployment:</label>
             <select
               className="form-select"
               name="deployment"
@@ -237,7 +229,7 @@ const handleViewPdf = (filename) => {
           </div>
 
           <div className="col-md-8">
-            <label className="form-label">Git URL:</label>
+            {/* <label className="form-label">Git URL:</label>
             <div className="d-flex">
               <input
                 type="text"
@@ -262,7 +254,7 @@ const handleViewPdf = (filename) => {
               >
                 ADD
               </button>
-            </div>
+            </div> */}
             <div className="mt-2">
               {gitUrls.map((url, idx) => (
                 <div key={idx}>
@@ -297,6 +289,23 @@ const handleViewPdf = (filename) => {
             />
             {errors.ipAddress && (
               <div className="invalid-feedback">{errors.ipAddress}</div>
+            )}
+          </div>
+
+          <div className="col-md-4">
+            <label className="form-label">Database Server IP:</label>
+            <input
+              type="text"
+              className={`form-control ${
+                errors.dbServerIp ? "is-invalid" : ""
+              }`}
+              name="dbServerIp" // ✅ matches backend
+              placeholder="Database server IP"
+              value={formData.dbServerIp || ""}
+              onChange={onChange}
+            />
+            {errors.dbServerIp && (
+              <div className="invalid-feedback">{errors.dbServerIp}</div>
             )}
           </div>
 
@@ -383,6 +392,7 @@ const handleViewPdf = (filename) => {
                   <tr key={idx}>
                     <td>{idx + 1}</td>
                     <td>{record.ipAddress || "N/A"}</td>
+                    <td>{record.databaseipAddress || "N/A"}</td>
                     <td>{record.purposeOfUse || "Application Server"}</td>
                     <td>{record.vaScore || "N/A"}</td>
                     <td>
@@ -448,45 +458,45 @@ const handleViewPdf = (filename) => {
         </div> */}
         <div className="d-flex justify-content-between mt-3">
           <button
-          type="button"
-          className="btn btn-outline-primary"
-          onClick={onPrevious}
-          style={{
-            width: "100px",
-            fontWeight: "bold",
-            color: "white",
-            border: "0 none",
-            borderRadius: "10px",
-            cursor: "pointer",
-            padding: "10px 5px",
-            background: "#a8dced",
-            marginLeft: "470px"
-          }}
-        >
-          Previous
-        </button>
+            type="button"
+            className="btn btn-outline-primary"
+            onClick={onPrevious}
+            style={{
+              width: "100px",
+              fontWeight: "bold",
+              color: "white",
+              border: "0 none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              padding: "10px 5px",
+              background: "#a8dced",
+              marginLeft: "470px",
+            }}
+          >
+            Previous
+          </button>
 
-        <button
-          type="button"
-          className="btn btn-success"
-          onClick={onNext}
-          style={{
-            width: "100px",
-            fontWeight: "bold",
-            color: "white",
-            border: "0 none",
-            borderRadius: "10px",
-            cursor: "pointer",
-            padding: "10px 5px",
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={onNext}
+            style={{
+              width: "100px",
+              fontWeight: "bold",
+              color: "white",
+              border: "0 none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              padding: "10px 5px",
 
-            marginRight: "470px",
-            background: "#0099cc",
-          }}
-        >
-          Next
-        </button>
+              marginRight: "470px",
+              background: "#0099cc",
+            }}
+          >
+            Next
+          </button>
+        </div>
       </div>
-    </div>
 
       {/* PDF Modal */}
       {showModal && (
@@ -500,10 +510,13 @@ const handleViewPdf = (filename) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">VA Report PDF</h5>
-                 <button type="button" className="btn btn-secondary" onClick={closeModal}>
-  Close
-</button>
-
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={closeModal}
+                >
+                  Close
+                </button>
               </div>
               <div className="modal-body" style={{ height: "80vh" }}>
                 <iframe

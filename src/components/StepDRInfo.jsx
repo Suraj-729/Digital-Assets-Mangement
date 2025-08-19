@@ -33,7 +33,7 @@ const DRForm = ({
       [name]: value,
     }));
   };
- 
+
   const handleVaFormChange = (e) => {
     const { name, value, files } = e.target;
     setVaForm((prev) => ({
@@ -73,8 +73,6 @@ const DRForm = ({
 
   return (
     <div className="container p-4" style={{ backgroundColor: "#f5f8ff" }}>
-      <h3 className="mb-4">DR Information</h3>
-
       {/* DR Fields */}
       <div className="row mb-3">
         <div className="col-md-4">
@@ -85,7 +83,7 @@ const DRForm = ({
             value={formData.serverType || ""}
             onChange={handleChange}
           >
-            <option value="">-- Select --</option>
+            <option value="">Select</option>
             <option value="Cloud">Cloud</option>
             <option value="On-Prem">On-Prem</option>
             <option value="Hybrid">Hybrid</option>
@@ -100,7 +98,7 @@ const DRForm = ({
             value={formData.dataCentre || ""}
             onChange={handleChange}
           >
-            <option value="">-- Select --</option>
+            <option value="">Select</option>
             <option value="NDC">NDC</option>
             <option value="CDC">CDC</option>
             <option value="WDC">WDC</option>
@@ -115,7 +113,7 @@ const DRForm = ({
             value={formData.deployment || ""}
             onChange={handleChange}
           >
-            <option value="">-- Select --</option>
+            <option value="">Select</option>
             <option value="Container as Service">Container as Service</option>
             <option value="VM">VM</option>
             <option value="Cloud-native">Cloud-native</option>
@@ -132,7 +130,7 @@ const DRForm = ({
             value={formData.location || ""}
             onChange={handleChange}
           >
-            <option value="">-- Select --</option>
+            <option value="">Select</option>
             <option value="BBSR">BBSR</option>
             <option value="BLR">BLR</option>
             <option value="DEL">DEL</option>
@@ -141,7 +139,6 @@ const DRForm = ({
       </div>
 
       <hr />
-      <h4>VA Records</h4>
 
       <div className="row mb-3">
         <div className="col-md-4">
@@ -154,7 +151,7 @@ const DRForm = ({
             onChange={handleVaFormChange}
           />
         </div>
-{/* 
+        {/* 
         <div className="col-md-4">
           <label>DB Server IP:</label>
           <input
@@ -166,19 +163,18 @@ const DRForm = ({
           />
         </div> */}
         <div className="col-md-4">
-  <label>DB Server IP:</label>
-  <input
-    type="text"
-    className="form-control"
-    name="dbServerIp"
-    value={vaForm.dbServerIp}
-    onChange={handleVaFormChange}
-    pattern="^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$"
-    title="Enter a valid IPv4 address (e.g., 192.168.1.1)"
-    required
-  />
-</div>
-
+          <label>DB Server IP:</label>
+          <input
+            type="text"
+            className="form-control"
+            name="dbServerIp"
+            value={vaForm.dbServerIp}
+            onChange={handleVaFormChange}
+            pattern="^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$"
+            title="Enter a valid IPv4 address (e.g., 192.168.1.1)"
+            required
+          />
+        </div>
 
         <div className="col-md-4">
           <label>Purpose:</label>
@@ -226,9 +222,11 @@ const DRForm = ({
 
       <div className="row mb-4">
         <div className="col-md-4">
-          <button className="btn btn-info w-100"  type="button"onClick={handleAddRecord}
-          style={{
-            
+          <button
+            className="btn btn-info w-100"
+            type="button"
+            onClick={handleAddRecord}
+            style={{
               color: "white",
               border: "none",
               padding: "8px 70px",
@@ -236,10 +234,9 @@ const DRForm = ({
               fontWeight: "bold",
               fontSize: "14px",
               letterSpacing: "0.5px",
-              marginLeft: "420px"
-            }}>
-
-
+              marginLeft: "420px",
+            }}
+          >
             Add Record
           </button>
         </div>
@@ -272,9 +269,17 @@ const DRForm = ({
                 <td>
                   {rec.vaReport ? (
                     typeof rec.vaReport === "string" ? (
-                      <a href={rec.vaReport} target="_blank" rel="noreferrer">View</a>
+                      <a href={rec.vaReport} target="_blank" rel="noreferrer">
+                        View
+                      </a>
                     ) : (
-                      <a href={URL.createObjectURL(rec.vaReport)} target="_blank" rel="noreferrer">View</a>
+                      <a
+                        href={URL.createObjectURL(rec.vaReport)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View
+                      </a>
                     )
                   ) : (
                     "No File"
@@ -301,34 +306,39 @@ const DRForm = ({
       {/* Navigation Buttons */}
       <div className="d-flex justify-content-between mt-4">
         {/* <button className="btn btn-secondary" onClick={onPrevious}> */}
-        <button className="btn btn-secondary" onClick={onPrevious}
-         style={{
-              width: "100px",
-              fontWeight: "bold",
-              color: "white",
-              border: "0 none",
-              borderRadius: "10px",
-              cursor: "pointer",
-              padding: "10px 5px",
-              background: "#a8dced",
-              marginLeft: "470px"
-            }}>
-
+        <button
+          className="btn btn-secondary"
+          onClick={onPrevious}
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#a8dced",
+            marginLeft: "470px",
+          }}
+        >
           Previous
         </button>
         {/* <button className="btn btn-success" onClick={onSubmit}> */}
-        <button className="btn btn-success" onClick={onSubmit}
-        style={{
-              width: "100px",
-              fontWeight: "bold",
-              color: "white",
-              border: "0 none",
-              borderRadius: "10px",
-              cursor: "pointer",
-              padding: "10px 5px",
-              background: "#0099cc",
-              marginRight: "470px"
-            }}>
+        <button
+          className="btn btn-success"
+          onClick={onSubmit}
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#0099cc",
+            marginRight: "470px",
+          }}
+        >
           Submit
         </button>
       </div>
