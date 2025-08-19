@@ -109,10 +109,11 @@ const TechnologyAndInfrastructure = ({
                 <th>Location</th>
                 <th>Git URLs</th>
                 <th>VA IP Address</th>
+                <th>VA DB IP Address</th>
                 <th>VA Purpose</th>
                 <th>VA Date</th>
                 <th>VA Score</th>
-                <th>VA Report</th>
+                {/* <th>VA Report</th> */}
               </tr>
             </thead>
             <tbody>
@@ -139,6 +140,7 @@ const TechnologyAndInfrastructure = ({
                         : "N/A"}
                     </td>
                     <td>{record.ipAddress || "N/A"}</td>
+                    <td>{record.dbServerIp}</td>
                     <td>{record.purposeOfUse || "N/A"}</td>
                     <td>{formatDate(record.dateOfVA)}</td>
                     <td>{record.vaScore || "N/A"}</td>

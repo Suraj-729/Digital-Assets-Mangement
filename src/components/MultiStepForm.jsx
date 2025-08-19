@@ -98,6 +98,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         deployment: editData.Infra?.deployment || "",
         location: editData.Infra?.location || "",
         ipAddress: "",
+        dbServerIp:"",
         purposeOfUse: "",
         vaScore: "",
         dateOfVA: "",
@@ -268,6 +269,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
     const newVa = {
       ipAddress: formData.ipAddress,
+      dbServerIp:formData.dbServerIp,
       purposeOfUse: formData.purposeOfUse || "Application Server",
       vaScore: formData.vaScore,
       dateOfVA: formData.dateOfVA,
@@ -391,6 +393,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         gitUrls: gitUrls,
         vaRecords: vaRecords.map((record) => ({
           ipAddress: record.ipAddress,
+          dbServerIp:record.dbServerIp,
           purposeOfUse: record.purposeOfUse,
           vaScore: record.vaScore,
           dateOfVA: record.dateOfVA,
