@@ -394,22 +394,7 @@ const StepInfrastructure = ({
           </table>
         </div>
 
-        {/* <div className="d-flex justify-content-between mt-3">
-          <input
-            type="button"
-            name="previous"
-            className="btn btn-primary"
-            value="Previous"
-            onClick={onPrevious}
-          />
-          <input
-            type="submit"
-            name="submit"
-            className="btn btn-primary"
-            value="Submit"
-            onClick={handleSubmit}
-          />
-        </div> */}
+   
         <div className="d-flex justify-content-between mt-3">
           <button
             type="button"

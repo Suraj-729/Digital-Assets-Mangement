@@ -15,7 +15,7 @@ const DRForm = ({
     dbServerIp: "",
     purpose: "",
     vaScore: "",
-    vaDate: "",
+    dateOfVA: "",
     vaReport: null,
   });
 
@@ -57,7 +57,7 @@ const DRForm = ({
       dbServerIp: "",
       purpose: "",
       vaScore: "",
-      vaDate: "",
+      dateOfVA: "",
       vaReport: null,
     });
   };
@@ -209,8 +209,8 @@ const DRForm = ({
           <input
             type="date"
             className="form-control"
-            name="vaDate"
-            value={vaForm.vaDate}
+            name="dateOfVA"
+            value={vaForm.dateOfVA}
             onChange={handleVaFormChange}
           />
         </div>
@@ -281,7 +281,7 @@ const DRForm = ({
                 <td>{rec.dbServerIp}</td>
                 <td>{rec.purpose}</td>
                 <td>{rec.vaScore}</td>
-                <td>{rec.vaDate}</td>
+                <td>{rec.dateOfVA}</td>
                 <td>
                   {rec.vaReport ? (
                     typeof rec.vaReport === "string" ? (

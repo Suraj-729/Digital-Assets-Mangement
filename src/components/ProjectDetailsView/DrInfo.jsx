@@ -58,9 +58,9 @@ const DrInfo = ({ drData }) => {
                 <td>{idx + 1}</td>
                 <td>{record.ipAddress || "N/A"}</td>
                 <td>{record.dbServerIp || "N/A"}</td>
-                <td>{record.purposeOfUse || "N/A"}</td> {/* <-- use purposeOfUse */}
+                <td>{record.purpose || "N/A"}</td> {/* <-- use purposeOfUse */}
                 <td>{record.vaScore || "N/A"}</td>
-                <td>{record.vaDate || record.dateOfVA || "N/A"}</td> {/* <-- support both vaDate and dateOfVA */}
+                <td>{record.dateOfVA || "N/A"}</td> {/* <-- support both vaDate and dateOfVA */}
                 <td>
                   {record.vaReport ? (
                     typeof record.vaReport === "string" ? (

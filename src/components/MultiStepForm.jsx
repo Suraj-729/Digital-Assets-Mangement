@@ -131,7 +131,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       dbServerIp: record.dbServerIp || "",
       purpose: record.purpose || "",
       vaScore: record.vaScore || "",
-      vaDate: record.vaDate ? record.vaDate.slice(0, 10) : "",
+      dateOfVA: record.dateOfVA? record.dateOfVA.slice(0, 10) : "",
     
       // ✅ Check if vaReport is a string or needs a placeholder
       vaReport: typeof record.vaReport === "string"
@@ -430,7 +430,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
           dbServerIp: record.dbServerIp || "",
           purpose: record.purpose || "",
           vaScore: record.vaScore || "",
-          vaDate: record.vaDate || "",
+          dateOfVA: record.dateOfVA || "",
           vaReport: record.vaReport || null, // file or base64 or ObjectId depending on backend
         })),
       };
