@@ -28,7 +28,12 @@ const Dashboard = () => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   // const employeeType = localStorage.getItem("employeeType") || "HOD";
 
+
   // const employeeType = localStorage.getItem("employeeType") || "HOD";
+
+
+
+
 
   const HOD = localStorage.getItem("HOD") || "N/A";
   // const location = useLocation();
@@ -428,18 +433,12 @@ const Dashboard = () => {
                                     return;
                                   }
 
-                                  const employeeType =
-                                    localStorage.getItem("employeeType") ||
-                                    "HOD";
-                                  const valueToSend = value.startsWith("/")
-                                    ? value.slice(1)
-                                    : value;
+                                  const employeeType = localStorage.getItem("employeeType") || "HOD";
+                                  const valueToSend = value.startsWith("/") ? value.slice(1) : value;
 
                                   try {
                                     const res = await api.get(
-                                      `/dashboard/filter/prismId/${encodeURIComponent(
-                                        valueToSend
-                                      )}/employee/${employeeId}/employeeType/${employeeType}`
+                                      `/dashboard/filter/prismId/${encodeURIComponent(valueToSend)}/employee/${employeeId}/employeeType/${employeeType}`
                                     );
                                     setFilteredProjects(res.data);
                                   } catch (err) {
@@ -460,27 +459,17 @@ const Dashboard = () => {
                                     return;
                                   }
 
-                                  const employeeType =
-                                    localStorage.getItem("employeeType") ||
-                                    "HOD";
+                                  const employeeType = localStorage.getItem("employeeType") || "HOD";
 
                                   let url;
                                   if (filterType === "department") {
-                                    url = `/dashboard/filter/department/${encodeURIComponent(
-                                      value
-                                    )}/employee/${employeeId}/employeeType/${employeeType}`;
+                                    url = `/dashboard/filter/department/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
                                   } else if (filterType === "datacenter") {
-                                    url = `/dashboard/filter/datacenter/${encodeURIComponent(
-                                      value
-                                    )}/employee/${employeeId}/employeeType/${employeeType}`;
+                                    url = `/dashboard/filter/datacenter/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
                                   } else if (filterType === "prismid") {
-                                    url = `/dashboard/filter/prismid/${encodeURIComponent(
-                                      value
-                                    )}/employee/${employeeId}/employeeType/${employeeType}`;
+                                    url = `/dashboard/filter/prismid/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
                                   } else {
-                                    url = `/dashboard/filter/${filterType}/${encodeURIComponent(
-                                      value
-                                    )}`;
+                                    url = `/dashboard/filter/${filterType}/${encodeURIComponent(value)}`;
                                   }
 
                                   try {
@@ -490,6 +479,7 @@ const Dashboard = () => {
                                     setFilteredProjects([]);
                                   }
                                 }}
+
                                 disabled={!filterType}
                               >
                                 <option value="">-- Select Value --</option>
@@ -631,9 +621,8 @@ const Dashboard = () => {
                                         </span>
                                       </td>
 
-                                      <td>
-                                        {formatDate(project.tlsNextExpiry)}
-                                      </td>
+                                      <td>{formatDate(project.tlsNextExpiry)}</td>
+
 
                                       <td>
                                         <button

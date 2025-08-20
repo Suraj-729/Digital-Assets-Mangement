@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
@@ -175,7 +176,10 @@ useEffect(() => {
       isValid = false;
     }
 
-    
+    // if (usedOsVersion.length === 0) {
+    //   errors.osVersion = "Please add at least one OS version";
+    //   isValid = false;
+    // }
 
     if (usedRepo.length === 0) {
       errors.repoUrl = "Please add at least one repository URL";

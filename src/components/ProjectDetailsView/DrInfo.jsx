@@ -23,7 +23,10 @@ const DrInfo = ({ drData }) => {
           <p>Deployment: <b>{drData.deployment || "N/A"}</b></p>
         </div>
         <div className="col-md-3">
-          <p>Location: <b>{drData.drLocation || "N/A"}</b></p>
+          <p>Location: <b>{drData.location || "N/A"}</b></p>
+        </div>
+        <div className="col-md-3">
+          <p>ANTIVIRUS: <b>{drData.antivirus || "N/A"}</b></p>
         </div>
       </div>
       {/* <h5>Git URLs</h5> */}
@@ -41,12 +44,12 @@ const DrInfo = ({ drData }) => {
           <thead className="table-light">
             <tr>
               <th>S.No.</th>
-              <th>IP Address</th>
+              <th>APPLICATION IP Address</th>
               <th>DB Server IP</th>
               <th>Purpose</th>
               <th>VA Score</th>
               <th>Date</th>
-              <th>VA Report</th>
+              {/* <th>VA Report</th> */}
             </tr>
           </thead>
           <tbody>
@@ -55,10 +58,10 @@ const DrInfo = ({ drData }) => {
                 <td>{idx + 1}</td>
                 <td>{record.ipAddress || "N/A"}</td>
                 <td>{record.dbServerIp || "N/A"}</td>
-                <td>{record.purposeOfUse || "N/A"}</td> {/* <-- use purposeOfUse */}
+                <td>{record.purpose || "N/A"}</td> {/* <-- use purposeOfUse */}
                 <td>{record.vaScore || "N/A"}</td>
-                <td>{record.vaDate || record.dateOfVA || "N/A"}</td> {/* <-- support both vaDate and dateOfVA */}
-                <td>
+                <td>{record.dateOfVA || "N/A"}</td> {/* <-- support both vaDate and dateOfVA */}
+                {/* <td>
                   {record.vaReport ? (
                     typeof record.vaReport === "string" ? (
                       <a href={record.vaReport} target="_blank" rel="noopener noreferrer">View</a>
@@ -66,7 +69,7 @@ const DrInfo = ({ drData }) => {
                       "No File"
                     )
                   ) : "No File"}
-                </td>
+                </td> */}
               </tr>
             ))}
             {(!drData.vaRecords || drData.vaRecords.length === 0) && (
