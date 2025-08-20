@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2";   // ✅ import SweetAlert2
+import { toast } from "react-toastify";
 
 const DRForm = ({
   formData,
@@ -70,10 +72,45 @@ const DRForm = ({
       vaRecords: updated,
     }));
   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (records.length === 0) {
+      toast.error("Please add at least one VA record before submitting.");
+      return;
+    }
+
+    Swal.fire({
+      
+      title: "Do you want to submit this form?",
+      // text:"Are you sure you want to submit the form? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, submit it!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (typeof onSubmit === "function") {
+          onSubmit(e);
+        } else {
+          toast.error("onSubmit is not defined or not a function.");
+        }
+        Swal.fire({
+          title: "Submitted!",
+          text: "Your data has been submitted.",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+    });
+  };
 
   return (
     <div className="container p-4" style={{ backgroundColor: "#f5f8ff" }}>
-      <h3 className="mb-4">DR Information</h3>
+      {/* <h3 className="mb-4">DR Information</h3> */}
 
       {/* DR Fields */}
       <div className="row mb-3">
@@ -154,11 +191,11 @@ const DRForm = ({
       </div>
 
       <hr />
-      <h4>VA Records</h4>
+      {/* <h4>VA Records</h4> */}
 
       <div className="row mb-3">
         <div className="col-md-4">
-          <label>IP Address:</label>
+          <label>APPLICATION IP Address:</label>
           <input
             type="text"
             className="form-control"
@@ -263,12 +300,12 @@ const DRForm = ({
         <thead className="table-light">
           <tr>
             <th>S.No.</th>
-            <th>IP Address</th>
+            <th>APPLICATION IP Address</th>
             <th>DB Server IP</th>
             <th>Purpose</th>
             <th>VA Score</th>
             <th>Date</th>
-            <th>Report</th>
+            {/* <th>Report</th> */}
             <th>Delete</th>
           </tr>
         </thead>
@@ -282,7 +319,7 @@ const DRForm = ({
                 <td>{rec.purpose}</td>
                 <td>{rec.vaScore}</td>
                 <td>{rec.dateOfVA}</td>
-                <td>
+                {/* <td>
                   {rec.vaReport ? (
                     typeof rec.vaReport === "string" ? (
                       <a href={rec.vaReport} target="_blank" rel="noreferrer">View</a>
@@ -292,7 +329,7 @@ const DRForm = ({
                   ) : (
                     "No File"
                   )}
-                </td>
+                </td> */}
                 <td>
                   <button
                     className="btn btn-outline-danger btn-sm"
@@ -330,7 +367,7 @@ const DRForm = ({
           Previous
         </button>
         {/* <button className="btn btn-success" onClick={onSubmit}> */}
-        <button className="btn btn-success" onClick={onSubmit}
+        <button className="btn btn-success" onClick={handleSubmit}
           style={{
             width: "100px",
             fontWeight: "bold",

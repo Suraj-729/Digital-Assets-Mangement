@@ -177,11 +177,10 @@ const Header = ({ onSidebarToggle }) => {
                   >
                     <div style={{ flexShrink: 0 }}>
                       <i
-                        className={`bi ${
-                          note.status === "Expired"
+                        className={`bi ${note.status === "Expired"
                             ? "bi-exclamation-octagon-fill"
                             : "bi-exclamation-triangle-fill"
-                        }`}
+                          }`}
                         style={{
                           fontSize: "1.6rem",
                           color:
@@ -257,8 +256,13 @@ const Header = ({ onSidebarToggle }) => {
                 style={{ minWidth: 220, maxHeight: 350, overflowY: "auto" }}
               >
                 <li className="dropdown-header">
-                  <h6>{localStorage.getItem("HOD")}</h6>
-                  <span>Designation</span>
+                  <h6>
+                    {localStorage.getItem("HOD") ||
+                      localStorage.getItem("PM") ||
+                      localStorage.getItem("Admin") ||
+                      "Guest"}
+                  </h6>
+                  <span>{localStorage.getItem("employeeType")}</span>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />

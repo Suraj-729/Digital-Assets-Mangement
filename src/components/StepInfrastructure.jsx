@@ -24,6 +24,10 @@ const StepInfrastructure = ({
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+ 
+  const isVaDisabled =
+  formData.deployment === "K8S as Service" ||
+  formData.deployment === "Container as Service";
 
   // ✅ Validation logic from your code
   const validate = () => {
@@ -230,9 +234,9 @@ const StepInfrastructure = ({
         </div>
 
         {/* VA Fields */}
-        <div className="row mt-4 g-3">
+        {/* <div className="row mt-4 g-3">
           <div className="col-md-4">
-            <label className="form-label">IP Address:</label>
+            <label className="form-label"> APPLICATION IP Address:</label>
             <input
               type="text"
               className={`form-control ${errors.ipAddress ? "is-invalid" : ""}`}
@@ -324,15 +328,130 @@ const StepInfrastructure = ({
               ADD
             </button>
           </div>
-        </div>
+        </div> */}
+<div className="row mt-4 g-3">
+  <div className="col-md-4">
+    <label className="form-label">Application IP Address:</label>
+    <input
+      type="text"
+      className={`form-control ${errors.ipAddress ? "is-invalid" : ""}`}
+      name="ipAddress"
+      placeholder="Application server IP"
+      value={formData.ipAddress}
+      onChange={onChange}
+      disabled={isVaDisabled}
+    />
+    {errors.ipAddress && (
+      <div className="invalid-feedback">{errors.ipAddress}</div>
+    )}
+  </div>
 
+  <div className="col-md-4">
+    <label>DB Server IP:</label>
+    <input
+      type="text"
+      className="form-control"
+      name="dbServer"
+      value={formData.dbServer}
+      onChange={onChange}
+      disabled={isVaDisabled}
+    />
+    {errors.dbServer && (
+      <div className="invalid-feedback">{errors.dbServer}</div>
+    )}
+  </div>
+
+  {/* <div className="col-md-4">
+    <label className="form-label">Database Server IP:</label>
+    <input
+      type="text"
+      className={`form-control ${errors.dbServerIp ? "is-invalid" : ""}`}
+      name="dbServerIp"
+      placeholder="Database server IP"
+      value={formData.dbServerIp || ""}
+      onChange={onChange}
+      disabled={isVaDisabled}
+    />
+    {errors.dbServerIp && (
+      <div className="invalid-feedback">{errors.dbServerIp}</div>
+    )}
+  </div> */}
+
+  <div className="col-md-4">
+    <label className="form-label">Purpose of Use:</label>
+    <input
+      type="text"
+      className="form-control"
+      name="purposeOfUse"
+      value={formData.purposeOfUse}
+      onChange={onChange}
+      disabled={isVaDisabled}
+    />
+  </div>
+
+  <div className="col-md-4">
+    <label className="form-label">Date of VA:</label>
+    <input
+      type="date"
+      className={`form-control ${errors.dateOfVA ? "is-invalid" : ""}`}
+      name="dateOfVA"
+      value={formData.dateOfVA || ""}
+      onChange={onChange}
+      disabled={isVaDisabled}
+    />
+    {errors.dateOfVA && (
+      <div className="invalid-feedback">{errors.dateOfVA}</div>
+    )}
+  </div>
+
+  <div className="col-md-4">
+    <label className="form-label">VA Score:</label>
+    <input
+      type="text"
+      className={`form-control ${errors.vaScore ? "is-invalid" : ""}`}
+      name="vaScore"
+      value={formData.vaScore || ""}
+      onChange={onChange}
+      disabled={isVaDisabled}   // ✅ Score disabled for K8S/Container
+    />
+    {errors.vaScore && (
+      <div className="invalid-feedback">{errors.vaScore}</div>
+    )}
+  </div>
+
+  <div className="col-md-4">
+    <label className="form-label">Upload VA Report:</label>
+    <input
+      type="file"
+      className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
+      name="vaReport"
+      accept="application/pdf"
+      onChange={handleVaFileUpload}
+      disabled={isVaDisabled}
+    />
+    {errors.vaReport && (
+      <div className="invalid-feedback">{errors.vaReport}</div>
+    )}
+  </div>
+
+  <div className="col-md-4 d-flex align-items-end">
+    <button
+      className="btn btn-primary w-100"
+      type="button"
+      onClick={handleAddVa}
+      disabled={isVaDisabled}  // ✅ Disable Add button for K8S/Container
+    >
+      ADD
+    </button>
+  </div>
+</div>
         {/* VA Table */}
         <div className="table-responsive mt-4">
           <table className="table table-bordered align-middle">
             <thead className="table-light">
               <tr>
                 <th>S.No.</th>
-                <th>IP Address</th>
+                <th>APPLICATION IP Address</th>
                 <th>DB Server IP</th>
                 <th>Purpose of Use</th>
                 <th>VA Score</th>

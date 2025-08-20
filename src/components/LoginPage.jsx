@@ -41,9 +41,16 @@ const LoginPage = ({ onLogin }) => {
       localStorage.setItem("employeeType", user.employeeType);
 
       // Set HOD value if present
-      const hodValue = user.HOD && user.HOD !== "HOD" ? user.HOD : "";
-      localStorage.setItem("HOD", hodValue);
+      // const hodValue = user.HOD && user.HOD !== "HOD" ? user.HOD : "";
+      // localStorage.setItem("HOD", hodValue);
 
+      if (user.employeeType === "PM") {
+        localStorage.setItem("PM", user.PM || "");
+      } else if (user.employeeType === "HOD") {
+        localStorage.setItem("HOD", user.HOD || "");
+      } else if (user.employeeType === "Admin") {
+        localStorage.setItem("Admin", user.Admin || "");
+      }
       if (onLogin) onLogin(user);
 
       toast.success("Login successful");

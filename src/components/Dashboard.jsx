@@ -29,7 +29,7 @@ const Dashboard = () => {
   // const employeeType = localStorage.getItem("employeeType") || "HOD";
 
 
-// const employeeType = localStorage.getItem("employeeType") || "HOD";
+  // const employeeType = localStorage.getItem("employeeType") || "HOD";
 
 
 
@@ -420,65 +420,65 @@ const Dashboard = () => {
 
                             {filterType === "prismid" ? (
                               <input
-    type="text"
-    className="form-control"
-    placeholder="Enter Data Center"
-    value={filterValue}
-    onChange={async (e) => {
-      const value = e.target.value;
-      setFilterValue(value);
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter Data Center"
+                                value={filterValue}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
 
-      if (!value) {
-        setFilteredProjects(projects);
-        return;
-      }
+                                  if (!value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
 
-      const employeeType = localStorage.getItem("employeeType") || "HOD";
-      const valueToSend = value.startsWith("/") ? value.slice(1) : value;
+                                  const employeeType = localStorage.getItem("employeeType") || "HOD";
+                                  const valueToSend = value.startsWith("/") ? value.slice(1) : value;
 
-      try {
-        const res = await api.get(
-  `/dashboard/filter/datacenter/${encodeURIComponent(valueToSend)}/employee/${employeeId}/employeeType/${employeeType}`
-);
-        setFilteredProjects(res.data);
-      } catch (err) {
-        setFilteredProjects([]);
-      }
-    }}
-  />
+                                  try {
+                                    const res = await api.get(
+                                      `/dashboard/filter/prismId/${encodeURIComponent(valueToSend)}/employee/${employeeId}/employeeType/${employeeType}`
+                                    );
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    setFilteredProjects([]);
+                                  }
+                                }}
+                              />
                             ) : (
                               <select
                                 className="form-select"
                                 value={filterValue}
-                              onChange={async (e) => {
-  const value = e.target.value;
-  setFilterValue(value);
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
 
-  if (!filterType || !value) {
-    setFilteredProjects(projects);
-    return;
-  }
+                                  if (!filterType || !value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
 
-  const employeeType = localStorage.getItem("employeeType") || "HOD";
+                                  const employeeType = localStorage.getItem("employeeType") || "HOD";
 
-  let url;
-  if (filterType === "department") {
-    url = `/dashboard/filter/department/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
-  } else if (filterType === "datacenter") {
-    url = `/dashboard/filter/datacenter/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
-  } else if (filterType === "prismid") {
-    url = `/dashboard/filter/prismid/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
-  } else {
-    url = `/dashboard/filter/${filterType}/${encodeURIComponent(value)}`;
-  }
+                                  let url;
+                                  if (filterType === "department") {
+                                    url = `/dashboard/filter/department/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
+                                  } else if (filterType === "datacenter") {
+                                    url = `/dashboard/filter/datacenter/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
+                                  } else if (filterType === "prismid") {
+                                    url = `/dashboard/filter/prismid/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
+                                  } else {
+                                    url = `/dashboard/filter/${filterType}/${encodeURIComponent(value)}`;
+                                  }
 
-  try {
-    const res = await api.get(url);
-    setFilteredProjects(res.data);
-  } catch (err) {
-    setFilteredProjects([]);
-  }
-}}
+                                  try {
+                                    const res = await api.get(url);
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    setFilteredProjects([]);
+                                  }
+                                }}
 
                                 disabled={!filterType}
                               >
@@ -622,7 +622,7 @@ const Dashboard = () => {
                                       </td>
 
                                       <td>{formatDate(project.tlsNextExpiry)}</td>
-                                      
+
 
                                       <td>
                                         <button
