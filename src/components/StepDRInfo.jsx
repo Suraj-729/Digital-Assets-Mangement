@@ -349,9 +349,19 @@ const DRForm = ({
       </table>
 
       {/* Navigation Buttons */}
-      <div className="d-flex justify-content-between mt-4">
-        {/* <button className="btn btn-secondary" onClick={onPrevious}> */}
-        <button className="btn btn-secondary" onClick={onPrevious}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+          marginTop: "30px",
+        }}
+      >
+        <button
+          type="button"
+          className="btn btn-outline-primary"
+          onClick={onPrevious}
           style={{
             width: "100px",
             fontWeight: "bold",
@@ -361,13 +371,15 @@ const DRForm = ({
             cursor: "pointer",
             padding: "10px 5px",
             background: "#a8dced",
-            marginLeft: "470px"
-          }}>
-
+          }}
+        >
           Previous
         </button>
-        {/* <button className="btn btn-success" onClick={onSubmit}> */}
-        <button className="btn btn-success" onClick={handleSubmit}
+
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={handleSubmit}
           style={{
             width: "100px",
             fontWeight: "bold",
@@ -377,11 +389,11 @@ const DRForm = ({
             cursor: "pointer",
             padding: "10px 5px",
             background: "#0099cc",
-            marginRight: "470px"
-          }}>
+          }}
+        >
           Submit
         </button>
-      </div>
+      </div> 
     </div>
   );
 };

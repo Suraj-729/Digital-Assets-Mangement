@@ -19,16 +19,16 @@ const StepSecurityAudit = ({
   const validateFields = () => {
     const newErrors = {};
 
-    if (!formData.auditDate) newErrors.auditDate = "Audit Date is required.";
-    if (!formData.expireDate) newErrors.expireDate = "Expire Date is required.";
-    if (!formData.auditType) newErrors.auditType = "Audit Type is required.";
-    if (!formData.agency) newErrors.agency = "Agency is required.";
+    // if (!formData.auditDate) newErrors.auditDate = "Audit Date is required.";
+    // if (!formData.expireDate) newErrors.expireDate = "Expire Date is required.";
+    // if (!formData.auditType) newErrors.auditType = "Audit Type is required.";
+    // if (!formData.agency) newErrors.agency = "Agency is required.";
     // if (!formData.sslLabScore) newErrors.sslLabScore = "SSL Lab Score is required.";
     // if (!formData.tlsNextExpiry) newErrors.tlsNextExpiry = "TLS Expiry Date is required.";
-    if (!formData.certificate || !formData.certificate.filename)
-      newErrors.certificate = "Certificate upload is required.";
-    if (!vaReport || !vaReport.filename)
-      newErrors.vaReport = "VA Report upload is required.";
+    // if (!formData.certificate || !formData.certificate.filename)
+    //   newErrors.certificate = "Certificate upload is required.";
+    // if (!vaReport || !vaReport.filename)
+    //   newErrors.vaReport = "VA Report upload is required.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -480,12 +480,12 @@ const StepSecurityAudit = ({
         className="next action-button btn btn-success"
         value="Next"
         onClick={onNext}
-        disabled={auditRecords.length === 0}
-        title={
-          auditRecords.length === 0
-            ? "Add at least one record to proceed"
-            : "Next"
-        }
+        // disabled={auditRecords.length === 0}
+        // title={
+        //   auditRecords.length === 0
+        //     ? "Add at least one record to proceed"
+        //     : "Next"
+        // }
       />
     </fieldset>
   );
