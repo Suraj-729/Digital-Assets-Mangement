@@ -153,7 +153,7 @@ const StepInfrastructure = ({
         <div className="row g-3">
           {/* Type of Server */}
           <div className="col-md-4">
-            <label className="form-label">Type of Server:</label>
+            <label className="form-label">Type of Server Deployment:</label>
             <select
               className="form-select"
               name="typeOfServer"
@@ -186,7 +186,7 @@ const StepInfrastructure = ({
 
           {/* Deployment */}
           <div className="col-md-4">
-            <label className="form-label">Deployment:</label>
+            <label className="form-label">Type of Application Deployment:</label>
             <select
               className="form-select"
               name="deployment"

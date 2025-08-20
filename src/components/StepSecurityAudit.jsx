@@ -264,7 +264,7 @@ const handleVAReportUpload = async (e) => {
           </div>
 
           <div className="col-md-6">
-            <label className="form-label">Upload VA Report (PDF)</label>
+            <label className="form-label">Upload Security Audit</label>
             <input
               type="file"
               className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}

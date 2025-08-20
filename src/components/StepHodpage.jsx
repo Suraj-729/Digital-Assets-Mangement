@@ -20,7 +20,7 @@ const StepHodPage = () => {
   const [errors, setErrors] = useState({});
   const [formToShow, setFormToShow] = useState(null);
 
-  const departments = ["IT", "HR", "Finance", "Electronics", "Planning"];
+  const departments = ["IT", "HR", "Finance", "Electronics", "Planning" , "Agriculture"];
 
 useEffect(() => {
   const fetchManagers = async () => {
