@@ -8,6 +8,7 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
   const [tlsNextExpiry, setTlsExpiryDate] = useState("");
   const [tlsScore, setTlsScore] = useState("");
   const [tlsProcuredFrom, setTlsProcuredFrom] = useState("");
+  
 
   // ✅ Pre-fill form if editing an existing record (first one as default)
   useEffect(() => {
@@ -44,7 +45,7 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
 
   return (
     <div className="container mt-4">
-      {/* <h3 className="text-center mb-4">TLS Information</h3> */}
+
 
   {/* First Row */}
   <div className="row mb-3 align-items-center">

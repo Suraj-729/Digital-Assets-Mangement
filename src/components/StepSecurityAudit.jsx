@@ -35,36 +35,35 @@ const StepSecurityAudit = ({
   };
 
   const handleFileChange = async (e) => {
-  const file = e.target.files[0];
-  if (!file || file.type !== "application/pdf") {
-    toast.error("Please select a valid PDF file.");
-    return;
-  }
+    const file = e.target.files[0];
+    if (!file || file.type !== "application/pdf") {
+      toast.error("Please select a valid PDF file.");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("certificate", file);
+    const formData = new FormData();
+    formData.append("certificate", file);
 
-  try {
-    const response = await api.post("/upload-certificate", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    try {
+      const response = await api.post("/upload-certificate", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-    toast.success("PDF uploaded successfully.");
-    onChange({
-      target: {
-        name: "certificate",
-        value: response.data.filename,
-      },
-    });
-  } catch (err) {
-    console.error("Upload error:", err);
-    const errorMessage = err.response?.data?.error || "Error uploading PDF.";
-    toast.error(errorMessage);
-  }
-};
-
+      toast.success("PDF uploaded successfully.");
+      onChange({
+        target: {
+          name: "certificate",
+          value: response.data.filename,
+        },
+      });
+    } catch (err) {
+      console.error("Upload error:", err);
+      const errorMessage = err.response?.data?.error || "Error uploading PDF.";
+      toast.error(errorMessage);
+    }
+  };
 
   const handleAddRecord = () => {
     if (!validateFields()) {
@@ -107,105 +106,150 @@ const StepSecurityAudit = ({
     setAuditRecords(updated);
   };
 
-
-
-
-const handleVAReportUpload = async (e) => {
-  const file = e.target.files[0];
-  if (!file || file.type !== "application/pdf") {
-    alert("Only PDF files are allowed.");
-    return;
-  }
-
-  const formDataUpload = new FormData();
-  formDataUpload.append("vaReport", file);
-
-  try {
-    const res = await api.post("/upload-va-report", formDataUpload, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    const result = res.data;
-    onChange({
-      target: {
-        name: "certificate", // consider renaming this to "vaReport"
-        value: { filename: result.filename },
-      },
-    });
-    setVaReport({ filename: result.filename });
-  } catch (err) {
-    console.error("Upload error:", err);
-    const errorMsg = err.response?.data?.error || "Upload error occurred";
-    alert(errorMsg);
-  }
-};
-
-  const handleViewVAReport = () => {
-  if (!vaReport?.filename) {
-    alert("No file to preview");
-    return;
-  }
-
-  setPdfUrl(`${api.defaults.baseURL}view-va-report/${vaReport.filename}`);
-  setShowModal(true);
-};
-
-
-  const handleView = async (index) => {
-  try {
-    const record = auditRecords[index];
-    const certFilename = record?.certificate?.filename;
-
-    if (!certFilename) {
-      alert("No certificate available for this record.");
+  const handleVAReportUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || file.type !== "application/pdf") {
+      alert("Only PDF files are allowed.");
       return;
     }
 
-    // Check if file exists
-    await api.get(`/view-va-report/${encodeURIComponent(certFilename)}`, {
-      responseType: "blob",
-    });
+    const formDataUpload = new FormData();
+    formDataUpload.append("vaReport", file);
 
-    // Build the preview URL using api config
-    const previewUrl = `${api.defaults.baseURL}view-va-report/${encodeURIComponent(certFilename)}`;
+    try {
+      const res = await api.post("/upload-va-report", formDataUpload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const result = res.data;
+      onChange({
+        target: {
+          name: "certificate", // consider renaming this to "vaReport"
+          value: { filename: result.filename },
+        },
+      });
+      setVaReport({ filename: result.filename });
+    } catch (err) {
+      console.error("Upload error:", err);
+      const errorMsg = err.response?.data?.error || "Upload error occurred";
+      alert(errorMsg);
+    }
+  };
+
+  //   const handleViewVAReport = () => {
+  //   if (!vaReport?.filename) {
+  //     alert("No file to preview");
+  //     return;
+  //   }
+
+  //   setPdfUrl(`${api.defaults.baseURL}view-va-report/${vaReport.filename}`);
+  //   setShowModal(true);
+  // };
+
+  const handleViewVAReport = () => {
+    console.log("handleViewVAReport triggered");
+    console.log("vaReport:", vaReport);
+
+    if (!vaReport?.filename) {
+      console.warn("No file to preview");
+      alert("No file to preview");
+      return;
+    }
+
+    const previewUrl = `${api.defaults.baseURL}view-va-report/${vaReport.filename}`;
+    console.log("Generated PDF preview URL:", previewUrl);
+
     setPdfUrl(previewUrl);
     setShowModal(true);
-  } catch (err) {
-    console.error("Error viewing certificate:", err);
-    alert("File not found or cannot be displayed.");
-  }
-};
+    console.log("Modal opened with PDF");
+  };
 
+  //   const handleView = async (index) => {
+  //   try {
+  //     const record = auditRecords[index];
+  //     const certFilename = record?.certificate?.filename;
 
+  //     if (!certFilename) {
+  //       alert("No certificate available for this record.");
+  //       return;
+  //     }
 
+  //     // Check if file exists
+  //     await api.get(`/view-va-report/${encodeURIComponent(certFilename)}`, {
+  //       responseType: "blob",
+  //     });
+
+  //     // Build the preview URL using api config
+  //     const previewUrl = `${api.defaults.baseURL}view-va-report/${encodeURIComponent(certFilename)}`;
+  //     setPdfUrl(previewUrl);
+  //     setShowModal(true);
+  //   } catch (err) {
+  //     console.error("Error viewing certificate:", err);
+  //     alert("File not found or cannot be displayed.");
+  //   }
+  // };
+
+  const handleView = async (index) => {
+    try {
+      const record = auditRecords[index];
+      let filename, endpoint;
+
+      if (record?.certificate?.filename) {
+        filename = record.certificate.filename;
+        endpoint = "view-certificate";
+      } else if (record?.vaReport?.filename) {
+        filename = record.vaReport.filename;
+        endpoint = "view-va-report";
+      } else {
+        alert("No file available for this record.");
+        return;
+      }
+
+      console.log("File to view:", filename, "via endpoint:", endpoint);
+
+      // Optional: check if file exists before showing
+      await api.get(`/${endpoint}/${encodeURIComponent(filename)}`, {
+        responseType: "blob",
+      });
+
+      const previewUrl = `${
+        api.defaults.baseURL
+      }${endpoint}/${encodeURIComponent(filename)}`;
+      setPdfUrl(previewUrl);
+      setShowModal(true);
+    } catch (err) {
+      console.error("Error viewing file:", err);
+      alert("File not found or cannot be displayed.");
+    }
+  };
 
   const handleCertificateUpload = async (e) => {
-  const file = e.target.files[0];
-  if (!file || file.type !== "application/pdf") {
-    alert("Only PDF files are allowed.");
-    return;
-  }
+    const file = e.target.files[0];
+    if (!file || file.type !== "application/pdf") {
+      alert("Only PDF files are allowed.");
+      return;
+    }
 
-  const formDataUpload = new FormData();
-  formDataUpload.append("certificate", file);
+    const formDataUpload = new FormData();
+    formDataUpload.append("certificate", file);
 
-  try {
-    const res = await api.post("/upload-certificate", formDataUpload);
+    try {
+      const res = await api.post("/upload-certificate", formDataUpload);
 
-    const result = res.data;
-    onChange({
-      target: {
-        name: "certificate",
-        value: { filename: result.filename },
-      },
-    });
-  } catch (err) {
-    console.error("Certificate upload error:", err);
-    alert("Certificate upload failed");
-  }
-};
+      const result = res.data;
+      onChange({
+        target: {
+          name: "certificate",
+          value: { filename: result.filename },
+        },
+      });
+    } catch (err) {
+      console.error("Certificate upload error:", err);
+      alert("Certificate upload failed");
+    }
+  };
 
   return (
     <fieldset>
@@ -227,7 +271,9 @@ const handleVAReportUpload = async (e) => {
             <label className="form-label">Expire Date</label>
             <input
               type="date"
-              className={`form-control ${errors.expireDate ? "is-invalid" : ""}`}
+              className={`form-control ${
+                errors.expireDate ? "is-invalid" : ""
+              }`}
               name="expireDate"
               value={formData.expireDate || ""}
               onChange={onChange}
@@ -347,9 +393,15 @@ const handleVAReportUpload = async (e) => {
                       type="button"
                       className="icon-btn text-primary"
                       onClick={() => handleView(idx)}
+                      // disabled={
+                      //   !record?.certificate?.filename &&
+                      //   !record?.vaReport?.filename
+                      // }
                       disabled={
-                        !record?.certificate?.filename &&
-                        !record?.vaReport?.filename
+                        !(
+                          record?.certificate?.filename ||
+                          record?.vaReport?.filename
+                        )
                       }
                       title={
                         record?.certificate?.filename
