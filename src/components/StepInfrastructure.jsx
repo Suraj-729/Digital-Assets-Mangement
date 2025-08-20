@@ -514,46 +514,51 @@ const StepInfrastructure = ({
         </div>
 
    
-        <div className="d-flex justify-content-between mt-3">
-          <button
-            type="button"
-            className="btn btn-outline-primary"
-            onClick={onPrevious}
-            style={{
-              width: "100px",
-              fontWeight: "bold",
-              color: "white",
-              border: "0 none",
-              borderRadius: "10px",
-              cursor: "pointer",
-              padding: "10px 5px",
-              background: "#a8dced",
-              marginLeft: "470px"
-            }}
-          >
-            Previous
-          </button>
+        <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+          marginTop: "30px",
+        }}
+      >
+        <button
+          type="button"
+          className="btn btn-outline-primary"
+          onClick={onPrevious}
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#a8dced",
+          }}
+        >
+          Previous
+        </button>
 
-          <button
-            type="button"
-            className="btn btn-success"
-            onClick={onNext}
-            style={{
-              width: "100px",
-              fontWeight: "bold",
-              color: "white",
-              border: "0 none",
-              borderRadius: "10px",
-              cursor: "pointer",
-              padding: "10px 5px",
-
-              marginRight: "470px",
-              background: "#0099cc",
-            }}
-          >
-            Next
-          </button>
-        </div>
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={onNext}
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#0099cc",
+          }}
+        >
+          Next
+        </button>
+      </div> 
       </div>
 
       {/* PDF Modal */}

@@ -44,7 +44,7 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
 
   return (
     <div className="container mt-4">
-      <h3 className="text-center mb-4">TLS Information</h3>
+      {/* <h3 className="text-center mb-4">TLS Information</h3> */}
 
   {/* First Row */}
   <div className="row mb-3 align-items-center">
@@ -55,6 +55,7 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
         className="form-control"
         value={tlsIssueDate}
         onChange={(e) => setTlsIssueDate(e.target.value)}
+        
       />
     </div>
     <div className="col-md-2 text-end ">TLS Expiry Date:</div>
@@ -62,7 +63,7 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
       <input
         type="date"
         className="form-control"
-        value={setTlsExpiryDate}
+        value={tlsNextExpiry}
         onChange={(e) => setTlsExpiryDate(e.target.value)}
       />
     </div>

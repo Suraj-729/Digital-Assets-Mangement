@@ -78,27 +78,27 @@ useEffect(() => {
 
   const validate = () => {
     const newErrors = {};
-    const requiredFields = [
-      "projectName",
-      "prismId",
-      "departmentName",
-      "url",
-      "publicIp",
-      "nicOfficerName",
-      "nicOfficerEmpCode",
-      "nicOfficerMob",
-      "nicOfficerEmail",
-      "deptOfficerName",
-      "deptOfficerDesignation",
-      "deptOfficerMob",
-      "deptOfficerEmail",
-    ];
+    // const requiredFields = [
+    //   "projectName",
+    //   "prismId",
+    //   "departmentName",
+    //   "url",
+    //   "publicIp",
+    //   "nicOfficerName",
+    //   "nicOfficerEmpCode",
+    //   "nicOfficerMob",
+    //   "nicOfficerEmail",
+    //   "deptOfficerName",
+    //   "deptOfficerDesignation",
+    //   "deptOfficerMob",
+    //   "deptOfficerEmail",
+    // ];
 
-    requiredFields.forEach((field) => {
-      if (!formData[field] || formData[field].trim() === "") {
-        newErrors[field] = "This field is required";
-      }
-    });
+    // requiredFields.forEach((field) => {
+    //   if (!formData[field] || formData[field].trim() === "") {
+    //     newErrors[field] = "This field is required";
+    //   }
+    // });
 
     // Alphabet-only validation
     const alphaOnlyFields = ["projectName", "departmentName", "HOD"];

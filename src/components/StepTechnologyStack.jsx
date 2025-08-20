@@ -152,44 +152,44 @@ useEffect(() => {
   };
 
   const handleNextStep = () => {
-    const errors = {};
-    let isValid = true;
+    // const errors = {};
+    // let isValid = true;
 
-    if (usedTech.length === 0) {
-      errors.frontEnd = "Please add at least one front-end technology";
-      isValid = false;
-    }
-
-    if (usedFrameworks.length === 0) {
-      errors.framework = "Please add at least one framework";
-      isValid = false;
-    }
-
-    if (usedDb.length === 0) {
-      errors.database = "Please add at least one database";
-      isValid = false;
-    }
-
-    if (usedOs.length === 0) {
-      errors.os = "Please add at least one operating system";
-      isValid = false;
-    }
-
-    // if (usedOsVersion.length === 0) {
-    //   errors.osVersion = "Please add at least one OS version";
+    // if (usedTech.length === 0) {
+    //   errors.frontEnd = "Please add at least one front-end technology";
     //   isValid = false;
     // }
 
-    if (usedRepo.length === 0) {
-      errors.repoUrl = "Please add at least one repository URL";
-      isValid = false;
-    }
+    // if (usedFrameworks.length === 0) {
+    //   errors.framework = "Please add at least one framework";
+    //   isValid = false;
+    // }
 
-    if (!isValid) {
-      setErrors(errors);
-      toast.error("Please complete all fields before proceeding.");
-      return;
-    }
+    // if (usedDb.length === 0) {
+    //   errors.database = "Please add at least one database";
+    //   isValid = false;
+    // }
+
+    // if (usedOs.length === 0) {
+    //   errors.os = "Please add at least one operating system";
+    //   isValid = false;
+    // }
+
+    // // if (usedOsVersion.length === 0) {
+    // //   errors.osVersion = "Please add at least one OS version";
+    // //   isValid = false;
+    // // }
+
+    // if (usedRepo.length === 0) {
+    //   errors.repoUrl = "Please add at least one repository URL";
+    //   isValid = false;
+    // }
+
+    // if (!isValid) {
+    //   setErrors(errors);
+    //   toast.error("Please complete all fields before proceeding.");
+    //   return;
+    // }
 
     onNext();
   };
@@ -562,7 +562,7 @@ useEffect(() => {
         >
           Next
         </button>
-      </div>
+      </div> 
     </fieldset>
   );
 };
