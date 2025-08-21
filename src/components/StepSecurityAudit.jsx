@@ -33,7 +33,8 @@ const StepSecurityAudit = ({
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+ 
+  
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file || file.type !== "application/pdf") {
@@ -486,6 +487,8 @@ const StepSecurityAudit = ({
         //     ? "Add at least one record to proceed"
         //     : "Next"
         // }
+        
+        
       />
     </fieldset>
   );

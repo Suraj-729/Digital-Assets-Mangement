@@ -267,18 +267,19 @@ const Dashboard = () => {
                   <h4 className="card-title">No Projects Yet</h4>
                   <p className="text-muted">
                     You haven't added any projects. Click below to get started.
+                    <h3>ADD PROJECT </h3>
                   </p>
-                  <button
+                  {/* <button
                     className="btn btn-primary mt-3"
                     onClick={handleAddProject}
                   >
                     Add Your First Project
-                  </button>
+                  </button> */}
                   <hr />
                   <div className="text-start mt-3">
-                    <p>
+                    {/* <p>
                       <strong>HOD:</strong> {HOD}
-                    </p>
+                    </p> */}
                     <p>
                       <strong>Employee ID:</strong> {employeeId}
                     </p>
@@ -621,8 +622,18 @@ const Dashboard = () => {
                                         </span>
                                       </td>
 
-                                      <td>{formatDate(project.tlsNextExpiry)}</td>
-
+                                      {/* <td>{formatDate(project.tlsNextExpiry)}</td> */}
+                                      <td>
+                                        {project.tlsNextExpiry &&
+                                        project.tlsNextExpiry.length > 0
+                                          ? formatDate(
+                                              project.tlsNextExpiry
+                                                .map((d) => new Date(d))
+                                                .filter((d) => d >= new Date())
+                                                .sort((a, b) => a - b)[0] // nearest future
+                                            )
+                                          : "N/A"}
+                                      </td>
 
                                       <td>
                                         <button
