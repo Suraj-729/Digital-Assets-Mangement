@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/mvpStyle.css";
@@ -23,7 +25,7 @@ const StepInfrastructure = ({
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
   const [uploading, setUploading] = useState(false);
-  
+ 
   const isVaDisabled =
   formData.deployment === "K8S as Service" ||
   formData.deployment === "Container as Service";
@@ -76,11 +78,9 @@ const StepInfrastructure = ({
     }
   };
 
-  // const handleViewPdf = (filename) => {
-  //   if (!filename) return;
-  //   setPdfUrl(`${api.defaults.baseURL}va-reports/${encodeURIComponent(filename)}`);
-  //   setShowModal(true);
-  // };
+
+
+
   const handleViewPdf = (filename) => {
     if (!filename || typeof filename !== "string") {
       console.error("Invalid filename provided for PDF view:", filename);
@@ -95,10 +95,14 @@ const StepInfrastructure = ({
     setShowModal(true);
   };
 
+
   const closeModal = () => {
     setShowModal(false);
     setPdfUrl("");
   };
+
+
+
 
 
   const handleVaFileUpload = async (e) => {
@@ -124,6 +128,7 @@ const StepInfrastructure = ({
     try {
       // const response = await fetch(`${API}/upload-va-report`, {
       const response = await fetch(`${baseURL}upload-va-report`, {
+
         method: "POST",
         body: formData,
       });
@@ -186,7 +191,7 @@ const StepInfrastructure = ({
 
           {/* Deployment */}
           <div className="col-md-4">
-            <label className="form-label">Type of application deployment:</label>
+            <label className="form-label">Type of Application Deployment:</label>
             <select
               className="form-select"
               name="deployment"
@@ -236,7 +241,7 @@ const StepInfrastructure = ({
         {/* VA Fields */}
         {/* <div className="row mt-4 g-3">
           <div className="col-md-4">
-            <label className="form-label">IP Address:</label>
+            <label className="form-label"> APPLICATION IP Address:</label>
             <input
               type="text"
               className={`form-control ${errors.ipAddress ? "is-invalid" : ""}`}
@@ -263,23 +268,6 @@ const StepInfrastructure = ({
             />
             {errors.dbServer && (
               <div className="invalid-feedback">{errors.dbServer}</div>
-            )}
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Database Server IP:</label>
-            <input
-              type="text"
-              className={`form-control ${
-                errors.dbServerIp ? "is-invalid" : ""
-              }`}
-              name="dbServerIp" // ✅ matches backend
-              placeholder="Database server IP"
-              value={formData.dbServerIp || ""}
-              onChange={onChange}
-            />
-            {errors.dbServerIp && (
-              <div className="invalid-feedback">{errors.dbServerIp}</div>
             )}
           </div>
 
@@ -346,7 +334,6 @@ const StepInfrastructure = ({
             </button>
           </div>
         </div> */}
-{/* VA Fields */}
 <div className="row mt-4 g-3">
   <div className="col-md-4">
     <label className="form-label">Application IP Address:</label>
@@ -463,14 +450,13 @@ const StepInfrastructure = ({
     </button>
   </div>
 </div>
-
         {/* VA Table */}
         <div className="table-responsive mt-4">
           <table className="table table-bordered align-middle">
             <thead className="table-light">
               <tr>
                 <th>S.No.</th>
-                <th>Application IP Address</th>
+                <th>APPLICATION IP Address</th>
                 <th>DB Server IP</th>
                 <th>Purpose of Use</th>
                 <th>VA Score</th>
@@ -533,46 +519,51 @@ const StepInfrastructure = ({
         </div>
 
    
-        <div className="d-flex justify-content-between mt-3">
-          <button
-            type="button"
-            className="btn btn-outline-primary"
-            onClick={onPrevious}
-            style={{
-              width: "100px",
-              fontWeight: "bold",
-              color: "white",
-              border: "0 none",
-              borderRadius: "10px",
-              cursor: "pointer",
-              padding: "10px 5px",
-              background: "#a8dced",
-              marginLeft: "470px"
-            }}
-          >
-            Previous
-          </button>
+        <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+          marginTop: "30px",
+        }}
+      >
+        <button
+          type="button"
+          className="btn btn-outline-primary"
+          onClick={onPrevious}
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#a8dced",
+          }}
+        >
+          Previous
+        </button>
 
-          <button
-            type="button"
-            className="btn btn-success"
-            onClick={onNext}
-            style={{
-              width: "100px",
-              fontWeight: "bold",
-              color: "white",
-              border: "0 none",
-              borderRadius: "10px",
-              cursor: "pointer",
-              padding: "10px 5px",
-
-              marginRight: "470px",
-              background: "#0099cc",
-            }}
-          >
-            Next
-          </button>
-        </div>
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={onNext}
+          style={{
+            width: "100px",
+            fontWeight: "bold",
+            color: "white",
+            border: "0 none",
+            borderRadius: "10px",
+            cursor: "pointer",
+            padding: "10px 5px",
+            background: "#0099cc",
+          }}
+        >
+          Next
+        </button>
+      </div> 
       </div>
 
       {/* PDF Modal */}

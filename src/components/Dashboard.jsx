@@ -631,8 +631,17 @@ const Dashboard = () => {
                                         </span>
                                       </td>
 
+                                      {/* <td>{formatDate(project.tlsNextExpiry)}</td> */}
                                       <td>
-                                        {formatDate(project.tlsNextExpiry)}
+                                        {project.tlsNextExpiry &&
+                                        project.tlsNextExpiry.length > 0
+                                          ? formatDate(
+                                              project.tlsNextExpiry
+                                                .map((d) => new Date(d))
+                                                .filter((d) => d >= new Date())
+                                                .sort((a, b) => a - b)[0] // nearest future
+                                            )
+                                          : "N/A"}
                                       </td>
 
                                       <td>

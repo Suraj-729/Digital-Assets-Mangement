@@ -177,11 +177,10 @@ const Header = ({ onSidebarToggle }) => {
                   >
                     <div style={{ flexShrink: 0 }}>
                       <i
-                        className={`bi ${
-                          note.status === "Expired"
+                        className={`bi ${note.status === "Expired"
                             ? "bi-exclamation-octagon-fill"
                             : "bi-exclamation-triangle-fill"
-                        }`}
+                          }`}
                         style={{
                           fontSize: "1.6rem",
                           color:

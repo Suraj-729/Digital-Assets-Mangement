@@ -109,12 +109,12 @@ const TechnologyAndInfrastructure = ({
                 <th>Location</th>
                 <th>Antivirus</th>
                 {/* <th>Git URLs</th> */}
-                <th>Application IP Address</th>
-                {/* <th>database server ip</th> */}
-                <th>Purpose</th>
-                <th>Date</th>
+                <th>APPLICATION IP Address</th>
+                <th>Database Server ip</th>
+                <th> Purpose</th>
+                <th> Date</th>
                 <th>VA Score</th>
-                {/* <th>VA Report</th> */}
+                <th>VA Report</th>
               </tr>
             </thead>
             <tbody>

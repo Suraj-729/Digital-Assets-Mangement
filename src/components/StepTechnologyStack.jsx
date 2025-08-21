@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
@@ -152,41 +153,44 @@ useEffect(() => {
   };
 
   const handleNextStep = () => {
-    const errors = {};
-    let isValid = true;
+    // const errors = {};
+    // let isValid = true;
 
-    if (usedTech.length === 0) {
-      errors.frontEnd = "Please add at least one front-end technology";
-      isValid = false;
-    }
+    // if (usedTech.length === 0) {
+    //   errors.frontEnd = "Please add at least one front-end technology";
+    //   isValid = false;
+    // }
 
-    if (usedFrameworks.length === 0) {
-      errors.framework = "Please add at least one framework";
-      isValid = false;
-    }
+    // if (usedFrameworks.length === 0) {
+    //   errors.framework = "Please add at least one framework";
+    //   isValid = false;
+    // }
 
-    if (usedDb.length === 0) {
-      errors.database = "Please add at least one database";
-      isValid = false;
-    }
+    // if (usedDb.length === 0) {
+    //   errors.database = "Please add at least one database";
+    //   isValid = false;
+    // }
 
-    if (usedOs.length === 0) {
-      errors.os = "Please add at least one operating system";
-      isValid = false;
-    }
+    // if (usedOs.length === 0) {
+    //   errors.os = "Please add at least one operating system";
+    //   isValid = false;
+    // }
 
-    
+    // // if (usedOsVersion.length === 0) {
+    // //   errors.osVersion = "Please add at least one OS version";
+    // //   isValid = false;
+    // // }
 
-    if (usedRepo.length === 0) {
-      errors.repoUrl = "Please add at least one repository URL";
-      isValid = false;
-    }
+    // if (usedRepo.length === 0) {
+    //   errors.repoUrl = "Please add at least one repository URL";
+    //   isValid = false;
+    // }
 
-    if (!isValid) {
-      setErrors(errors);
-      toast.error("Please complete all fields before proceeding.");
-      return;
-    }
+    // if (!isValid) {
+    //   setErrors(errors);
+    //   toast.error("Please complete all fields before proceeding.");
+    //   return;
+    // }
 
     onNext();
   };
@@ -207,7 +211,7 @@ useEffect(() => {
 
       {/* Front End */}
        <div className="form-group row mb-4">
-      <label className="col-md-3 col-form-label fw-bold">Front End Technology</label>
+      <label className="col-md-3 col-form-label ">Front End /Backend Technology</label>
       <div className="col-md-6">
         {/* Technology Dropdown */}
         <div className="input-group mb-2">
@@ -559,7 +563,7 @@ useEffect(() => {
         >
           Next
         </button>
-      </div>
+      </div> 
     </fieldset>
   );
 };

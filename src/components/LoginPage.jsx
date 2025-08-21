@@ -50,9 +50,8 @@ const LoginPage = ({ onLogin }) => {
       } else if (user.employeeType === "HOD") {
         localStorage.setItem("HOD", user.HOD || "");
       } else if (user.employeeType === "Admin") {
-        localStorage.setItem("Admin", user.Admin || "");
+        localStorage.setItem("Admin", user.Admin || "");
       }
-
       if (onLogin) onLogin(user);
 
       toast.success("Login successful");

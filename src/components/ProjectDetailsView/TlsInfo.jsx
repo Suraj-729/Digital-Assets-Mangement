@@ -28,8 +28,8 @@ const TlsInfo = ({ tlsRecords }) => {
             {tlsRecords.map((record, idx) => (
               <tr key={idx}>
                 <td>{idx + 1}</td>
-                <td>{record.issueDate || "N/A"}</td>
-                <td>{record.expiryDate || "N/A"}</td>
+                <td>{record.issueDate ? new Date(record.issueDate).toLocaleDateString() : "N/A"}</td>
+                <td>{record.expiryDate ? new Date(record.expiryDate).toLocaleDateString() : "N/A"}</td>
                 <td>{record.score || "N/A"}</td>
                 <td>{record.procuredFrom || "N/A"}</td>
                 

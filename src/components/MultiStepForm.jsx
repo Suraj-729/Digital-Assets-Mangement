@@ -300,7 +300,10 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     // try {
     //   const form = new FormData();
     //   const employeeId = localStorage.getItem("employeeId");
-
+    // const confirmSubmit = window.confirm("Are you sure you want to submit this project?");
+    // if (!confirmSubmit) {
+    //   return; // ❌ Stop submission
+    // }
     try {
       const form = new FormData();
       let employeeId = localStorage.getItem("employeeId");
