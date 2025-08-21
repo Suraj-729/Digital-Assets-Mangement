@@ -15,7 +15,7 @@ const DRForm = ({
     dbServerIp: "",
     purpose: "",
     vaScore: "",
-    vaDate: "",
+    dateOfVA: "",
     vaReport: null,
   });
 
@@ -57,7 +57,7 @@ const DRForm = ({
       dbServerIp: "",
       purpose: "",
       vaScore: "",
-      vaDate: "",
+      dateOfVA: "",
       vaReport: null,
     });
   };
@@ -136,13 +136,26 @@ const DRForm = ({
             <option value="DEL">DEL</option>
           </select>
         </div>
+        <div className="col-md-4">
+            <label className="form-label">ANTIVIRUS:</label>
+            <select
+              className="form-select"
+              name="antivirus"
+              value={formData.antivirus || ""}
+              onChange={handleChange}
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
       </div>
 
       <hr />
 
       <div className="row mb-3">
         <div className="col-md-4">
-          <label>IP Address:</label>
+          <label>Application IP Address:</label>
           <input
             type="text"
             className="form-control"
@@ -192,8 +205,8 @@ const DRForm = ({
           <input
             type="date"
             className="form-control"
-            name="vaDate"
-            value={vaForm.vaDate}
+            name="dateOfVA"
+            value={vaForm.dateOfVA}
             onChange={handleVaFormChange}
           />
         </div>
@@ -247,12 +260,12 @@ const DRForm = ({
         <thead className="table-light">
           <tr>
             <th>S.No.</th>
-            <th>IP Address</th>
+            <th>Application IP Address</th>
             <th>DB Server IP</th>
             <th>Purpose</th>
             <th>VA Score</th>
             <th>Date</th>
-            <th>Report</th>
+            {/* <th>Report</th> */}
             <th>Delete</th>
           </tr>
         </thead>
@@ -265,8 +278,8 @@ const DRForm = ({
                 <td>{rec.dbServerIp}</td>
                 <td>{rec.purpose}</td>
                 <td>{rec.vaScore}</td>
-                <td>{rec.vaDate}</td>
-                <td>
+                <td>{rec.dateOfVA}</td>
+                {/* <td>
                   {rec.vaReport ? (
                     typeof rec.vaReport === "string" ? (
                       <a href={rec.vaReport} target="_blank" rel="noreferrer">
@@ -284,7 +297,7 @@ const DRForm = ({
                   ) : (
                     "No File"
                   )}
-                </td>
+                </td> */}
                 <td>
                   <button
                     className="btn btn-outline-danger btn-sm"

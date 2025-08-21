@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import api from "../Api";
 import "../css/loginpage.css";
@@ -31,9 +30,11 @@ const LoginPage = ({ onLogin }) => {
       );
 
       const user = response.data.user;
-      const employeeId = location.state?.employeeId || localStorage.getItem("employeeId");
-      const employeeType = location.state?.employeeType || localStorage.getItem("employeeType");
-      
+      const employeeId =
+        location.state?.employeeId || localStorage.getItem("employeeId");
+      const employeeType =
+        location.state?.employeeType || localStorage.getItem("employeeType");
+
       // Save session data
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("userId", user.userId);
@@ -41,8 +42,16 @@ const LoginPage = ({ onLogin }) => {
       localStorage.setItem("employeeType", user.employeeType);
 
       // Set HOD value if present
-      const hodValue = user.HOD && user.HOD !== "HOD" ? user.HOD : "";
-      localStorage.setItem("HOD", hodValue);
+      // const hodValue = user.HOD && user.HOD !== "HOD" ? user.HOD : "";
+      // localStorage.setItem("HOD", hodValue);
+
+      if (user.employeeType === "PM") {
+        localStorage.setItem("PM", user.PM || "");
+      } else if (user.employeeType === "HOD") {
+        localStorage.setItem("HOD", user.HOD || "");
+      } else if (user.employeeType === "Admin") {
+        localStorage.setItem("Admin", user.Admin || "");
+      }
 
       if (onLogin) onLogin(user);
 
@@ -57,7 +66,6 @@ const LoginPage = ({ onLogin }) => {
           employeeType,
         },
       });
-      
     } catch (err) {
       console.error("Login error:", err);
       const message =

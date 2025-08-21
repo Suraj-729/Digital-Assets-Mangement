@@ -107,11 +107,12 @@ const TechnologyAndInfrastructure = ({
                 <th>Data Centre</th>
                 <th>Deployment</th>
                 <th>Location</th>
-                <th>Git URLs</th>
-                <th>VA IP Address</th>
-                <th>VA DB IP Address</th>
-                <th>VA Purpose</th>
-                <th>VA Date</th>
+                <th>Antivirus</th>
+                {/* <th>Git URLs</th> */}
+                <th>Application IP Address</th>
+                {/* <th>database server ip</th> */}
+                <th>Purpose</th>
+                <th>Date</th>
                 <th>VA Score</th>
                 {/* <th>VA Report</th> */}
               </tr>
@@ -124,7 +125,8 @@ const TechnologyAndInfrastructure = ({
                     <td>{project?.Infra?.dataCentre || "N/A"}</td>
                     <td>{project?.Infra?.deployment || "N/A"}</td>
                     <td>{project?.Infra?.location || "N/A"}</td>
-                    <td>
+                    <td>{project?.Infra?.antivirus || "N/A"}</td>
+                    {/* <td>
                       {project?.Infra?.gitUrls?.length > 0
                         ? project.Infra.gitUrls.map((url, index) => (
                             <div key={index}>
@@ -138,9 +140,9 @@ const TechnologyAndInfrastructure = ({
                             </div>
                           ))
                         : "N/A"}
-                    </td>
+                    </td> */}
                     <td>{record.ipAddress || "N/A"}</td>
-                    <td>{record.dbServerIp}</td>
+                    <td>{record.dbServer || "N/A"}</td>
                     <td>{record.purposeOfUse || "N/A"}</td>
                     <td>{formatDate(record.dateOfVA)}</td>
                     <td>{record.vaScore || "N/A"}</td>
@@ -227,12 +229,14 @@ TechnologyAndInfrastructure.propTypes = {
     Infra: PropTypes.shape({
       typeOfServer: PropTypes.string,
       location: PropTypes.string,
+      antivirus:PropTypes.string,
       deployment: PropTypes.string,
       dataCentre: PropTypes.string,
       gitUrls: PropTypes.arrayOf(PropTypes.string),
       vaRecords: PropTypes.arrayOf(
         PropTypes.shape({
           ipAddress: PropTypes.string,
+          dbServer: PropTypes.string,
           purposeOfUse: PropTypes.string,
           vaScore: PropTypes.string,
           dateOfVA: PropTypes.string,

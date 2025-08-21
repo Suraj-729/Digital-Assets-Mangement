@@ -58,6 +58,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     dataCentre: "",
     deployment: "",
     location: "",
+    antivirus:"",
     vaRecords: [], // Initialize with an empty array
   });
   const [drRecords, setDrRecords] = useState([]);
@@ -97,13 +98,14 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         dataCentre: editData.Infra?.dataCentre || "",
         deployment: editData.Infra?.deployment || "",
         location: editData.Infra?.location || "",
+        antivirus: editData.Infra?.antivirus || "", // Optional field
         ipAddress: "",
-        dbServerIp:"",
+        dbServer: "", // Optional field, can be empty
         purposeOfUse: "",
         vaScore: "",
         dateOfVA: "",
         vaReport: null,
-        gitUrl: "",
+        // gitUrl: "",
       });
 
       // Set technology stack
@@ -129,7 +131,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       dbServerIp: record.dbServerIp || "",
       purpose: record.purpose || "",
       vaScore: record.vaScore || "",
-      vaDate: record.vaDate ? record.vaDate.slice(0, 10) : "",
+      dateOfVA: record.dateOfVA? record.dateOfVA.slice(0, 10) : "",
     
       // ✅ Check if vaReport is a string or needs a placeholder
       vaReport: typeof record.vaReport === "string"
@@ -142,6 +144,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       dataCentre: dr.dataCentre || "",
       deployment: dr.deployment || "",
       location: dr.location || "",
+      antivirus: dr.antivirus || "", // Optional field
       vaRecords: drVaRecords,
     });
 
@@ -269,7 +272,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
     const newVa = {
       ipAddress: formData.ipAddress,
-      dbServerIp:formData.dbServerIp,
+      dbServer: formData.dbServer , // Optional field
       purposeOfUse: formData.purposeOfUse || "Application Server",
       vaScore: formData.vaScore,
       dateOfVA: formData.dateOfVA,
@@ -282,6 +285,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     setFormData((prev) => ({
       ...prev,
       ipAddress: "",
+      dbServer: "", // Reset optional field
       vaScore: "",
       dateOfVA: "",
       vaReport: null,
@@ -387,13 +391,15 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
       const Infra = {
         typeOfServer: formData.typeOfServer,
+
         dataCentre: formData.dataCentre,
         deployment: formData.deployment,
         location: formData.location,
-        gitUrls: gitUrls,
+        antivirus: formData.antivirus ,// Optional field
+        // gitUrls: gitUrls,
         vaRecords: vaRecords.map((record) => ({
           ipAddress: record.ipAddress,
-          dbServerIp:record.dbServerIp,
+          dbServer: record.dbServer, // Optional field
           purposeOfUse: record.purposeOfUse,
           vaScore: record.vaScore,
           dateOfVA: record.dateOfVA,
@@ -418,12 +424,13 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         dataCentre: drFormData.dataCentre || "",
         deployment: drFormData.deployment || "",
         location: drFormData.location || "",
+        antivirus: drFormData.antivirus || "", // Optional field
         vaRecords: drRecords.map((record) => ({
           ipAddress: record.ipAddress || "",
           dbServerIp: record.dbServerIp || "",
           purpose: record.purpose || "",
           vaScore: record.vaScore || "",
-          vaDate: record.vaDate || "",
+          dateOfVA: record.dateOfVA || "",
           vaReport: record.vaReport || null, // file or base64 or ObjectId depending on backend
         })),
       };

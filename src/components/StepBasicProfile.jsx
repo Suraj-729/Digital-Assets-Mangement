@@ -136,12 +136,12 @@ useEffect(() => {
     // if (validate()) {
     //   onNext();
     // }
-    if (validate()) {
+    // if (validate()) {
       // toast.success("Basic Profile validated successfully!");
       onNext();
-    } else {
-      toast.error("Please fill all required fields correctly.");
-    }
+    // } else {
+    //   toast.error("Please fill all required fields correctly.");
+    // }
   };
 
   return (
