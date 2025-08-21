@@ -75,10 +75,10 @@ const DRForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (records.length === 0) {
-      toast.error("Please add at least one VA record before submitting.");
-      return;
-    }
+    // if (records.length === 0) {
+    //   toast.error("Please add at least one VA record before submitting.");
+    //   return;
+    // }
 
     Swal.fire({
       
@@ -115,7 +115,7 @@ const DRForm = ({
       {/* DR Fields */}
       <div className="row mb-3">
         <div className="col-md-4">
-          <label>Type of Server:</label>
+          <label>Type of Server Deployment:</label>
           <select
             className="form-control"
             name="serverType"
@@ -145,7 +145,7 @@ const DRForm = ({
         </div>
 
         <div className="col-md-4">
-          <label>Deployment:</label>
+          <label>Type of Application Deployment:</label>
           <select
             className="form-control"
             name="deployment"

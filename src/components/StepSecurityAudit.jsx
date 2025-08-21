@@ -310,7 +310,7 @@ const StepSecurityAudit = ({
           </div>
 
           <div className="col-md-6">
-            <label className="form-label">Security Audit  Report (PDF)</label>
+            <label className="form-label">Upload Security Audit</label>
             <input
               type="file"
               className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}

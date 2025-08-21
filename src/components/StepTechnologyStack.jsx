@@ -211,7 +211,7 @@ useEffect(() => {
 
       {/* Front End */}
        <div className="form-group row mb-4">
-      <label className="col-md-3 col-form-label fw-bold">Front End Technology</label>
+      <label className="col-md-3 col-form-label ">Front End /Backend Technology</label>
       <div className="col-md-6">
         {/* Technology Dropdown */}
         <div className="input-group mb-2">
