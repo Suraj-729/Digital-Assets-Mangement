@@ -153,10 +153,10 @@ const DRForm = ({
             onChange={handleChange}
           >
             <option value="">-- Select --</option>
-            <option value="Container as Service">Container as Service</option>
+            <option value="Physical Machine">Physical Machine</option>
             <option value="VM">VM</option>
-            <option value="Cloud-native">Cloud-native</option>
-            <option value="Cloud-native">K8S as Service</option>
+            <option value="Container as Service">Container as Service</option>
+            <option value="K8S as Service">K8S as Service</option>
           </select>
         </div>
       </div>
@@ -203,7 +203,7 @@ const DRForm = ({
       placeholder="Application server IP"
       value={vaForm.ipAddress}
       onChange={handleVaFormChange}
-      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8S as Service"}
+      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
     />
   </div>
 
@@ -215,7 +215,7 @@ const DRForm = ({
       name="dbServerIp"
       value={vaForm.dbServerIp}
       onChange={handleVaFormChange}
-      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8S as Service"}
+      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
     />
   </div>
 
@@ -227,7 +227,7 @@ const DRForm = ({
       name="purpose"
       value={vaForm.purpose}
       onChange={handleVaFormChange}
-      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8S as Service"}
+      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
     />
   </div>
 
@@ -239,7 +239,7 @@ const DRForm = ({
       name="dateOfVA"
       value={vaForm.dateOfVA}
       onChange={handleVaFormChange}
-      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8S as Service"}
+      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
     />
   </div>
 
@@ -251,7 +251,7 @@ const DRForm = ({
       name="vaScore"
       value={vaForm.vaScore}
       onChange={handleVaFormChange}
-      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8S as Service"}
+      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
     />
   </div>
 
@@ -263,7 +263,7 @@ const DRForm = ({
       name="vaReport"
       accept="application/pdf"
       onChange={handleVaFormChange}
-      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8S as Service"}
+      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
     />
   </div>
 
