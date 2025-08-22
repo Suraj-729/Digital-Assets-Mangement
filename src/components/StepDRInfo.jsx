@@ -156,6 +156,7 @@ const DRForm = ({
             <option value="Container as Service">Container as Service</option>
             <option value="VM">VM</option>
             <option value="Cloud-native">Cloud-native</option>
+            <option value="Cloud-native">K8Service</option>
           </select>
         </div>
       </div>
@@ -190,109 +191,102 @@ const DRForm = ({
           </div>
       </div>
 
-      <hr />
+
       {/* <h4>VA Records</h4> */}
+<div className="row g-3">
+  <div className="col-md-4">
+    <label className="form-label">Application IP Address:</label>
+    <input
+      type="text"
+      className="form-control"
+      name="ipAddress"
+      placeholder="Application server IP"
+      value={vaForm.ipAddress}
+      onChange={handleVaFormChange}
+      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8Service"}
+    />
+  </div>
 
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <label>APPLICATION IP Address:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="ipAddress"
-            value={vaForm.ipAddress}
-            onChange={handleVaFormChange}
-          />
-        </div>
-        {/* 
-        <div className="col-md-4">
-          <label>DB Server IP:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="dbServerIp"
-            value={vaForm.dbServerIp}
-            onChange={handleVaFormChange}
-          />
-        </div> */}
-        <div className="col-md-4">
-          <label>DB Server IP:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="dbServerIp"
-            value={vaForm.dbServerIp}
-            onChange={handleVaFormChange}
-            pattern="^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$"
-            title="Enter a valid IPv4 address (e.g., 192.168.1.1)"
-            required
-          />
-        </div>
+  <div className="col-md-4">
+    <label>DB Server IP:</label>
+    <input
+      type="text"
+      className="form-control"
+      name="dbServerIp"
+      value={vaForm.dbServerIp}
+      onChange={handleVaFormChange}
+      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8Service"}
+    />
+  </div>
 
-        <div className="col-md-4">
-          <label>Purpose:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="purpose"
-            value={vaForm.purpose}
-            onChange={handleVaFormChange}
-          />
-        </div>
+  <div className="col-md-4">
+    <label className="form-label">Purpose of Use:</label>
+    <input
+      type="text"
+      className="form-control"
+      name="purpose"
+      value={vaForm.purpose}
+      onChange={handleVaFormChange}
+      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8Service"}
+    />
+  </div>
 
-        <div className="col-md-4 mt-3">
-          <label>Date of VA:</label>
-          <input
-            type="date"
-            className="form-control"
-            name="dateOfVA"
-            value={vaForm.dateOfVA}
-            onChange={handleVaFormChange}
-          />
-        </div>
+  <div className="col-md-4">
+    <label className="form-label">Date of VA:</label>
+    <input
+      type="date"
+      className="form-control"
+      name="dateOfVA"
+      value={vaForm.dateOfVA}
+      onChange={handleVaFormChange}
+      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8Service"}
+    />
+  </div>
 
-        <div className="col-md-4 mt-3">
-          <label>VA Score:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="vaScore"
-            value={vaForm.vaScore}
-            onChange={handleVaFormChange}
-          />
-        </div>
+  <div className="col-md-4">
+    <label className="form-label">VA Score:</label>
+    <input
+      type="text"
+      className="form-control"
+      name="vaScore"
+      value={vaForm.vaScore}
+      onChange={handleVaFormChange}
+      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8Service"}
+    />
+  </div>
 
-        <div className="col-md-4 mt-3">
-          <label>Upload VA Report:</label>
-          <input
-            type="file"
-            className="form-control"
-            name="vaReport"
-            onChange={handleVaFormChange}
-          />
-        </div>
-      </div>
+  <div className="col-md-4">
+    <label className="form-label">Upload VA Report:</label>
+    <input
+      type="file"
+      className="form-control"
+      name="vaReport"
+      accept="application/pdf"
+      onChange={handleVaFormChange}
+      disabled={formData.deployment === "Cloud-native" || formData.deployment === "K8Service"}
+    />
+  </div>
 
-      <div className="row mb-4">
-        <div className="col-md-4">
-          <button className="btn btn-info w-100" type="button" onClick={handleAddRecord}
-            style={{
+  <div className="col-md-12 d-flex justify-content-center mt-3">
+    <button
+      className="btn btn-info"
+      type="button"
+      onClick={handleAddRecord}
+      style={{
+        color: "white",
+        border: "none",
+        padding: "8px 70px",
+        borderRadius: "6px",
+        fontWeight: "bold",
+        fontSize: "14px",
+        letterSpacing: "0.5px",
+      }}
+    >
+      Add Record
+    </button>
+  </div>
+</div>
 
-              color: "white",
-              border: "none",
-              padding: "8px 70px",
-              borderRadius: "6px",
-              fontWeight: "bold",
-              fontSize: "14px",
-              letterSpacing: "0.5px",
-              marginLeft: "420px"
-            }}>
-
-
-            Add Record
-          </button>
-        </div>
-      </div>
 
       {/* VA Table */}
       <table className="table table-bordered text-center">
