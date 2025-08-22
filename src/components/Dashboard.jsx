@@ -28,14 +28,10 @@ const Dashboard = () => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   // const employeeType = localStorage.getItem("employeeType") || "HOD";
 
-
   // const employeeType = localStorage.getItem("employeeType") || "HOD";
-
-
-
-
-
+  const Admin = localStorage.getItem("Admin") || "N/A";
   const HOD = localStorage.getItem("HOD") || "N/A";
+  const PM = localStorage.getItem("PM") || "N/A";
   // const location = useLocation();
   const employeeId =
     location.state?.employeeId || localStorage.getItem("employeeId");
@@ -266,20 +262,17 @@ const Dashboard = () => {
                 <div className="card-body text-center">
                   <h4 className="card-title">No Projects Yet</h4>
                   <p className="text-muted">
-                    You haven't added any projects. Click below to get started.
-                    <h3>ADD PROJECT </h3>
+                    You haven't added any projects.Click On SideBar Projects
                   </p>
-                  {/* <button
-                    className="btn btn-primary mt-3"
-                    onClick={handleAddProject}
-                  >
-                    Add Your First Project
-                  </button> */}
+
                   <hr />
                   <div className="text-start mt-3">
                     {/* <p>
-                      <strong>HOD:</strong> {HOD}
+                     <strong>EmployeeName:</strong> {HOD && HOD} {PM && !HOD && PM}
                     </p> */}
+                    <p>
+                      <strong>EmployeeType:</strong> {employeeType}
+                    </p>
                     <p>
                       <strong>Employee ID:</strong> {employeeId}
                     </p>
@@ -434,12 +427,18 @@ const Dashboard = () => {
                                     return;
                                   }
 
-                                  const employeeType = localStorage.getItem("employeeType") || "HOD";
-                                  const valueToSend = value.startsWith("/") ? value.slice(1) : value;
+                                  const employeeType =
+                                    localStorage.getItem("employeeType") ||
+                                    "HOD";
+                                  const valueToSend = value.startsWith("/")
+                                    ? value.slice(1)
+                                    : value;
 
                                   try {
                                     const res = await api.get(
-                                      `/dashboard/filter/prismId/${encodeURIComponent(valueToSend)}/employee/${employeeId}/employeeType/${employeeType}`
+                                      `/dashboard/filter/prismId/${encodeURIComponent(
+                                        valueToSend
+                                      )}/employee/${employeeId}/employeeType/${employeeType}`
                                     );
                                     setFilteredProjects(res.data);
                                   } catch (err) {
@@ -460,17 +459,27 @@ const Dashboard = () => {
                                     return;
                                   }
 
-                                  const employeeType = localStorage.getItem("employeeType") || "HOD";
+                                  const employeeType =
+                                    localStorage.getItem("employeeType") ||
+                                    "HOD";
 
                                   let url;
                                   if (filterType === "department") {
-                                    url = `/dashboard/filter/department/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
+                                    url = `/dashboard/filter/department/${encodeURIComponent(
+                                      value
+                                    )}/employee/${employeeId}/employeeType/${employeeType}`;
                                   } else if (filterType === "datacenter") {
-                                    url = `/dashboard/filter/datacenter/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
+                                    url = `/dashboard/filter/datacenter/${encodeURIComponent(
+                                      value
+                                    )}/employee/${employeeId}/employeeType/${employeeType}`;
                                   } else if (filterType === "prismid") {
-                                    url = `/dashboard/filter/prismid/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
+                                    url = `/dashboard/filter/prismid/${encodeURIComponent(
+                                      value
+                                    )}/employee/${employeeId}/employeeType/${employeeType}`;
                                   } else {
-                                    url = `/dashboard/filter/${filterType}/${encodeURIComponent(value)}`;
+                                    url = `/dashboard/filter/${filterType}/${encodeURIComponent(
+                                      value
+                                    )}`;
                                   }
 
                                   try {
@@ -480,7 +489,6 @@ const Dashboard = () => {
                                     setFilteredProjects([]);
                                   }
                                 }}
-
                                 disabled={!filterType}
                               >
                                 <option value="">-- Select Value --</option>
