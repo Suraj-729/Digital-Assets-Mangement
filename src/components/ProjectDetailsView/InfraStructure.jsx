@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../../css/mvpStyle.css";
@@ -72,7 +70,7 @@ const TechnologyAndInfrastructure = ({
                 <th>Framework</th>
                 <th>Database</th>
                 <th>OS</th>
-                
+
                 <th>Repository URLs</th>
               </tr>
             </thead>
@@ -82,12 +80,16 @@ const TechnologyAndInfrastructure = ({
                 <td>{displayValue(project?.TS?.framework)}</td>
                 <td>{displayValue(project?.TS?.database)}</td>
                 <td>{displayValue(project?.TS?.os)}</td>
-                
+
                 <td>
                   {project?.TS?.repoUrls?.length > 0
                     ? project.TS.repoUrls.map((url, index) => (
                         <div key={index}>
-                          <a href={url} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {url}
                           </a>
                         </div>
@@ -98,7 +100,6 @@ const TechnologyAndInfrastructure = ({
             </tbody>
           </table>
         )}
-
         {showInfra && (
           <table className="table table-bordered">
             <thead className="table-light">
@@ -108,17 +109,18 @@ const TechnologyAndInfrastructure = ({
                 <th>Deployment</th>
                 <th>Location</th>
                 <th>Antivirus</th>
-                {/* <th>Git URLs</th> */}
                 <th>APPLICATION IP Address</th>
                 <th>Database Server ip</th>
-                <th> Purpose</th>
-                <th> Date</th>
+                <th>Purpose</th>
+                <th>Date</th>
                 <th>VA Score</th>
                 <th>VA Report</th>
               </tr>
             </thead>
             <tbody>
-              {project?.Infra?.vaRecords?.length > 0 ? (
+              {project?.Infra?.vaRecords &&
+              project.Infra.vaRecords.length > 0 ? (
+                // Render VA records
                 project.Infra.vaRecords.map((record, idx) => (
                   <tr key={idx}>
                     <td>{project?.Infra?.typeOfServer || "N/A"}</td>
@@ -126,21 +128,6 @@ const TechnologyAndInfrastructure = ({
                     <td>{project?.Infra?.deployment || "N/A"}</td>
                     <td>{project?.Infra?.location || "N/A"}</td>
                     <td>{project?.Infra?.antivirus || "N/A"}</td>
-                    {/* <td>
-                      {project?.Infra?.gitUrls?.length > 0
-                        ? project.Infra.gitUrls.map((url, index) => (
-                            <div key={index}>
-                              <a
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {url}
-                              </a>
-                            </div>
-                          ))
-                        : "N/A"}
-                    </td> */}
                     <td>{record.ipAddress || "N/A"}</td>
                     <td>{record.dbServer || "N/A"}</td>
                     <td>{record.purposeOfUse || "N/A"}</td>
@@ -162,10 +149,19 @@ const TechnologyAndInfrastructure = ({
                   </tr>
                 ))
               ) : (
+                // Render one row with Infra info and N/A for VA columns
                 <tr>
-                  <td colSpan={10} className="text-center">
-                    No VA Records Available
-                  </td>
+                  <td>{project?.Infra?.typeOfServer || "N/A"}</td>
+                  <td>{project?.Infra?.dataCentre || "N/A"}</td>
+                  <td>{project?.Infra?.deployment || "N/A"}</td>
+                  <td>{project?.Infra?.location || "N/A"}</td>
+                  <td>{project?.Infra?.antivirus || "N/A"}</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
                 </tr>
               )}
             </tbody>
@@ -229,7 +225,7 @@ TechnologyAndInfrastructure.propTypes = {
     Infra: PropTypes.shape({
       typeOfServer: PropTypes.string,
       location: PropTypes.string,
-      antivirus:PropTypes.string,
+      antivirus: PropTypes.string,
       deployment: PropTypes.string,
       dataCentre: PropTypes.string,
       gitUrls: PropTypes.arrayOf(PropTypes.string),
@@ -251,4 +247,3 @@ TechnologyAndInfrastructure.propTypes = {
 };
 
 export default TechnologyAndInfrastructure;
-
