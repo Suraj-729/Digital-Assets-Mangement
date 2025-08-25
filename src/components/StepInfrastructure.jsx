@@ -452,7 +452,7 @@ const StepInfrastructure = ({
             <thead className="table-light">
               <tr>
                 <th>S.No.</th>
-                <th>APPLICATION IP Address</th>
+                <th>Application IP Address</th>
                 <th>DB Server IP</th>
                 <th>Purpose of Use</th>
                 <th>VA Score</th>

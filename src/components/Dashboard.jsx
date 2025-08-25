@@ -221,13 +221,15 @@ const Dashboard = () => {
     if (status === "Expired") return "badge bg-danger";
     return "badge bg-secondary";
   };
+
   const auditBadge = (auditStatus) => {
     if (auditStatus && auditStatus !== "N/A") return "badge bg-success";
     return "badge bg-secondary";
   };
-  const sslBadge = (sslStatus) => {
-    if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
-    return "badge bg-secondary";
+  
+  const sslBadge = (tlsStatus) => {
+    if (tlsStatus && tlsStatus !== "N/A") return "badge bg-success";
+    return "badge bg-unsuccess";
   };
 
   if (loading) {
@@ -659,16 +661,13 @@ const Dashboard = () => {
 
 
 
+<td>
+  <span className={sslBadge(project.tlsStatus || "N/A")}>
+    {project.tlsStatus || "N/A"}
+  </span>
+</td>
 
-                                      <td>
-                                        <span
-                                          className={sslBadge(
-                                            project.sslStatus
-                                          )}
-                                        >
-                                          {project.sslStatus || "N/A"}
-                                        </span>
-                                      </td>
+
 
                                       {/* <td>{formatDate(project.tlsNextExpiry)}</td> */}
                                       {/* <td>
@@ -682,9 +681,25 @@ const Dashboard = () => {
                                             )
                                           : "N/A"}
                                       </td> */}
-                                      <td>
+                                      {/* <td>
                                         {project.tlsNextExpiry && project.tlsNextExpiry.length > 0
                                           ? formatDate(new Date(project.tlsNextExpiry[project.tlsNextExpiry.length - 1]))
+                                          : "N/A"}
+                                      </td> */}
+                                      <td>
+                                        {project.tlsNextExpiry
+                                          ? formatDate(
+                                              new Date(
+                                                Array.isArray(
+                                                  project.tlsNextExpiry
+                                                )
+                                                  ? project.tlsNextExpiry[
+                                                      project.tlsNextExpiry
+                                                        .length - 1
+                                                    ]
+                                                  : project.tlsNextExpiry
+                                              )
+                                            )
                                           : "N/A"}
                                       </td>
 

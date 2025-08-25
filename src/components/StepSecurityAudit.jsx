@@ -296,7 +296,7 @@ const StepSecurityAudit = ({
             </select>
           </div>
 
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <label className="form-label">Auditing Agency</label>
             <select
               className={`form-select ${errors.agency ? "is-invalid" : ""}`}
@@ -308,7 +308,18 @@ const StepSecurityAudit = ({
               <option value="securely">securely</option>
               <option value="pinaki">pinaki</option>
             </select>
-          </div>
+          </div> */}
+          <div className="col-md-6">
+  <label className="form-label">Auditing Agency</label>
+  <input
+    type="text"
+    className={`form-control ${errors.agency ? "is-invalid" : ""}`}
+    name="agency"
+    value={formData.agency || ""}
+    onChange={onChange}
+    placeholder="Enter Auditing Agency"
+  />
+</div>
 
           <div className="col-md-6">
             <label className="form-label">Upload Security Audit</label>

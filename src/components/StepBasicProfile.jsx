@@ -305,6 +305,15 @@ useEffect(() => {
                           value={formData[field] || ""}
                           onChange={onChange}
                           disabled={disableField}
+
+                          {...(field === "nicOfficerMob" && {
+                            maxLength: 10,
+                            pattern: "[0-9]{10}",
+                            inputMode: "numeric",
+                            onInput: (e) => {
+                                    e.target.value = e.target.value.replace(/\D/g, "");
+                            }
+                          })}
                         />
                         {errors[field] && <div className="invalid-feedback">{errors[field]}</div>}
                       </div>
@@ -328,13 +337,20 @@ useEffect(() => {
                       <label className="form-label">{labels[i]}</label>
                     </div>
                     <div className="col-sm-8 mb-2">
-                      <input
-                        type={types[i]}
-                        className={`form-control ${errors[field] ? "is-invalid" : ""}`}
-                        name={field}
-                        value={formData[field] || ""}
-                        onChange={onChange}
-                      />
+                    <input
+  type={types[i]}
+  className={`form-control ${errors[field] ? "is-invalid" : ""}`}
+  name={field}
+  value={formData[field] || ""}
+  onChange={onChange}
+  maxLength={10}
+  pattern="[0-9]{10}"
+  inputMode="numeric"
+  onInput={(e) => {
+    e.target.value = e.target.value.replace(/\D/g, ""); // remove non-digits
+  }}
+/>
+
                       {errors[field] && <div className="invalid-feedback">{errors[field]}</div>}
                     </div>
                   </div>
