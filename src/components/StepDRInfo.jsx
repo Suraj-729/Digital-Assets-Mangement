@@ -122,7 +122,7 @@ const DRForm = ({
             value={formData.serverType || ""}
             onChange={handleChange}
           >
-            <option value="">-- Select --</option>
+            <option value="">Select</option>
             <option value="Cloud">Cloud</option>
             <option value="On-Prem">On-Prem</option>
             <option value="Hybrid">Hybrid</option>
@@ -137,10 +137,12 @@ const DRForm = ({
             value={formData.dataCentre || ""}
             onChange={handleChange}
           >
-            <option value="">-- Select --</option>
+            <option value="">Select</option>
             <option value="NDC">NDC</option>
             <option value="CDC">CDC</option>
-            <option value="WDC">WDC</option>
+            <option value="AZURE">AZURE</option>
+            <option value="AWS">AWS</option>
+            <option value="GCP">GCP</option>
           </select>
         </div>
 
