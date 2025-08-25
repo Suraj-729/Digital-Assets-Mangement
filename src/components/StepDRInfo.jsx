@@ -153,10 +153,10 @@ const DRForm = ({
             onChange={handleChange}
           >
             <option value="">-- Select --</option>
-            <option value="Container as Service">Container as Service</option>
+            <option value="Physical Machine">Physical Machine</option>
             <option value="VM">VM</option>
-            <option value="Cloud-native">Cloud-native</option>
-            <option value="Cloud-native">K8Service</option>
+            <option value="Container as Service">Container as Service</option>
+            <option value="K8S as Service">K8S as Service</option>
           </select>
         </div>
       </div>

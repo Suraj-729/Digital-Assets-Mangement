@@ -29,8 +29,9 @@ const Dashboard = () => {
   // const employeeType = localStorage.getItem("employeeType") || "HOD";
 
   // const employeeType = localStorage.getItem("employeeType") || "HOD";
-
+  const Admin = localStorage.getItem("Admin") || "N/A";
   const HOD = localStorage.getItem("HOD") || "N/A";
+  const PM = localStorage.getItem("PM") || "N/A";
   // const location = useLocation();
   const employeeId =
     location.state?.employeeId || localStorage.getItem("employeeId");
@@ -188,6 +189,31 @@ const Dashboard = () => {
       month: "long",
     })} / ${date.getFullYear()}`;
   };
+  // function getLatestSecurityAuditExpireDate(audits) {
+  //   if (!Array.isArray(audits) || audits.length === 0) return null;
+
+  //   // Collect valid Date objects from expireDate fields
+  //   const validDates = audits
+  //     .map(r => (r && r.expireDate ? new Date(r.expireDate) : null))
+  //     .filter(d => d instanceof Date && !isNaN(d));
+
+  //   if (validDates.length === 0) return null;
+
+  //   // Return the maximum (latest) date
+  //   return new Date(Math.max(...validDates.map(d => d.getTime())));
+  // }
+
+  // function formatDate(value) {
+  //   if (!value) return "N/A";
+  //   const d = value instanceof Date ? value : new Date(value);
+  //   if (Number.isNaN(d.getTime())) return "N/A";
+  //   return d.toLocaleDateString("en-GB", {
+  //     day: "2-digit",
+  //     month: "short",
+  //     year: "numeric",
+  //   });
+  // }
+
 
   // Badge helpers
   const statusBadge = (status) => {
@@ -261,18 +287,16 @@ const Dashboard = () => {
                 <div className="card-body text-center">
                   <h4 className="card-title">No Projects Yet</h4>
                   <p className="text-muted">
-                    You haven't added any projects. Click below to get started.
+                    You haven't added any projects.Click On SideBar Projects
                   </p>
-                  <button
-                    className="btn btn-primary mt-3"
-                    onClick={handleAddProject}
-                  >
-                    Add Your First Project
-                  </button>
+
                   <hr />
                   <div className="text-start mt-3">
+                    {/* <p>
+                     <strong>EmployeeName:</strong> {HOD && HOD} {PM && !HOD && PM}
+                    </p> */}
                     <p>
-                      <strong>HOD:</strong> {HOD}
+                      <strong>EmployeeType:</strong> {employeeType}
                     </p>
                     <p>
                       <strong>Employee ID:</strong> {employeeId}
@@ -621,6 +645,21 @@ const Dashboard = () => {
                                             : "N/A"}
                                         </span>
                                       </td>
+                                    {/* <td> */}
+                                    {/* {console.log("🔎 SecurityAudit for", project.assetsId, project?.SA?.securityAudit)}
+                                    <td>
+  <span>
+    {project.SA?.securityAudit?.length > 0
+      ? formatDate(
+          project.SA.securityAudit[project.SA.securityAudit.length - 1].expireDate
+        )
+      : "N/A"}
+  </span>
+</td> */}
+
+
+
+
                                       <td>
                                         <span
                                           className={sslBadge(
@@ -632,7 +671,7 @@ const Dashboard = () => {
                                       </td>
 
                                       {/* <td>{formatDate(project.tlsNextExpiry)}</td> */}
-                                      <td>
+                                      {/* <td>
                                         {project.tlsNextExpiry &&
                                         project.tlsNextExpiry.length > 0
                                           ? formatDate(
@@ -642,7 +681,13 @@ const Dashboard = () => {
                                                 .sort((a, b) => a - b)[0] // nearest future
                                             )
                                           : "N/A"}
+                                      </td> */}
+                                      <td>
+                                        {project.tlsNextExpiry && project.tlsNextExpiry.length > 0
+                                          ? formatDate(new Date(project.tlsNextExpiry[project.tlsNextExpiry.length - 1]))
+                                          : "N/A"}
                                       </td>
+
 
                                       <td>
                                         <button
