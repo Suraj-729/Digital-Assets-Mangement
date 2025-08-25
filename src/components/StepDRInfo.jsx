@@ -179,7 +179,7 @@ const DRForm = ({
           </select>
         </div>
         <div className="col-md-4">
-            <label className="form-label">ANTIVIRUS:</label>
+            <label className="form-label">Antivirus:</label>
             <select
               className="form-select"
               name="antivirus"

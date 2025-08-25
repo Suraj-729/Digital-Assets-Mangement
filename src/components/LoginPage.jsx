@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import api from "../Api";
 import "../css/loginpage.css";
@@ -31,9 +30,11 @@ const LoginPage = ({ onLogin }) => {
       );
 
       const user = response.data.user;
-      const employeeId = location.state?.employeeId || localStorage.getItem("employeeId");
-      const employeeType = location.state?.employeeType || localStorage.getItem("employeeType");
-      
+      const employeeId =
+        location.state?.employeeId || localStorage.getItem("employeeId");
+      const employeeType =
+        location.state?.employeeType || localStorage.getItem("employeeType");
+
       // Save session data
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("userId", user.userId);
@@ -64,7 +65,6 @@ const LoginPage = ({ onLogin }) => {
           employeeType,
         },
       });
-      
     } catch (err) {
       console.error("Login error:", err);
       const message =
