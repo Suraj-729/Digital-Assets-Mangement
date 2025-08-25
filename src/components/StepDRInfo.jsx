@@ -177,7 +177,7 @@ const DRForm = ({
           </select>
         </div>
         <div className="col-md-4">
-            <label className="form-label">ANTIVIRUS:</label>
+            <label className="form-label">Antivirus:</label>
             <select
               className="form-select"
               name="antivirus"
@@ -293,7 +293,7 @@ const DRForm = ({
         <thead className="table-light">
           <tr>
             <th>S.No.</th>
-            <th>APPLICATION IP Address</th>
+            <th>Application IP Address</th>
             <th>DB Server IP</th>
             <th>Purpose</th>
             <th>VA Score</th>
