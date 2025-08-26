@@ -1,12 +1,8 @@
-
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
 import { baseURL } from "../Api";
-
-
 
 const StepInfrastructure = ({
   formData = {},
@@ -25,10 +21,10 @@ const StepInfrastructure = ({
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
   const [uploading, setUploading] = useState(false);
- 
+
   const isVaDisabled =
-  formData.deployment === "K8S as Service" ||
-  formData.deployment === "Container as Service";
+    formData.deployment === "K8S as Service" ||
+    formData.deployment === "Container as Service";
 
   // ✅ Validation logic from your code
   const validate = () => {
@@ -47,7 +43,6 @@ const StepInfrastructure = ({
     if (!dbServer || !/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(dbServer)) {
       newErrors.dbServer = "Valid DB Server IP address is required";
     }
-
 
     if (!vaScore || isNaN(vaScore) || vaScore < 0 || vaScore > 100) {
       newErrors.vaScore = "Valid VA Score (0–100) is required";
@@ -78,9 +73,6 @@ const StepInfrastructure = ({
     }
   };
 
-
-
-
   const handleViewPdf = (filename) => {
     if (!filename || typeof filename !== "string") {
       console.error("Invalid filename provided for PDF view:", filename);
@@ -95,15 +87,10 @@ const StepInfrastructure = ({
     setShowModal(true);
   };
 
-
   const closeModal = () => {
     setShowModal(false);
     setPdfUrl("");
   };
-
-
-
-
 
   const handleVaFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -124,7 +111,6 @@ const StepInfrastructure = ({
     try {
       // const response = await fetch(`${API}/upload-va-report`, {
       const response = await fetch(`${baseURL}upload-va-report`, {
-
         method: "POST",
         body: formData,
       });
@@ -187,7 +173,9 @@ const StepInfrastructure = ({
 
           {/* Deployment */}
           <div className="col-md-4">
-            <label className="form-label">Type of Application Deployment:</label>
+            <label className="form-label">
+              Type of Application Deployment:
+            </label>
             <select
               className="form-select"
               name="deployment"
@@ -221,7 +209,7 @@ const StepInfrastructure = ({
             </select>
           </div>
           <div className="col-md-4">
-            <label className="form-label">ANTIVIRUS:</label>
+            <label className="form-label">Antivirus:</label>
             <select
               className="form-select"
               name="antivirus"
@@ -233,13 +221,13 @@ const StepInfrastructure = ({
               <option value="No">No</option>
             </select>
           </div>
-
         </div>
 
         {/* VA Fields */}
-        {/* <div className="row mt-4 g-3">
+
+        <div className="row mt-4 g-3">
           <div className="col-md-4">
-            <label className="form-label"> APPLICATION IP Address:</label>
+            <label className="form-label">Application IP Address:</label>
             <input
               type="text"
               className={`form-control ${errors.ipAddress ? "is-invalid" : ""}`}
@@ -247,11 +235,13 @@ const StepInfrastructure = ({
               placeholder="Application server IP"
               value={formData.ipAddress}
               onChange={onChange}
+              disabled={isVaDisabled}
             />
             {errors.ipAddress && (
               <div className="invalid-feedback">{errors.ipAddress}</div>
             )}
           </div>
+
           <div className="col-md-4">
             <label>DB Server IP:</label>
             <input
@@ -260,111 +250,14 @@ const StepInfrastructure = ({
               name="dbServer"
               value={formData.dbServer}
               onChange={onChange}
-              pattern="^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$"
-              title="Enter a valid IPv4 address (e.g., 192.168.1.1)"
-              required
+              disabled={isVaDisabled}
             />
             {errors.dbServer && (
               <div className="invalid-feedback">{errors.dbServer}</div>
             )}
           </div>
 
-          <div className="col-md-4">
-            <label className="form-label">Purpose of Use:</label>
-            <input
-              type="text"
-              className="form-control"
-              name="purposeOfUse"
-              value={formData.purposeOfUse}
-              onChange={onChange}
-            />
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Date of VA:</label>
-            <input
-              type="date"
-              className={`form-control ${errors.dateOfVA ? "is-invalid" : ""}`}
-              name="dateOfVA"
-              value={formData.dateOfVA || ""}
-              onChange={onChange}
-            />
-            {errors.dateOfVA && (
-              <div className="invalid-feedback">{errors.dateOfVA}</div>
-            )}
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">VA Score:</label>
-            <input
-              type="text"
-              className={`form-control ${errors.vaScore ? "is-invalid" : ""}`}
-              name="vaScore"
-              value={formData.vaScore || ""}
-              onChange={onChange}
-            />
-            {errors.vaScore && (
-              <div className="invalid-feedback">{errors.vaScore}</div>
-            )}
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Upload VA Report:</label>
-            <input
-              type="file"
-              className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
-              name="vaReport"
-              accept="application/pdf"
-              onChange={handleVaFileUpload}
-            />
-            {errors.vaReport && (
-              <div className="invalid-feedback">{errors.vaReport}</div>
-            )}
-          </div>
-
-          <div className="col-md-4 d-flex align-items-end">
-            <button
-              className="btn btn-primary w-100"
-              type="button"
-              onClick={handleAddVa}
-            >
-              ADD
-            </button>
-          </div>
-        </div> */}
-<div className="row mt-4 g-3">
-  <div className="col-md-4">
-    <label className="form-label">Application IP Address:</label>
-    <input
-      type="text"
-      className={`form-control ${errors.ipAddress ? "is-invalid" : ""}`}
-      name="ipAddress"
-      placeholder="Application server IP"
-      value={formData.ipAddress}
-      onChange={onChange}
-      disabled={isVaDisabled}
-    />
-    {errors.ipAddress && (
-      <div className="invalid-feedback">{errors.ipAddress}</div>
-    )}
-  </div>
-
-  <div className="col-md-4">
-    <label>DB Server IP:</label>
-    <input
-      type="text"
-      className="form-control"
-      name="dbServer"
-      value={formData.dbServer}
-      onChange={onChange}
-      disabled={isVaDisabled}
-    />
-    {errors.dbServer && (
-      <div className="invalid-feedback">{errors.dbServer}</div>
-    )}
-  </div>
-
-  {/* <div className="col-md-4">
+          {/* <div className="col-md-4">
     <label className="form-label">Database Server IP:</label>
     <input
       type="text"
@@ -380,74 +273,74 @@ const StepInfrastructure = ({
     )}
   </div> */}
 
-  <div className="col-md-4">
-    <label className="form-label">Purpose of Use:</label>
-    <input
-      type="text"
-      className="form-control"
-      name="purposeOfUse"
-      value={formData.purposeOfUse}
-      onChange={onChange}
-      disabled={isVaDisabled}
-    />
-  </div>
+          <div className="col-md-4">
+            <label className="form-label">Purpose of Use:</label>
+            <input
+              type="text"
+              className="form-control"
+              name="purposeOfUse"
+              value={formData.purposeOfUse}
+              onChange={onChange}
+              disabled={isVaDisabled}
+            />
+          </div>
 
-  <div className="col-md-4">
-    <label className="form-label">Date of VA:</label>
-    <input
-      type="date"
-      className={`form-control ${errors.dateOfVA ? "is-invalid" : ""}`}
-      name="dateOfVA"
-      value={formData.dateOfVA || ""}
-      onChange={onChange}
-      disabled={isVaDisabled}
-    />
-    {errors.dateOfVA && (
-      <div className="invalid-feedback">{errors.dateOfVA}</div>
-    )}
-  </div>
+          <div className="col-md-4">
+            <label className="form-label">Date of VA:</label>
+            <input
+              type="date"
+              className={`form-control ${errors.dateOfVA ? "is-invalid" : ""}`}
+              name="dateOfVA"
+              value={formData.dateOfVA || ""}
+              onChange={onChange}
+              disabled={isVaDisabled}
+            />
+            {errors.dateOfVA && (
+              <div className="invalid-feedback">{errors.dateOfVA}</div>
+            )}
+          </div>
 
-  <div className="col-md-4">
-    <label className="form-label">VA Score:</label>
-    <input
-      type="text"
-      className={`form-control ${errors.vaScore ? "is-invalid" : ""}`}
-      name="vaScore"
-      value={formData.vaScore || ""}
-      onChange={onChange}
-      disabled={isVaDisabled}   // ✅ Score disabled for K8S/Container
-    />
-    {errors.vaScore && (
-      <div className="invalid-feedback">{errors.vaScore}</div>
-    )}
-  </div>
+          <div className="col-md-4">
+            <label className="form-label">VA Score:</label>
+            <input
+              type="text"
+              className={`form-control ${errors.vaScore ? "is-invalid" : ""}`}
+              name="vaScore"
+              value={formData.vaScore || ""}
+              onChange={onChange}
+              disabled={isVaDisabled} // ✅ Score disabled for K8S/Container
+            />
+            {errors.vaScore && (
+              <div className="invalid-feedback">{errors.vaScore}</div>
+            )}
+          </div>
 
-  <div className="col-md-4">
-    <label className="form-label">Upload VA Report:</label>
-    <input
-      type="file"
-      className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
-      name="vaReport"
-      accept="application/pdf"
-      onChange={handleVaFileUpload}
-      disabled={isVaDisabled}
-    />
-    {errors.vaReport && (
-      <div className="invalid-feedback">{errors.vaReport}</div>
-    )}
-  </div>
+          <div className="col-md-4">
+            <label className="form-label">Upload VA Report:</label>
+            <input
+              type="file"
+              className={`form-control ${errors.vaReport ? "is-invalid" : ""}`}
+              name="vaReport"
+              accept="application/pdf"
+              onChange={handleVaFileUpload}
+              disabled={isVaDisabled}
+            />
+            {errors.vaReport && (
+              <div className="invalid-feedback">{errors.vaReport}</div>
+            )}
+          </div>
 
-  <div className="col-md-4 d-flex align-items-end">
-    <button
-      className="btn btn-primary w-100"
-      type="button"
-      onClick={handleAddVa}
-      disabled={isVaDisabled}  // ✅ Disable Add button for K8S/Container
-    >
-      ADD
-    </button>
-  </div>
-</div>
+          <div className="col-md-4 d-flex align-items-end">
+            <button
+              className="btn btn-primary w-100"
+              type="button"
+              onClick={handleAddVa}
+              disabled={isVaDisabled} // ✅ Disable Add button for K8S/Container
+            >
+              ADD
+            </button>
+          </div>
+        </div>
         {/* VA Table */}
         <div className="table-responsive mt-4">
           <table className="table table-bordered align-middle">
@@ -516,52 +409,51 @@ const StepInfrastructure = ({
           </table>
         </div>
 
-   
         <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "20px",
-          marginTop: "30px",
-        }}
-      >
-        <button
-          type="button"
-          className="btn btn-outline-primary"
-          onClick={onPrevious}
           style={{
-            width: "100px",
-            fontWeight: "bold",
-            color: "white",
-            border: "0 none",
-            borderRadius: "10px",
-            cursor: "pointer",
-            padding: "10px 5px",
-            background: "#a8dced",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "20px",
+            marginTop: "30px",
           }}
         >
-          Previous
-        </button>
+          <button
+            type="button"
+            className="btn btn-outline-primary"
+            onClick={onPrevious}
+            style={{
+              width: "100px",
+              fontWeight: "bold",
+              color: "white",
+              border: "0 none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              padding: "10px 5px",
+              background: "#a8dced",
+            }}
+          >
+            Previous
+          </button>
 
-        <button
-          type="button"
-          className="btn btn-success"
-          onClick={onNext}
-          style={{
-            width: "100px",
-            fontWeight: "bold",
-            color: "white",
-            border: "0 none",
-            borderRadius: "10px",
-            cursor: "pointer",
-            padding: "10px 5px",
-            background: "#0099cc",
-          }}
-        >
-          Next
-        </button>
-      </div> 
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={onNext}
+            style={{
+              width: "100px",
+              fontWeight: "bold",
+              color: "white",
+              border: "0 none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              padding: "10px 5px",
+              background: "#0099cc",
+            }}
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       {/* PDF Modal */}
@@ -576,10 +468,13 @@ const StepInfrastructure = ({
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">VA Report PDF</h5>
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={closeModal}
+                >
                   Close
                 </button>
-
               </div>
               <div className="modal-body" style={{ height: "80vh" }}>
                 <iframe

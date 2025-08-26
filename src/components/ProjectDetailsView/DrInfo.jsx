@@ -11,7 +11,7 @@ const DrInfo = ({ drData }) => {
 
   return (
     <div className="tab-pane fade show active profile-overview">
-      {/* <h4>DR Information</h4> */}
+    
       <div className="row mb-3">
         <div className="col-md-3">
           <p>Type of Server: <b>{drData.serverType || "N/A"}</b></p>
@@ -26,7 +26,7 @@ const DrInfo = ({ drData }) => {
           <p>Location: <b>{drData.location || "N/A"}</b></p>
         </div>
         <div className="col-md-3">
-          <p>ANTIVIRUS: <b>{drData.antivirus || "N/A"}</b></p>
+          <p>Antivirus: <b>{drData.antivirus || "N/A"}</b></p>
         </div>
       </div>
       {/* <h5>Git URLs</h5> */}
@@ -38,7 +38,7 @@ const DrInfo = ({ drData }) => {
         ))}
         {(!drData.gitUrls || drData.gitUrls.length === 0) && <li>No Git URLs</li>}
       </ul> */}
-      <h5>VA Records</h5>
+   
       <div className="table-responsive">
         <table className="table table-bordered text-center">
           <thead className="table-light">

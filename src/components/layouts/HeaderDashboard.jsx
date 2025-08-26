@@ -138,8 +138,8 @@ const Header = ({ onSidebarToggle }) => {
                   }}
                 >
                   <span>
-                    🔔 You have {notifications.length} new
-                    notification{notifications.length !== 1 ? "s" : ""}
+                    🔔 You have {notifications.length} new notification
+                    {notifications.length !== 1 ? "s" : ""}
                   </span>
                   <button
                     className="btn btn-sm btn-outline-danger"
@@ -264,6 +264,7 @@ const Header = ({ onSidebarToggle }) => {
                   </h6>
                   <span>{localStorage.getItem("employeeType")}</span>
                 </li>
+
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
@@ -299,4 +300,3 @@ const Header = ({ onSidebarToggle }) => {
 };
 
 export default Header;
-
