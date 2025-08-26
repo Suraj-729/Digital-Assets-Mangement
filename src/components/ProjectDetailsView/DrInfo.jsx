@@ -11,7 +11,7 @@ const DrInfo = ({ drData }) => {
 
   return (
     <div className="tab-pane fade show active profile-overview">
-      <h4>DR Information</h4>
+      {/* <h4>DR Information</h4> */}
       <div className="row mb-3">
         <div className="col-md-3">
           <p>Type of Server: <b>{drData.serverType || "N/A"}</b></p>

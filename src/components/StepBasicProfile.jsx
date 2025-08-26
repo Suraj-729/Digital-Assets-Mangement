@@ -343,12 +343,14 @@ useEffect(() => {
   name={field}
   value={formData[field] || ""}
   onChange={onChange}
-  maxLength={10}
-  pattern="[0-9]{10}"
-  inputMode="numeric"
-  onInput={(e) => {
-    e.target.value = e.target.value.replace(/\D/g, ""); // remove non-digits
-  }}
+  {...(field === "deptOfficerMob" && {
+    maxLength: 10,
+    pattern: "[0-9]{10}",
+    inputMode: "numeric",
+    onInput: (e) => {
+            e.target.value = e.target.value.replace(/\D/g, "");
+    }
+  })}
 />
 
                       {errors[field] && <div className="invalid-feedback">{errors[field]}</div>}
