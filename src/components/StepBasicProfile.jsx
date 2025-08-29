@@ -57,24 +57,50 @@ const StepBasicProfile = ({
     }
   }, [employeeType]);
 
-  useEffect(() => {
-    if (employeeType === "PM") {
-      const empCode = formData.empCode || localStorage.getItem("employeeId");
-      if (!empCode) return;
+  // useEffect(() => {
+  //   if (employeeType === "PM") {
+  //     const empCode = formData.empCode || localStorage.getItem("employeeId");
+  //     if (!empCode) return;
 
-      setLoading(true);
-      api
-        .get(`/project-assignments/by-pm/${empCode}`)
-        .then((res) => {
-          setProjects(res.data || []);
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error("Failed to fetch project assignment data.");
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [employeeType, formData.empCode]);
+  //     setLoading(true);
+  //     api
+  //       .get(`/project-assignments/by-pm/${empCode}`)
+  //       .then((res) => {
+  //         setProjects(res.data || []);
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //         toast.error("Failed to fetch project assignment data.");
+  //       })
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [employeeType, formData.empCode]);
+
+
+
+  useEffect(() => {
+  if (employeeType === "PM") {
+    const empCode = formData.empCode || localStorage.getItem("employeeId");
+    if (!empCode) return;
+
+    setLoading(true);
+    api
+      .get(`/project-assignments/by-pm/${empCode}`)
+      .then((res) => {
+        setProjects(res.data || []);
+      })
+      .catch((err) => {
+        console.error(err);
+
+        // Show server error if available, else fallback message
+        const errorMessage =
+          err.response?.data?.message ||
+          "Failed to fetch project assignment data.";
+        toast.error(errorMessage);
+      })
+      .finally(() => setLoading(false));
+  }
+}, [employeeType, formData.empCode]);
 
   const handleProjectSelect = (e) => {
     const selectedProject = projects.find(

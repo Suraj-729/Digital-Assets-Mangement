@@ -136,15 +136,123 @@ const Dashboard = () => {
     }
   };
 
-  const handleEditProject = (projectName) => {
-    console.log("Edit clicked for", projectName);
-    if (!projectName) return;
-    navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`, {
-      //  state: { from: location.pathname, projectName },
-    });
-  };
+  // const handleEditProject = (projectName) => {
+  //   console.log("Edit clicked for", projectName);
+  //   if (!projectName) return;
+  //   navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`, {
+  //     //  state: { from: location.pathname, projectName },
+  //   });
+  // };
 
   // Add this function to handle Add Project click
+
+  // const handleEditProject = async (projectName) => {
+  //   try {
+  //     // Use employeeId from localStorage
+  //     const empCode = localStorage.getItem("employeeId");
+  //     if (!projectName || !empCode) return;
+
+  //     // Call backend API to mark project editable
+  //     const res = await api.patch("/project-assignments/mark-for-edit", {
+  //       projectName,
+  //       empCode,
+  //     });
+
+  //     if (res.status >= 200 && res.status < 300) {
+  //       console.log("Project ready for edit:", res.data.message);
+  //       navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+  //     } else {
+  //       toast.error("Failed to prepare project for edit");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error marking project for edit:", err);
+  //     toast.error("Something went wrong while editing the project");
+  //   }
+  // };
+
+
+//   const handleEditProject = async (projectName) => {
+//   try {
+//     // const navigate = useNavigate();
+
+//     if (!projectName) {
+//       toast.error("Project name is missing!");
+//       return;
+//     }
+
+//     const employeeId = localStorage.getItem("employeeId");
+//     const employeeType = localStorage.getItem("employeeType"); // HOD, Admin, PM, etc.
+
+//     if (!employeeId || !employeeType) {
+//       toast.error("User info not found!");
+//       return;
+//     }
+
+//     // Decide key based on role
+//     const payload =
+//       employeeType === "PM"
+//         ? { projectName, empCode: employeeId }
+//         : { projectName, employeeId };
+
+//     console.log("Marking project editable with payload:", payload);
+
+//     const res = await api.patch("/project-assignments/mark-for-edit", payload);
+
+//     if (res.status >= 200 && res.status < 300) {
+//       console.log("Project ready for edit:", res.data.message);
+//       navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+//     } else {
+//       toast.error("Failed to prepare project for edit");
+//     }
+//   } catch (err) {
+//     console.error("Error marking project for edit:", err);
+//     toast.error("Something went wrong while editing the project");
+//   }
+// };
+
+const handleEditProject = async (projectName) => {
+  try {
+    if (!projectName) {
+      toast.error("Project name is missing!");
+      return;
+    }
+
+    const employeeId = localStorage.getItem("employeeId");
+    const employeeType = localStorage.getItem("employeeType"); // HOD, Admin, PM, etc.
+
+    if (!employeeId || !employeeType) {
+      toast.error("User info not found!");
+      return;
+    }
+
+    // Build payload based on role
+    let payload = { projectName };
+    if (employeeType === "PM") {
+      payload.empCode = employeeId;
+    } else if (employeeType === "HOD") {
+      payload.employeeId = employeeId;
+    } else {
+      payload.employeeId = employeeId; // fallback for other roles
+    }
+
+    console.log("Marking project editable with payload:", payload);
+
+    const res = await api.patch("/project-assignments/mark-for-edit", payload);
+
+    if (res.status >= 200 && res.status < 300) {
+      console.log("Project ready for edit:", res.data.message);
+      navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+    } else {
+      toast.error("Failed to prepare project for edit");
+    }
+  } catch (err) {
+    console.error("Error marking project for edit:", err);
+    toast.error("Something went wrong while editing the project");
+  }
+};
+
+
+
   const handleAddProject = () => {
     setEditProjectData(null); // Reset edit data
     setFormToShow("addProject");
@@ -189,7 +297,7 @@ const Dashboard = () => {
       month: "long",
     })} / ${date.getFullYear()}`;
   };
-  
+
   // Badge helpers
   const statusBadge = (status) => {
     if (status === "ACTIVE") return "badge bg-warning text-dark";
@@ -648,6 +756,18 @@ const Dashboard = () => {
                                           : "N/A"}
                                       </td>
 
+                                      {/* <td>
+                                        <button
+                                          className="btn btn-sm btn-outline-primary"
+                                          onClick={() =>
+                                            handleEditProject(
+                                              project.projectName
+                                            )
+                                          }
+                                        >
+                                          Edit
+                                        </button>
+                                      </td> */}
                                       <td>
                                         <button
                                           className="btn btn-sm btn-outline-primary"

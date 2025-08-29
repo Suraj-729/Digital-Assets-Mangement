@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { FaTrash } from "react-icons/fa";
-import Swal from "sweetalert2";   // ✅ import SweetAlert2
+import Swal from "sweetalert2"; // ✅ import SweetAlert2
 import { toast } from "react-toastify";
+import api from "../Api";
+import { useParams } from "react-router-dom";
 
 const DRForm = ({
   formData,
@@ -43,7 +45,8 @@ const DRForm = ({
       [name]: files ? files[0] : value,
     }));
   };
-
+  const { projectName: projectNameFromUrl } = useParams(); // 🚀 get projectName from URL
+  const empCode = localStorage.getItem("employeeId") || "";
   const handleAddRecord = () => {
     if (!vaForm.ipAddress || !vaForm.dbServerIp) return;
 
@@ -72,42 +75,182 @@ const DRForm = ({
       vaRecords: updated,
     }));
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
 
-    // if (records.length === 0) {
-    //   toast.error("Please add at least one VA record before submitting.");
-    //   return;
-    // }
+  //   // if (records.length === 0) {
+  //   //   toast.error("Please add at least one VA record before submitting.");
+  //   //   return;
+  //   // }
 
-    Swal.fire({
-      
-      title: "Do you want to submit this form?",
-      // text:"Are you sure you want to submit the form? This action cannot be undone.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, submit it!",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        if (typeof onSubmit === "function") {
-          onSubmit(e);
-        } else {
-          toast.error("onSubmit is not defined or not a function.");
-        }
-        Swal.fire({
-          title: "Submitted!",
-          text: "Your data has been submitted.",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+  //   Swal.fire({
+
+  //     title: "Do you want to submit this form?",
+  //     // text:"Are you sure you want to submit the form? This action cannot be undone.",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, submit it!",
+  //     cancelButtonText: "Cancel",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       if (typeof onSubmit === "function") {
+  //         onSubmit(e);
+  //       } else {
+  //         toast.error("onSubmit is not defined or not a function.");
+  //       }
+  //       Swal.fire({
+  //         title: "Submitted!",
+  //         text: "Your data has been submitted.",
+  //         icon: "success",
+  //         timer: 2000,
+  //         showConfirmButton: false,
+  //       });
+  //     }
+  //   });
+  // };
+
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+
+//   const projectName = projectNameFromUrl || formData?.BP?.name || "";
+//   const employeeId = localStorage.getItem("employeeId") || "";
+//   const employeeType = localStorage.getItem("employeeType") || "";
+
+//   console.log(
+//     "Submitting form for project:",
+//     projectName,
+//     "with empCode:",
+//     employeeId
+//   );
+//   console.log("Full formData:", formData);
+
+//   if (!projectName) {
+//     toast.error("Project name is missing!");
+//     console.warn("Cannot find projectName in URL or formData");
+//     return;
+//   }
+
+//   if (!employeeId) {
+//     toast.error("Employee ID is missing from localStorage!");
+//     console.warn("Cannot find employeeId in localStorage");
+//     return;
+//   }
+
+//   Swal.fire({
+//     title: "Do you want to submit this form?",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonColor: "#3085d6",
+//     cancelButtonColor: "#d33",
+//     confirmButtonText: "Yes, submit it!",
+//     cancelButtonText: "Cancel",
+//   }).then(async (result) => {
+//     if (!result.isConfirmed) return;
+
+//     try {
+//       if (typeof onSubmit === "function") {
+//         await onSubmit(e); // save VA/DR records
+//       }
+
+//       // update project status
+//       let payload = { projectName };
+//       if (employeeType === "PM") {
+//         payload.empCode = employeeId;
+//       } else {
+//         payload.employeeId = employeeId;
+//       }
+
+//       const response = await api.put("/project/update-status", payload);
+//       console.log("Project status update response:", response.data);
+
+//       Swal.fire({
+//         title: "Submitted!",
+//         text: "Your data has been submitted and project status updated.",
+//         icon: "success",
+//         timer: 2000,
+//         showConfirmButton: false,
+//       });
+//     } catch (err) {
+//       console.error("Error during submission or status update:", err);
+//       toast.error("Submission failed. Please try again.");
+//     }
+//   });
+// };
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const projectName = projectNameFromUrl || formData?.BP?.name || "";
+  const employeeId = localStorage.getItem("employeeId") || "";
+  const employeeType = localStorage.getItem("employeeType") || "";
+
+  console.log(
+    "Submitting form for project:",
+    projectName,
+    "with employeeId:",
+    employeeId,
+    "and employeeType:",
+    employeeType
+  );
+  console.log("Full formData:", formData);
+
+  if (!projectName) {
+    toast.error("Project name is missing!");
+    console.warn("Cannot find projectName in URL or formData");
+    return;
+  }
+
+  if (!employeeId) {
+    toast.error("Employee ID is missing from localStorage!");
+    console.warn("Cannot find employeeId in localStorage");
+    return;
+  }
+
+  Swal.fire({
+    title: "Do you want to submit this form?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, submit it!",
+    cancelButtonText: "Cancel",
+  }).then(async (result) => {
+    if (!result.isConfirmed) return;
+
+    try {
+      if (typeof onSubmit === "function") {
+        await onSubmit(e); // save VA/DR records
       }
-    });
-  };
 
+      // update project status
+      let payload = { projectName };
+      if (employeeType === "PM") {
+        payload.empCode = employeeId;
+      } else if (employeeType === "Admin") {
+        payload.adminId = employeeId;
+      } else {
+        payload.employeeId = employeeId;
+      }
+
+      const response = await api.put("/project/update-status", payload);
+      console.log("Project status update response:", response.data);
+
+      Swal.fire({
+        title: "Submitted!",
+        text: "Your data has been submitted and project status updated.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (err) {
+      console.error("Error during submission or status update:", err);
+      toast.error("Submission failed. Please try again.");
+    }
+  });
+};
   return (
     <div className="container p-4" style={{ backgroundColor: "#f5f8ff" }}>
       {/* <h3 className="mb-4">DR Information</h3> */}
@@ -177,116 +320,132 @@ const DRForm = ({
           </select>
         </div>
         <div className="col-md-4">
-            <label className="form-label">Antivirus:</label>
-            <select
-              className="form-select"
-              name="antivirus"
-              value={formData.antivirus || ""}
-              onChange={handleChange}
-            >
-              <option value="">Select</option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-          </div>
+          <label className="form-label">Antivirus:</label>
+          <select
+            className="form-select"
+            name="antivirus"
+            value={formData.antivirus || ""}
+            onChange={handleChange}
+          >
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
       </div>
 
-
       {/* <h4>VA Records</h4> */}
-<div className="row g-3">
-  <div className="col-md-4">
-    <label className="form-label">Application IP Address:</label>
-    <input
-      type="text"
-      className="form-control"
-      name="ipAddress"
-      placeholder="Application server IP"
-      value={vaForm.ipAddress}
-      onChange={handleVaFormChange}
-      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
-    />
-  </div>
+      <div className="row g-3">
+        <div className="col-md-4">
+          <label className="form-label">Application IP Address:</label>
+          <input
+            type="text"
+            className="form-control"
+            name="ipAddress"
+            placeholder="Application server IP"
+            value={vaForm.ipAddress}
+            onChange={handleVaFormChange}
+            disabled={
+              formData.deployment === "Container as Service" ||
+              formData.deployment === "K8S as Service"
+            }
+          />
+        </div>
 
-  <div className="col-md-4">
-    <label>DB Server IP:</label>
-    <input
-      type="text"
-      className="form-control"
-      name="dbServerIp"
-      value={vaForm.dbServerIp}
-      onChange={handleVaFormChange}
-      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
-    />
-  </div>
+        <div className="col-md-4">
+          <label>DB Server IP:</label>
+          <input
+            type="text"
+            className="form-control"
+            name="dbServerIp"
+            value={vaForm.dbServerIp}
+            onChange={handleVaFormChange}
+            disabled={
+              formData.deployment === "Container as Service" ||
+              formData.deployment === "K8S as Service"
+            }
+          />
+        </div>
 
-  <div className="col-md-4">
-    <label className="form-label">Purpose of Use:</label>
-    <input
-      type="text"
-      className="form-control"
-      name="purpose"
-      value={vaForm.purpose}
-      onChange={handleVaFormChange}
-      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
-    />
-  </div>
+        <div className="col-md-4">
+          <label className="form-label">Purpose of Use:</label>
+          <input
+            type="text"
+            className="form-control"
+            name="purpose"
+            value={vaForm.purpose}
+            onChange={handleVaFormChange}
+            disabled={
+              formData.deployment === "Container as Service" ||
+              formData.deployment === "K8S as Service"
+            }
+          />
+        </div>
 
-  <div className="col-md-4">
-    <label className="form-label">Date of VA:</label>
-    <input
-      type="date"
-      className="form-control"
-      name="dateOfVA"
-      value={vaForm.dateOfVA}
-      onChange={handleVaFormChange}
-      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
-    />
-  </div>
+        <div className="col-md-4">
+          <label className="form-label">Date of VA:</label>
+          <input
+            type="date"
+            className="form-control"
+            name="dateOfVA"
+            value={vaForm.dateOfVA}
+            onChange={handleVaFormChange}
+            disabled={
+              formData.deployment === "Container as Service" ||
+              formData.deployment === "K8S as Service"
+            }
+          />
+        </div>
 
-  <div className="col-md-4">
-    <label className="form-label">VA Score:</label>
-    <input
-      type="text"
-      className="form-control"
-      name="vaScore"
-      value={vaForm.vaScore}
-      onChange={handleVaFormChange}
-      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
-    />
-  </div>
+        <div className="col-md-4">
+          <label className="form-label">VA Score:</label>
+          <input
+            type="text"
+            className="form-control"
+            name="vaScore"
+            value={vaForm.vaScore}
+            onChange={handleVaFormChange}
+            disabled={
+              formData.deployment === "Container as Service" ||
+              formData.deployment === "K8S as Service"
+            }
+          />
+        </div>
 
-  <div className="col-md-4">
-    <label className="form-label">Upload VA Report:</label>
-    <input
-      type="file"
-      className="form-control"
-      name="vaReport"
-      accept="application/pdf"
-      onChange={handleVaFormChange}
-      disabled={formData.deployment === "Container as Service" || formData.deployment === "K8S as Service"}
-    />
-  </div>
+        <div className="col-md-4">
+          <label className="form-label">Upload VA Report:</label>
+          <input
+            type="file"
+            className="form-control"
+            name="vaReport"
+            accept="application/pdf"
+            onChange={handleVaFormChange}
+            disabled={
+              formData.deployment === "Container as Service" ||
+              formData.deployment === "K8S as Service"
+            }
+          />
+        </div>
 
-  <div className="col-md-12 d-flex justify-content-center mt-3">
-    <button
-      className="btn btn-info"
-      type="button"
-      onClick={handleAddRecord}
-      style={{
-        color: "white",
-        border: "none",
-        padding: "8px 70px",
-        borderRadius: "6px",
-        fontWeight: "bold",
-        fontSize: "14px",
-        letterSpacing: "0.5px",
-      }}
-    >
-      Add Record
-    </button>
-  </div>
-</div>
-
+        <div className="col-md-12 d-flex justify-content-center mt-3">
+          <button
+            className="btn btn-info"
+            type="button"
+            onClick={handleAddRecord}
+            style={{
+              color: "white",
+              border: "none",
+              padding: "8px 70px",
+              borderRadius: "6px",
+              fontWeight: "bold",
+              fontSize: "14px",
+              letterSpacing: "0.5px",
+            }}
+          >
+            Add Record
+          </button>
+        </div>
+      </div>
 
       {/* VA Table */}
       <table className="table table-bordered text-center">
@@ -386,10 +545,9 @@ const DRForm = ({
         >
           Submit
         </button>
-      </div> 
+      </div>
     </div>
   );
 };
 
 export default DRForm;
-
