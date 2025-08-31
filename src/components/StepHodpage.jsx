@@ -21,26 +21,26 @@ const StepHodPage = () => {
 
   // const departments = ["IT", "HR", "Finance", "Electronics", "Planning" , "Agriculture"];
   const [departments, setDepartments] = useState([]);
- useEffect(() => {
-  const fetchDepartments = async () => {
-    try {
-      const res = await api.get("/getDepartments");
-      console.log("API Response:", res.data);
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const res = await api.get("/getDepartments");
+        console.log("API Response:", res.data);
 
-      // res.data is an array with one object containing 'departments'
-      if (res.data.length > 0 && res.data[0].departments) {
-        setDepartments(res.data[0].departments);
-      } else {
-        setDepartments([]);
+        // res.data is an array with one object containing 'departments'
+        if (res.data.length > 0 && res.data[0].departments) {
+          setDepartments(res.data[0].departments);
+        } else {
+          setDepartments([]);
+        }
+      } catch (error) {
+        toast.error("Failed to fetch departments");
+        console.error("Fetch error:", error);
       }
-    } catch (error) {
-      toast.error("Failed to fetch departments");
-      console.error("Fetch error:", error);
-    }
-  };
+    };
 
-  fetchDepartments();
-}, []);
+    fetchDepartments();
+  }, []);
 
   useEffect(() => {
     const fetchManagers = async () => {
@@ -170,12 +170,19 @@ const StepHodPage = () => {
                         errors.department ? "is-invalid" : ""
                       }`}
                       value={formData.department}
-                      onChange={handleChange}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          department: e.target.value,
+                        }))
+                      } // store deptName
                     >
                       <option value="">Select Department</option>
                       {departments.map((dept) => (
-                        <option key={dept._id} value={dept._id}>
-                          {dept.name}
+                        <option key={dept._id} value={dept.deptName}>
+                          {" "}
+                          {/* use deptName as value */}
+                          {dept.deptName}
                         </option>
                       ))}
                     </select>

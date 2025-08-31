@@ -1,7 +1,13 @@
+// import React, { useState, useEffect } from "react";
+// import "../css/mvpStyle.css";
+// import { toast } from "react-toastify";
+// import api from "../Api";
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
 import api from "../Api";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 const StepBasicProfile = ({
   formData = {},
@@ -46,61 +52,83 @@ const StepBasicProfile = ({
               },
             });
           } else {
-            toast.warning("No project data found for your empCode.");
+            // toast.warning("No project data found for your empCode.");
           }
         })
         .catch((err) => {
           console.error("Error fetching project assignment data:", err);
-          toast.error("Failed to fetch project assignment data.");
+          // toast.error("Failed to fetch project assignment data.");
         })
         .finally(() => setLoading(false));
     }
   }, [employeeType]);
 
-  // useEffect(() => {
-  //   if (employeeType === "PM") {
-  //     const empCode = formData.empCode || localStorage.getItem("employeeId");
-  //     if (!empCode) return;
-
-  //     setLoading(true);
-  //     api
-  //       .get(`/project-assignments/by-pm/${empCode}`)
-  //       .then((res) => {
-  //         setProjects(res.data || []);
-  //       })
-  //       .catch((err) => {
-  //         console.error(err);
-  //         toast.error("Failed to fetch project assignment data.");
-  //       })
-  //       .finally(() => setLoading(false));
-  //   }
-  // }, [employeeType, formData.empCode]);
-
-
-
   useEffect(() => {
-  if (employeeType === "PM") {
-    const empCode = formData.empCode || localStorage.getItem("employeeId");
-    if (!empCode) return;
+    if (employeeType === "PM") {
+      const empCode = formData.empCode || localStorage.getItem("employeeId");
+      if (!empCode) return;
 
-    setLoading(true);
-    api
-      .get(`/project-assignments/by-pm/${empCode}`)
-      .then((res) => {
-        setProjects(res.data || []);
-      })
-      .catch((err) => {
-        console.error(err);
+      setLoading(true);
+      api
+        .get(`/project-assignments/by-pm/${empCode}`)
+        .then((res) => {
+          const data = res.data || [];
+          setProjects(data);
 
-        // Show server error if available, else fallback message
-        const errorMessage =
-          err.response?.data?.message ||
-          "Failed to fetch project assignment data.";
-        toast.error(errorMessage);
-      })
-      .finally(() => setLoading(false));
-  }
-}, [employeeType, formData.empCode]);
+          if (!data.length) {
+            // ❌ Popup when no projects assigned
+            Swal.fire({
+              title: "No Projects Assigned",
+              text: "There are no projects assigned to you by HOD.",
+              icon: "info",
+              confirmButtonText: "OK",
+            });
+            return;
+          }
+
+          // ✅ Only prefill if we are in EDIT mode (formData.projectName already exists)
+          if (formData.projectName) {
+            const project = data.find(
+              (p) => p.projectName === formData.projectName
+            );
+            if (project) {
+              onChange({
+                target: { name: "projectName", value: project.projectName },
+              });
+              onChange({
+                target: {
+                  name: "departmentName",
+                  value: project.deptName || "",
+                },
+              });
+              onChange({ target: { name: "HOD", value: project.HOD || "" } });
+              onChange({
+                target: {
+                  name: "nicOfficerName",
+                  value: project.projectManagerName || "",
+                },
+              });
+              onChange({
+                target: {
+                  name: "nicOfficerEmpCode",
+                  value: project.empCode || "",
+                },
+              });
+            }
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          Swal.fire({
+            title: "Error",
+            text: "Oops! You don’t have any projects assigned yet. Please reach out to your HOD.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [employeeType, formData.empCode, formData.projectName]);
 
   const handleProjectSelect = (e) => {
     const selectedProject = projects.find(
@@ -331,7 +359,21 @@ const StepBasicProfile = ({
                   }`}
                   name="publicIp"
                   value={formData.publicIp || ""}
-                  onChange={onChange}
+                  onChange={(e) => {
+                    onChange(e); // your existing form state update
+
+                    // real-time IP validation
+                    const ipRegex =
+                      /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
+                    if (!ipRegex.test(e.target.value)) {
+                      setErrors((prev) => ({
+                        ...prev,
+                        publicIp: "Invalid IP address",
+                      }));
+                    } else {
+                      setErrors((prev) => ({ ...prev, publicIp: null }));
+                    }
+                  }}
                 />
                 {errors.publicIp && (
                   <div className="invalid-feedback">{errors.publicIp}</div>
@@ -418,44 +460,65 @@ const StepBasicProfile = ({
           </div>
 
           {/* Department Officer Section */}
-          <div className="col-md-6">
-            <h5 className="sub-heading-1">Nodal Officer from Department:</h5>
-            <div className="p-3 border rounded box-1">
-              {[
-                "deptOfficerName",
-                "deptOfficerDesignation",
-                "deptOfficerMob",
-                "deptOfficerEmail",
-              ].map((field, i) => {
-                const labels = ["Name:", "Designation:", "Mob:", "Email:"];
-                const types = ["text", "text", "text", "email"];
-                return (
-                  <div
-                    className="row align-items-center text-right"
-                    key={field}
-                  >
-                    <div className="col-sm-4 mb-2">
-                      <label className="form-label">{labels[i]}</label>
-                    </div>
-                    <div className="col-sm-8 mb-2">
-                      <input
-                        type={types[i]}
-                        className={`form-control ${
-                          errors[field] ? "is-invalid" : ""
-                        }`}
-                        name={field}
-                        value={formData[field] || ""}
-                        onChange={onChange}
-                      />
-                      {errors[field] && (
-                        <div className="invalid-feedback">{errors[field]}</div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+       <div className="col-md-6">
+  <h5 className="sub-heading-1">Nodal Officer from Department:</h5>
+  <div className="p-3 border rounded box-1">
+    {[
+      "deptOfficerName",
+      "deptOfficerDesignation",
+      "deptOfficerMob",
+      "deptOfficerEmail",
+    ].map((field, i) => {
+      const labels = ["Name:", "Designation:", "Mob:", "Email:"];
+      const types = ["text", "text", "text", "email"];
+      return (
+        <div className="row align-items-center text-right" key={field}>
+          <div className="col-sm-4 mb-2">
+            <label className="form-label">{labels[i]}</label>
           </div>
+          <div className="col-sm-8 mb-2">
+            <input
+              type={types[i]}
+              className={`form-control ${errors[field] ? "is-invalid" : ""}`}
+              name={field}
+              value={formData[field] || ""}
+              onChange={(e) => {
+                let value = e.target.value;
+
+                // Remove non-digit characters and validate if mobile number field
+                if (field === "nicOfficerMob" || field === "deptOfficerMob") {
+                  value = value.replace(/\D/g, "");
+                  e.target.value = value;
+
+                  // Real-time validation: exactly 10 digits
+                  if (!/^\d{10}$/.test(value)) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      [field]: "Invalid mobile number",
+                    }));
+                  } else {
+                    setErrors((prev) => ({ ...prev, [field]: null }));
+                  }
+                }
+
+                onChange(e); // update form state
+              }}
+              {...((field === "nicOfficerMob" || field === "deptOfficerMob") && {
+                maxLength: 10,
+                pattern: "[0-9]{10}",
+                inputMode: "numeric",
+              })}
+            />
+            {errors[field] && (
+              <div className="invalid-feedback">{errors[field]}</div>
+            )}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
         </div>
       </div>
 

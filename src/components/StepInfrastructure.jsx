@@ -202,8 +202,10 @@ const StepInfrastructure = ({
               onChange={onChange}
             >
               <option value="">Select</option>
-              <option value="BBSR">BBSR</option>
+              <option value="BBSR">Bhubaneswar</option>
               <option value="Delhi">Delhi</option>
+              <option value="Pune">Pune</option>
+              <option value="Hyderabad">Hyderabad</option>
             </select>
           </div>
           <div className="col-md-4">
@@ -231,8 +233,23 @@ const StepInfrastructure = ({
               className={`form-control ${errors.ipAddress ? "is-invalid" : ""}`}
               name="ipAddress"
               placeholder="Application server IP"
-              value={formData.ipAddress}
-              onChange={onChange}
+              value={formData.ipAddress || ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                onChange(e); // update form state
+
+                // Real-time IPv4 validation
+                const ipRegex =
+                  /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
+                if (!ipRegex.test(value)) {
+                  setErrors((prev) => ({
+                    ...prev,
+                    ipAddress: "Invalid IP address",
+                  }));
+                } else {
+                  setErrors((prev) => ({ ...prev, ipAddress: null }));
+                }
+              }}
               disabled={isVaDisabled}
             />
             {errors.ipAddress && (
@@ -244,10 +261,25 @@ const StepInfrastructure = ({
             <label>DB Server IP:</label>
             <input
               type="text"
-              className="form-control"
+              className={`form-control ${errors.dbServer ? "is-invalid" : ""}`}
               name="dbServer"
-              value={formData.dbServer}
-              onChange={onChange}
+              value={formData.dbServer || ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                onChange(e);
+
+                // Real-time IPv4 validation for DB server IP
+                const ipRegex =
+                  /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
+                if (!ipRegex.test(value)) {
+                  setErrors((prev) => ({
+                    ...prev,
+                    dbServer: "Invalid IP address",
+                  }));
+                } else {
+                  setErrors((prev) => ({ ...prev, dbServer: null }));
+                }
+              }}
               disabled={isVaDisabled}
             />
             {errors.dbServer && (

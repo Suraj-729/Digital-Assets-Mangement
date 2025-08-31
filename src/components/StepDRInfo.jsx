@@ -22,7 +22,9 @@ const DRForm = ({
     dateOfVA: "",
     vaReport: null,
   });
-
+  const [hasDrInfo, setHasDrInfo] = useState(formData?.hasDrInfo || "No");
+  const { projectName: urlProjectName } = useParams();
+  const [errors, setErrors] = useState({});
   // 🧠 Sync records from parent if editing
   useEffect(() => {
     if (formData?.vaRecords?.length) {
@@ -75,432 +77,493 @@ const DRForm = ({
       vaRecords: updated,
     }));
   };
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
 
-  //   // if (records.length === 0) {
-  //   //   toast.error("Please add at least one VA record before submitting.");
-  //   //   return;
-  //   // }
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const employeeId = localStorage.getItem("employeeId");
+  //   const employeeType = localStorage.getItem("employeeType");
+  //   let projectName = "";
+
+  //   let res;
+  //   if (employeeType === "PM") {
+  //     res = await api.get(`/project-assignments/${employeeId}`);
+  //     if (Array.isArray(res.data) && res.data.length > 0) {
+  //       const pmProject = res.data.find((item) => item.empCode === employeeId);
+  //       if (pmProject) projectName = pmProject.projectName;
+  //     }
+  //   } else if (employeeType === "HOD") {
+  //     res = await api.get(`/project-assignments/hod/${employeeId}`);
+  //     if (Array.isArray(res.data) && res.data.length > 0) {
+  //       const hodProject = res.data.find(
+  //         (item) => item.employeeId === employeeId
+  //       );
+  //       if (hodProject) projectName = hodProject.projectName;
+  //     }
+  //   }
+
+  //   if (!projectName) {
+  //     console.error("❌ Project name is missing!");
+  //     toast.error("Project name is missing!");
+  //     return;
+  //   }
+
+  //   if (!employeeId) {
+  //     console.error("❌ Employee ID is missing in localStorage!");
+  //     toast.error("Employee ID is missing from localStorage!");
+  //     return;
+  //   }
 
   //   Swal.fire({
-
   //     title: "Do you want to submit this form?",
-  //     // text:"Are you sure you want to submit the form? This action cannot be undone.",
   //     icon: "warning",
   //     showCancelButton: true,
   //     confirmButtonColor: "#3085d6",
   //     cancelButtonColor: "#d33",
   //     confirmButtonText: "Yes, submit it!",
   //     cancelButtonText: "Cancel",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
+  //   }).then(async (result) => {
+  //     if (!result.isConfirmed) return;
+
+  //     try {
   //       if (typeof onSubmit === "function") {
-  //         onSubmit(e);
-  //       } else {
-  //         toast.error("onSubmit is not defined or not a function.");
+  //         console.log("Calling onSubmit to save VA/DR records...");
+  //         await onSubmit(e);
   //       }
+
+  //       // prepare payload
+  //       let payload = { projectName };
+  //       if (employeeType === "PM") {
+  //         payload.empCode = employeeId;
+  //       } else if (employeeType === "Admin") {
+  //         payload.adminId = employeeId;
+  //       } else {
+  //         payload.employeeId = employeeId;
+  //       }
+
+  //       console.log("Final payload before update-status API:", payload);
+
+  //       const response = await api.put("/project/update-status", payload);
+  //       console.log("✅ Project status update response:", response.data);
+
   //       Swal.fire({
   //         title: "Submitted!",
-  //         text: "Your data has been submitted.",
+  //         text: "Your data has been submitted and project status updated.",
   //         icon: "success",
   //         timer: 2000,
   //         showConfirmButton: false,
   //       });
+  //     } catch (err) {
+  //       console.error("❌ Error during submission or status update:", err);
+  //       toast.error("Submission failed. Please try again.");
   //     }
   //   });
   // };
 
-// const handleSubmit = async (e) => {
-//   e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //     e.preventDefault();
 
-//   const projectName = projectNameFromUrl || formData?.BP?.name || "";
-//   const employeeId = localStorage.getItem("employeeId") || "";
-//   const employeeType = localStorage.getItem("employeeType") || "";
+  //     const employeeId = localStorage.getItem("employeeId");
+  //     const employeeType = localStorage.getItem("employeeType");
+  //     let projectName = "";
 
-//   console.log(
-//     "Submitting form for project:",
-//     projectName,
-//     "with empCode:",
-//     employeeId
-//   );
-//   console.log("Full formData:", formData);
+  //     try {
+  //       if (employeeType === "Admin") {
+  //         // ✅ Admin: take project name directly from URL
+  //         projectName = urlProjectName || "";
+  //       } else if (employeeType === "PM") {
+  //         const res = await api.get(`/project-assignments/${employeeId}`);
+  //         const pmProject = res.data.find((item) => item.empCode === employeeId);
+  //         if (pmProject) projectName = pmProject.projectName;
+  //       } else if (employeeType === "HOD") {
+  //         const res = await api.get(`/project-assignments/hod/${employeeId}`);
+  //         const hodProject = res.data.find((item) => item.employeeId === employeeId);
+  //         if (hodProject) projectName = hodProject.projectName;
+  //       }
 
-//   if (!projectName) {
-//     toast.error("Project name is missing!");
-//     console.warn("Cannot find projectName in URL or formData");
-//     return;
-//   }
+  //       if (!projectName) {
+  //         toast.error("Project name is missing!");
+  //         return;
+  //       }
 
-//   if (!employeeId) {
-//     toast.error("Employee ID is missing from localStorage!");
-//     console.warn("Cannot find employeeId in localStorage");
-//     return;
-//   }
+  //       Swal.fire({
+  //         title: "Do you want to submit this form?",
+  //         icon: "warning",
+  //         showCancelButton: true,
+  //         confirmButtonText: "Yes, submit it!",
+  //         cancelButtonText: "Cancel",
+  //       }).then(async (result) => {
+  //         if (!result.isConfirmed) return;
 
-//   Swal.fire({
-//     title: "Do you want to submit this form?",
-//     icon: "warning",
-//     showCancelButton: true,
-//     confirmButtonColor: "#3085d6",
-//     cancelButtonColor: "#d33",
-//     confirmButtonText: "Yes, submit it!",
-//     cancelButtonText: "Cancel",
-//   }).then(async (result) => {
-//     if (!result.isConfirmed) return;
+  //         if (typeof onSubmit === "function") await onSubmit(e);
 
-//     try {
-//       if (typeof onSubmit === "function") {
-//         await onSubmit(e); // save VA/DR records
-//       }
+  //         // Prepare payload
+  //         let payload = { projectName };
+  //         if (employeeType === "PM") payload.empCode = employeeId;
+  //         else if (employeeType === "HOD") payload.employeeId = employeeId;
+  //         // ✅ Admin: no need to send anything else
 
-//       // update project status
-//       let payload = { projectName };
-//       if (employeeType === "PM") {
-//         payload.empCode = employeeId;
-//       } else {
-//         payload.employeeId = employeeId;
-//       }
+  //         await api.put("/project/update-status", payload);
+  //         Swal.fire({
+  //           title: "Submitted!",
+  //           text: "Your data has been submitted.",
+  //           icon: "success",
+  //           timer: 2000,
+  //           showConfirmButton: false,
+  //         });
+  //       });
+  //     } catch (err) {
+  //       console.error("Submission error:", err);
+  //       toast.error("Something went wrong. Please try again.");
+  //     }
+  //   };
 
-//       const response = await api.put("/project/update-status", payload);
-//       console.log("Project status update response:", response.data);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-//       Swal.fire({
-//         title: "Submitted!",
-//         text: "Your data has been submitted and project status updated.",
-//         icon: "success",
-//         timer: 2000,
-//         showConfirmButton: false,
-//       });
-//     } catch (err) {
-//       console.error("Error during submission or status update:", err);
-//       toast.error("Submission failed. Please try again.");
-//     }
-//   });
-// };
-
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const projectName = projectNameFromUrl || formData?.BP?.name || "";
-  const employeeId = localStorage.getItem("employeeId") || "";
-  const employeeType = localStorage.getItem("employeeType") || "";
-
-  console.log(
-    "Submitting form for project:",
-    projectName,
-    "with employeeId:",
-    employeeId,
-    "and employeeType:",
-    employeeType
-  );
-  console.log("Full formData:", formData);
-
-  if (!projectName) {
-    toast.error("Project name is missing!");
-    console.warn("Cannot find projectName in URL or formData");
-    return;
-  }
-
-  if (!employeeId) {
-    toast.error("Employee ID is missing from localStorage!");
-    console.warn("Cannot find employeeId in localStorage");
-    return;
-  }
-
-  Swal.fire({
-    title: "Do you want to submit this form?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, submit it!",
-    cancelButtonText: "Cancel",
-  }).then(async (result) => {
-    if (!result.isConfirmed) return;
+    const employeeId = localStorage.getItem("employeeId"); // actual ID of the logged-in user
+    const employeeType = localStorage.getItem("employeeType"); // "PM" | "HOD" | "Admin"
+    let projectName = "";
 
     try {
-      if (typeof onSubmit === "function") {
-        await onSubmit(e); // save VA/DR records
+      if (employeeType === "Admin") {
+        projectName = urlProjectName || "";
+      } else if (employeeType === "PM") {
+        const res = await api.get(`/project-assignments/${employeeId}`);
+        const pmProject = res.data.find((it) => it.empCode === employeeId);
+        if (pmProject) projectName = pmProject.projectName;
+      } else if (employeeType === "HOD") {
+        const res = await api.get(`/project-assignments/hod/${employeeId}`);
+        const hodProject = res.data.find((it) => it.employeeId === employeeId);
+        if (hodProject) projectName = hodProject.projectName;
       }
 
-      // update project status
-      let payload = { projectName };
-      if (employeeType === "PM") {
-        payload.empCode = employeeId;
-      } else if (employeeType === "Admin") {
-        payload.adminId = employeeId;
-      } else {
-        payload.employeeId = employeeId;
+      if (!projectName) {
+        toast.error("Project name is missing!");
+        return;
       }
 
-      const response = await api.put("/project/update-status", payload);
-      console.log("Project status update response:", response.data);
+      const confirm = await Swal.fire({
+        title: "Do you want to submit this form?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, submit it!",
+        cancelButtonText: "Cancel",
+      });
+      if (!confirm.isConfirmed) return;
+
+      if (typeof onSubmit === "function") await onSubmit(e);
+
+      // Build payload expected by backend:
+      const payload = { projectName, userType: employeeType };
+      if (employeeType === "PM") payload.empCode = employeeId; // PM id goes in empCode
+      if (employeeType === "HOD") payload.employeeId = employeeId; // HOD id goes in employeeId
+      // Admin: projectName + userType is enough
+
+      await api.put("/project/update-status", payload);
 
       Swal.fire({
         title: "Submitted!",
-        text: "Your data has been submitted and project status updated.",
+        text: "Your data has been submitted.",
         icon: "success",
         timer: 2000,
         showConfirmButton: false,
       });
     } catch (err) {
-      console.error("Error during submission or status update:", err);
-      toast.error("Submission failed. Please try again.");
+      console.error("Submission error:", err);
+      toast.error("Something went wrong. Please try again.");
     }
-  });
-};
+  };
+
   return (
     <div className="container p-4" style={{ backgroundColor: "#f5f8ff" }}>
-      {/* <h3 className="mb-4">DR Information</h3> */}
-
-      {/* DR Fields */}
       <div className="row mb-3">
         <div className="col-md-4">
-          <label>Type of Server Deployment:</label>
+          <label>Do you have DR Info?</label>
           <select
             className="form-control"
-            name="serverType"
-            value={formData.serverType || ""}
-            onChange={handleChange}
-          >
-            <option value="">-- Select --</option>
-            <option value="Cloud">Cloud</option>
-            <option value="On-Prem">On-Prem</option>
-            <option value="Hybrid">Hybrid</option>
-          </select>
-        </div>
-
-        <div className="col-md-4">
-          <label>Data Centre:</label>
-          <select
-            className="form-control"
-            name="dataCentre"
-            value={formData.dataCentre || ""}
-            onChange={handleChange}
-          >
-            <option value="">-- Select --</option>
-            <option value="NDC">NDC</option>
-            <option value="CDC">CDC</option>
-            <option value="WDC">WDC</option>
-          </select>
-        </div>
-
-        <div className="col-md-4">
-          <label>Type of Application Deployment:</label>
-          <select
-            className="form-control"
-            name="deployment"
-            value={formData.deployment || ""}
-            onChange={handleChange}
-          >
-            <option value="">-- Select --</option>
-            <option value="Physical Machine">Physical Machine</option>
-            <option value="VM">VM</option>
-            <option value="Container as Service">Container as Service</option>
-            <option value="K8S as Service">K8S as Service</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <label>Location:</label>
-          <select
-            className="form-control"
-            name="location"
-            value={formData.location || ""}
-            onChange={handleChange}
-          >
-            <option value="">-- Select --</option>
-            <option value="BBSR">BBSR</option>
-            <option value="BLR">BLR</option>
-            <option value="DEL">DEL</option>
-          </select>
-        </div>
-        <div className="col-md-4">
-          <label className="form-label">Antivirus:</label>
-          <select
-            className="form-select"
-            name="antivirus"
-            value={formData.antivirus || ""}
-            onChange={handleChange}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-      </div>
-
-      {/* <h4>VA Records</h4> */}
-      <div className="row g-3">
-        <div className="col-md-4">
-          <label className="form-label">Application IP Address:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="ipAddress"
-            placeholder="Application server IP"
-            value={vaForm.ipAddress}
-            onChange={handleVaFormChange}
-            disabled={
-              formData.deployment === "Container as Service" ||
-              formData.deployment === "K8S as Service"
-            }
-          />
-        </div>
-
-        <div className="col-md-4">
-          <label>DB Server IP:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="dbServerIp"
-            value={vaForm.dbServerIp}
-            onChange={handleVaFormChange}
-            disabled={
-              formData.deployment === "Container as Service" ||
-              formData.deployment === "K8S as Service"
-            }
-          />
-        </div>
-
-        <div className="col-md-4">
-          <label className="form-label">Purpose of Use:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="purpose"
-            value={vaForm.purpose}
-            onChange={handleVaFormChange}
-            disabled={
-              formData.deployment === "Container as Service" ||
-              formData.deployment === "K8S as Service"
-            }
-          />
-        </div>
-
-        <div className="col-md-4">
-          <label className="form-label">Date of VA:</label>
-          <input
-            type="date"
-            className="form-control"
-            name="dateOfVA"
-            value={vaForm.dateOfVA}
-            onChange={handleVaFormChange}
-            disabled={
-              formData.deployment === "Container as Service" ||
-              formData.deployment === "K8S as Service"
-            }
-          />
-        </div>
-
-        <div className="col-md-4">
-          <label className="form-label">VA Score:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="vaScore"
-            value={vaForm.vaScore}
-            onChange={handleVaFormChange}
-            disabled={
-              formData.deployment === "Container as Service" ||
-              formData.deployment === "K8S as Service"
-            }
-          />
-        </div>
-
-        <div className="col-md-4">
-          <label className="form-label">Upload VA Report:</label>
-          <input
-            type="file"
-            className="form-control"
-            name="vaReport"
-            accept="application/pdf"
-            onChange={handleVaFormChange}
-            disabled={
-              formData.deployment === "Container as Service" ||
-              formData.deployment === "K8S as Service"
-            }
-          />
-        </div>
-
-        <div className="col-md-12 d-flex justify-content-center mt-3">
-          <button
-            className="btn btn-info"
-            type="button"
-            onClick={handleAddRecord}
-            style={{
-              color: "white",
-              border: "none",
-              padding: "8px 70px",
-              borderRadius: "6px",
-              fontWeight: "bold",
-              fontSize: "14px",
-              letterSpacing: "0.5px",
+            value={hasDrInfo}
+            onChange={(e) => {
+              setHasDrInfo(e.target.value);
+              setFormData((prev) => ({
+                ...prev,
+                hasDrInfo: e.target.value,
+              }));
             }}
           >
-            Add Record
-          </button>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
         </div>
       </div>
 
-      {/* VA Table */}
-      <table className="table table-bordered text-center">
-        <thead className="table-light">
-          <tr>
-            <th>S.No.</th>
-            <th>Application IP Address</th>
-            <th>DB Server IP</th>
-            <th>Purpose</th>
-            <th>VA Score</th>
-            <th>Date</th>
-            {/* <th>Report</th> */}
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {records.length ? (
-            records.map((rec, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{rec.ipAddress}</td>
-                <td>{rec.dbServerIp}</td>
-                <td>{rec.purpose}</td>
-                <td>{rec.vaScore}</td>
-                <td>{rec.dateOfVA}</td>
-                {/* <td>
-                  {rec.vaReport ? (
-                    typeof rec.vaReport === "string" ? (
-                      <a href={rec.vaReport} target="_blank" rel="noreferrer">View</a>
-                    ) : (
-                      <a href={URL.createObjectURL(rec.vaReport)} target="_blank" rel="noreferrer">View</a>
-                    )
-                  ) : (
-                    "No File"
-                  )}
-                </td> */}
-                <td>
-                  <button
-                    className="btn btn-outline-danger btn-sm"
-                    onClick={() => handleDeleteRecord(index)}
-                  >
-                    <FaTrash />
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="8">No records added.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      {hasDrInfo === "Yes" && (
+        <>
+          <div className="row mb-3">
+            <div className="col-md-4">
+              <label>Type of Server Deployment:</label>
+              <select
+                className="form-control"
+                name="serverType"
+                value={formData.serverType || ""}
+                onChange={handleChange}
+              >
+                <option value="">Select</option>
+                <option value="Cloud">Cloud</option>
+                <option value="On-Prem">On-Prem</option>
+                <option value="Hybrid">Hybrid</option>
+              </select>
+            </div>
+            <div className="col-md-4">
+              <label>Data Centre:</label>
+              <select
+                className="form-control"
+                name="dataCentre"
+                value={formData.dataCentre || ""}
+                onChange={handleChange}
+              >
+                <option value="">Select</option>
+                <option value="NDC">NDC</option>
+                <option value="CDC">CDC</option>
+                <option value="WDC">WDC</option>
+              </select>
+            </div>
+            <div className="col-md-4">
+              <label>Type of Application Deployment:</label>
+              <select
+                className="form-control"
+                name="deployment"
+                value={formData.deployment || ""}
+                onChange={handleChange}
+              >
+                <option value="">Select</option>
+                <option value="Physical Machine">Physical Machine</option>
+                <option value="VM">VM</option>
+                <option value="Container as Service">
+                  Container as Service
+                </option>
+                <option value="K8S as Service">K8S as Service</option>
+              </select>
+            </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col-md-4">
+              <label>Location:</label>
+              <select
+                className="form-control"
+                name="location"
+                value={formData.location || ""}
+                onChange={handleChange}
+              >
+                <option value="">Select</option>
+                <option value="BBSR">Bhubaneswar</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Pune">Pune</option>
+                <option value="Hyderabad">Hyderabad</option>
+              </select>
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">Antivirus:</label>
+              <select
+                className="form-select"
+                name="antivirus"
+                value={formData.antivirus || ""}
+                onChange={handleChange}
+              >
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+          <div className="row g-3">
+            <div className="col-md-4">
+              <label className="form-label">Application IP Address:</label>
+              <input
+                type="text"
+                className={`form-control ${
+                  errors.ipAddress ? "is-invalid" : ""
+                }`}
+                name="ipAddress"
+                placeholder="Application server IP"
+                value={vaForm.ipAddress || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  handleVaFormChange(e); // update vaForm state
 
-      {/* Navigation Buttons */}
+                  // Real-time IPv4 validation
+                  const ipRegex =
+                    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
+                  if (!ipRegex.test(value)) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      ipAddress: "Invalid IP address",
+                    }));
+                  } else {
+                    setErrors((prev) => ({ ...prev, ipAddress: null }));
+                  }
+                }}
+                disabled={
+                  formData.deployment === "Container as Service" ||
+                  formData.deployment === "K8S as Service"
+                }
+              />
+              {errors.ipAddress && (
+                <div className="invalid-feedback">{errors.ipAddress}</div>
+              )}
+            </div>
+
+            <div className="col-md-4">
+              <label>DB Server IP:</label>
+              <input
+                type="text"
+                className={`form-control ${
+                  errors.dbServerIp ? "is-invalid" : ""
+                }`}
+                name="dbServerIp"
+                value={vaForm.dbServerIp || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  handleVaFormChange(e); // update vaForm state
+
+                  // Real-time IPv4 validation
+                  const ipRegex =
+                    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
+                  if (!ipRegex.test(value)) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      dbServerIp: "Invalid IP address",
+                    }));
+                  } else {
+                    setErrors((prev) => ({ ...prev, dbServerIp: null }));
+                  }
+                }}
+                disabled={
+                  formData.deployment === "Container as Service" ||
+                  formData.deployment === "K8S as Service"
+                }
+              />
+              {errors.dbServerIp && (
+                <div className="invalid-feedback">{errors.dbServerIp}</div>
+              )}
+            </div>
+
+            <div className="col-md-4">
+              <label className="form-label">Purpose of Use:</label>
+              <input
+                type="text"
+                className="form-control"
+                name="purpose"
+                value={vaForm.purpose}
+                onChange={handleVaFormChange}
+                disabled={
+                  formData.deployment === "Container as Service" ||
+                  formData.deployment === "K8S as Service"
+                }
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">Date of VA:</label>
+              <input
+                type="date"
+                className="form-control"
+                name="dateOfVA"
+                value={vaForm.dateOfVA}
+                onChange={handleVaFormChange}
+                disabled={
+                  formData.deployment === "Container as Service" ||
+                  formData.deployment === "K8S as Service"
+                }
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">VA Score:</label>
+              <input
+                type="text"
+                className="form-control"
+                name="vaScore"
+                value={vaForm.vaScore}
+                onChange={handleVaFormChange}
+                disabled={
+                  formData.deployment === "Container as Service" ||
+                  formData.deployment === "K8S as Service"
+                }
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">Upload VA Report:</label>
+              <input
+                type="file"
+                className="form-control"
+                name="vaReport"
+                accept="application/pdf"
+                onChange={handleVaFormChange}
+                disabled={
+                  formData.deployment === "Container as Service" ||
+                  formData.deployment === "K8S as Service"
+                }
+              />
+            </div>
+            <div className="col-md-12 d-flex justify-content-center mt-3">
+              <button
+                className="btn btn-info"
+                type="button"
+                onClick={handleAddRecord}
+                style={{
+                  color: "white",
+                  border: "none",
+                  padding: "8px 70px",
+                  borderRadius: "6px",
+                  fontWeight: "bold",
+                  fontSize: "14px",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Add Record
+              </button>
+            </div>
+          </div>
+          <table className="table table-bordered text-center">
+            <thead className="table-light">
+              <tr>
+                <th>S.No.</th>
+                <th>Application IP Address</th>
+                <th>DB Server IP</th>
+                <th>Purpose</th>
+                <th>VA Score</th>
+                <th>Date</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {records.length ? (
+                records.map((rec, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{rec.ipAddress}</td>
+                    <td>{rec.dbServerIp}</td>
+                    <td>{rec.purpose}</td>
+                    <td>{rec.vaScore}</td>
+                    <td>{rec.dateOfVA}</td>
+                    <td>
+                      <button
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={() => handleDeleteRecord(index)}
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7">No records added.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </>
+      )}
+
       <div
         style={{
           display: "flex",
@@ -527,7 +590,6 @@ const handleSubmit = async (e) => {
         >
           Previous
         </button>
-
         <button
           type="button"
           className="btn btn-success"

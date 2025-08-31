@@ -57,6 +57,14 @@ const Dashboard = () => {
     return [];
   };
 
+  const sslBadge = (tlsStatus) => {
+    if (tlsStatus === "Valid") return "badge bg-success"; // green
+    if (tlsStatus === "Expired" || tlsStatus === "Invalid")
+      return "badge bg-danger"; // red
+    if (tlsStatus === "Expiring Soon") return "badge bg-warning text-dark";
+    return "badge bg-secondary";
+  };
+
   useEffect(() => {
     setFilteredProjects(projects);
   }, [projects]);
@@ -136,122 +144,54 @@ const Dashboard = () => {
     }
   };
 
-  // const handleEditProject = (projectName) => {
-  //   console.log("Edit clicked for", projectName);
-  //   if (!projectName) return;
-  //   navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`, {
-  //     //  state: { from: location.pathname, projectName },
-  //   });
-  // };
+  const handleEditProject = async (projectName, BP) => {
+    try {
+      if (!projectName) {
+        toast.error("Project name is missing!");
+        return;
+      }
 
-  // Add this function to handle Add Project click
+      const employeeId = localStorage.getItem("employeeId");
+      const employeeType = localStorage.getItem("employeeType"); // PM, HOD, Admin
 
-  // const handleEditProject = async (projectName) => {
-  //   try {
-  //     // Use employeeId from localStorage
-  //     const empCode = localStorage.getItem("employeeId");
-  //     if (!projectName || !empCode) return;
+      if (!employeeId || !employeeType) {
+        toast.error("User info not found!");
+        return;
+      }
 
-  //     // Call backend API to mark project editable
-  //     const res = await api.patch("/project-assignments/mark-for-edit", {
-  //       projectName,
-  //       empCode,
-  //     });
+      // Base payload
+      let payload = { projectName, employeeType };
 
-  //     if (res.status >= 200 && res.status < 300) {
-  //       console.log("Project ready for edit:", res.data.message);
-  //       navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
-  //     } else {
-  //       toast.error("Failed to prepare project for edit");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error marking project for edit:", err);
-  //     toast.error("Something went wrong while editing the project");
-  //   }
-  // };
+      if (employeeType === "PM") {
+        payload.empCode = employeeId;
+      } else if (employeeType === "HOD") {
+        payload.employeeId = BP?.name || employeeId; // take BP.name, fallback to id
+      } else if (employeeType === "Admin") {
+        // No adminId anymore, only navigate
+        navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+        return; // skip API call
+      } else {
+        payload.employeeId = employeeId; // fallback
+      }
 
+      console.log("Marking project editable:", payload);
 
-//   const handleEditProject = async (projectName) => {
-//   try {
-//     // const navigate = useNavigate();
+      const res = await api.patch(
+        "/project-assignments/mark-for-edit",
+        payload
+      );
 
-//     if (!projectName) {
-//       toast.error("Project name is missing!");
-//       return;
-//     }
-
-//     const employeeId = localStorage.getItem("employeeId");
-//     const employeeType = localStorage.getItem("employeeType"); // HOD, Admin, PM, etc.
-
-//     if (!employeeId || !employeeType) {
-//       toast.error("User info not found!");
-//       return;
-//     }
-
-//     // Decide key based on role
-//     const payload =
-//       employeeType === "PM"
-//         ? { projectName, empCode: employeeId }
-//         : { projectName, employeeId };
-
-//     console.log("Marking project editable with payload:", payload);
-
-//     const res = await api.patch("/project-assignments/mark-for-edit", payload);
-
-//     if (res.status >= 200 && res.status < 300) {
-//       console.log("Project ready for edit:", res.data.message);
-//       navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
-//     } else {
-//       toast.error("Failed to prepare project for edit");
-//     }
-//   } catch (err) {
-//     console.error("Error marking project for edit:", err);
-//     toast.error("Something went wrong while editing the project");
-//   }
-// };
-
-const handleEditProject = async (projectName) => {
-  try {
-    if (!projectName) {
-      toast.error("Project name is missing!");
-      return;
+      if (res.status >= 200 && res.status < 300) {
+        toast.success(res.data.message);
+        navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+      } else {
+        toast.error("Failed to prepare project for edit");
+      }
+    } catch (err) {
+      console.error("Error marking project for edit:", err);
+      toast.error("Something went wrong while editing the project");
     }
-
-    const employeeId = localStorage.getItem("employeeId");
-    const employeeType = localStorage.getItem("employeeType"); // HOD, Admin, PM, etc.
-
-    if (!employeeId || !employeeType) {
-      toast.error("User info not found!");
-      return;
-    }
-
-    // Build payload based on role
-    let payload = { projectName };
-    if (employeeType === "PM") {
-      payload.empCode = employeeId;
-    } else if (employeeType === "HOD") {
-      payload.employeeId = employeeId;
-    } else {
-      payload.employeeId = employeeId; // fallback for other roles
-    }
-
-    console.log("Marking project editable with payload:", payload);
-
-    const res = await api.patch("/project-assignments/mark-for-edit", payload);
-
-    if (res.status >= 200 && res.status < 300) {
-      console.log("Project ready for edit:", res.data.message);
-      navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
-    } else {
-      toast.error("Failed to prepare project for edit");
-    }
-  } catch (err) {
-    console.error("Error marking project for edit:", err);
-    toast.error("Something went wrong while editing the project");
-  }
-};
-
-
+  };
 
   const handleAddProject = () => {
     setEditProjectData(null); // Reset edit data
@@ -260,16 +200,19 @@ const handleEditProject = async (projectName) => {
 
   // Calculate dashboard stats from the projects data
   // const totalProjects = projects.length;
-  const activeProjects = projects.filter((project) => {
-    if (!project.expireDate) return false;
-    const expireDate = new Date(project.expireDate);
-    return expireDate > new Date();
-  }).length;
-  const inactiveProjects = projects.filter((project) => {
-    if (!project.expireDate) return true;
-    const expireDate = new Date(project.expireDate);
-    return expireDate <= new Date();
-  }).length;
+  // const activeProjects = projects.filter((project) => {
+  //   if (!project.expireDate) return false;
+  //   const expireDate = new Date(project.expireDate);
+  //   return expireDate > new Date();
+  // }).length;
+  // const inactiveProjects = projects.filter((project) => {
+  //   if (!project.expireDate) return true;
+  //   const expireDate = new Date(project.expireDate);
+  //   return expireDate <= new Date();
+  // }).length;
+
+  const activeProjects = projects.length; // All projects are active
+const inactiveProjects = 0; // No inactive projects
 
   // Helper to get unique values for the selected filter type
 
@@ -304,14 +247,27 @@ const handleEditProject = async (projectName) => {
     if (status === "Expired") return "badge bg-danger";
     return "badge bg-secondary";
   };
-  const auditBadge = (auditStatus) => {
-    if (auditStatus && auditStatus !== "N/A") return "badge bg-success";
-    return "badge bg-secondary";
-  };
-  const sslBadge = (sslStatus) => {
-    if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
-    return "badge bg-secondary";
-  };
+  // const auditBadge = (auditStatus) => {
+  //   if (auditStatus && auditStatus !== "N/A") return "badge bg-success";
+  //   return "badge bg-secondary";
+  // };
+  const auditBadge = (auditStatus, expireDate) => {
+  if (!auditStatus || auditStatus === "N/A") return "badge bg-secondary";
+
+  if (expireDate) {
+    const expiry = new Date(expireDate);
+    if (expiry <= new Date()) {
+      return "badge bg-danger"; // expired → red
+    }
+  }
+
+  return "badge bg-success"; // active → green
+};
+
+  // const sslBadge = (sslStatus) => {
+  //   if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
+  //   return "badge bg-secondary";
+  // };
 
   if (loading) {
     return (
@@ -462,32 +418,34 @@ const handleEditProject = async (projectName) => {
                       </div>
 
                       <div className="col-md-4 col-sm-6">
-                        <div className="card info-card revenue-card">
-                          <div className="card-body d-flex align-items-center gap-3">
-                            <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                              <i className="bi bi-toggle-on"></i>
-                            </div>
-                            <div>
-                              <h6>{activeProjects}</h6>
-                            </div>
-                            <h5 className="card-title">Active Projects</h5>
-                          </div>
-                        </div>
-                      </div>
+  <div className="card info-card revenue-card">
+    <div className="card-body d-flex align-items-center gap-3">
+      <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
+        <i className="bi bi-toggle-on"></i>
+      </div>
+      <div>
+        <h6>{projects.length}</h6>
+      </div>
+      <h5 className="card-title">Active Projects</h5>
+    </div>
+  </div>
+</div>
+
 
                       <div className="col-md-4 col-sm-12">
-                        <div className="card info-card customers-card">
-                          <div className="card-body d-flex align-items-center gap-3">
-                            <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                              <i className="bi bi-toggle-off"></i>
-                            </div>
-                            <div>
-                              <h6>{inactiveProjects}</h6>
-                            </div>
-                            <h5 className="card-title">Inactive Projects</h5>
-                          </div>
-                        </div>
-                      </div>
+  <div className="card info-card customers-card">
+    <div className="card-body d-flex align-items-center gap-3">
+      <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
+        <i className="bi bi-toggle-off"></i>
+      </div>
+      <div>
+        <h6>0</h6>
+      </div>
+      <h5 className="card-title">Inactive Projects</h5>
+    </div>
+  </div>
+</div>
+
                     </div>
                   </div>
 
@@ -671,16 +629,24 @@ const handleEditProject = async (projectName) => {
                                   <th>Edit</th>
                                 </tr>
                               </thead>
+                    
                               <tbody>
                                 {filteredProjects.map((project, index) => {
                                   const key =
                                     project.assetsId ||
                                     `${project.projectName}-${index}`;
-                                  const statusValue = project.expireDate
-                                    ? new Date(project.expireDate) > new Date()
-                                      ? "ACTIVE"
-                                      : "Expired"
-                                    : "N/A";
+                                  const statusValue = "ACTIVE";
+
+                                  const formatDateSafe = (dateInput) => {
+                                    if (!dateInput) return "N/A";
+                                    const date = new Date(dateInput);
+                                    return isNaN(date.getTime())
+                                      ? "N/A"
+                                      : `${date.getDate()} / ${date.toLocaleString(
+                                          "en-GB",
+                                          { month: "long" }
+                                        )} / ${date.getFullYear()}`;
+                                  };
 
                                   return (
                                     <tr key={key}>
@@ -714,60 +680,32 @@ const handleEditProject = async (projectName) => {
                                       </td>
                                       <td>
                                         <span
-                                          className={auditBadge(
-                                            project.auditStatus
-                                          )}
+                                         className={auditBadge(project.auditStatus, project.expireDate)}
                                         >
                                           {project.auditStatus || "N/A"}
                                         </span>
                                       </td>
                                       <td>
-                                        <span>
-                                          {project.expireDate
-                                            ? formatDate(project.expireDate)
-                                            : "N/A"}
-                                        </span>
+                                        {formatDateSafe(project.expireDate)}
                                       </td>
-
                                       <td>
                                         <span
                                           className={sslBadge(
-                                            project.sslStatus
+                                            project.tlsStatus
                                           )}
                                         >
-                                          {project.sslStatus || "N/A"}
+                                          {project.tlsStatus || "N/A"}
                                         </span>
                                       </td>
-
                                       <td>
-                                        {project.tlsNextExpiry
-                                          ? formatDate(
-                                              new Date(
-                                                Array.isArray(
-                                                  project.tlsNextExpiry
-                                                )
-                                                  ? project.tlsNextExpiry[
-                                                      project.tlsNextExpiry
-                                                        .length - 1
-                                                    ]
-                                                  : project.tlsNextExpiry
-                                              )
+                                        {Array.isArray(project.tlsNextExpiry)
+                                          ? formatDateSafe(
+                                              project.tlsNextExpiry.slice(-1)[0]
                                             )
-                                          : "N/A"}
+                                          : formatDateSafe(
+                                              project.tlsNextExpiry
+                                            )}
                                       </td>
-
-                                      {/* <td>
-                                        <button
-                                          className="btn btn-sm btn-outline-primary"
-                                          onClick={() =>
-                                            handleEditProject(
-                                              project.projectName
-                                            )
-                                          }
-                                        >
-                                          Edit
-                                        </button>
-                                      </td> */}
                                       <td>
                                         <button
                                           className="btn btn-sm btn-outline-primary"

@@ -58,7 +58,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
     dataCentre: "",
     deployment: "",
     location: "",
-    antivirus:"",
+    antivirus: "",
     vaRecords: [], // Initialize with an empty array
   });
   const [drRecords, setDrRecords] = useState([]);
@@ -124,32 +124,33 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       setGitUrls(editData.Infra?.gitUrls || []);
       setVaRecords(vaDataWithId);
 
-       // DR Info
-    const dr = editData.DR || {};
-    const drVaRecords = (dr.vaRecords || []).map((record) => ({
-      ipAddress: record.ipAddress || "",
-      dbServerIp: record.dbServerIp || "",
-      purpose: record.purpose || "",
-      vaScore: record.vaScore || "",
-      dateOfVA: record.dateOfVA? record.dateOfVA.slice(0, 10) : "",
-    
-      // ✅ Check if vaReport is a string or needs a placeholder
-      vaReport: typeof record.vaReport === "string"
-        ? record.vaReport
-        : record.vaReport?.filename || "", // Fallback if stored as file object
-    }));
+      // DR Info
+      const dr = editData.DR || {};
+      const drVaRecords = (dr.vaRecords || []).map((record) => ({
+        ipAddress: record.ipAddress || "",
+        dbServerIp: record.dbServerIp || "",
+        purpose: record.purpose || "",
+        vaScore: record.vaScore || "",
+        dateOfVA: record.dateOfVA ? record.dateOfVA.slice(0, 10) : "",
 
-    setDrFormData({
-      serverType: dr.serverType || "",
-      dataCentre: dr.dataCentre || "",
-      deployment: dr.deployment || "",
-      location: dr.location || "",
-      antivirus: dr.antivirus || "", // Optional field
-      vaRecords: drVaRecords,
-    });
+        // ✅ Check if vaReport is a string or needs a placeholder
+        vaReport:
+          typeof record.vaReport === "string"
+            ? record.vaReport
+            : record.vaReport?.filename || "", // Fallback if stored as file object
+      }));
 
-    console.log("DR Data Set for Editing:", drVaRecords);
-    console.log("DRForm received drFormData:", drFormData);
+      setDrFormData({
+        serverType: dr.serverType || "",
+        dataCentre: dr.dataCentre || "",
+        deployment: dr.deployment || "",
+        location: dr.location || "",
+        antivirus: dr.antivirus || "", // Optional field
+        vaRecords: drVaRecords,
+      });
+
+      console.log("DR Data Set for Editing:", drVaRecords);
+      console.log("DRForm received drFormData:", drFormData);
       // Set TLS info
       const tlsInfo = (editData.TLS?.tlsInfo || []).map((record) => {
         const issueDate = record.issueDate
@@ -158,32 +159,18 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         const expiryDate = record.expiryDate
           ? new Date(record.expiryDate).toISOString().split("T")[0]
           : "";
-      
-        let certStatus = "Valid";
-        if (expiryDate && new Date() > new Date(expiryDate)) {
-          certStatus = "Expired";
-        } else if (expiryDate) {
-          const warningPeriod = new Date();
-          warningPeriod.setDate(warningPeriod.getDate() + 30);
-          if (new Date(expiryDate) < warningPeriod) {
-            certStatus = "Expiring Soon";
-          }
-        }
-      
+
         return {
-          procuredFrom: record.procuredFrom || "", //  optional: if you're using this
-          score: record.score || "",               //  optional: if you're using this
+          procuredFrom: record.procuredFrom || "",
+          score: record.score || "",
           issueDate,
           expiryDate,
-          certStatus,
         };
       });
-      
 
       // FIX: Use setTlsData instead of tlsInfo()
       setTlsData(tlsInfo);
       console.log("TLS Data Set for Editing:", tlsInfo);
-
 
       // Set Security Audits
       const dynamicAuditRecords = audits.map((record) => ({
@@ -227,17 +214,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
   };
 
   const handlePrevious = () => setCurrentStep((prev) => prev - 1);
-  // const handleStepClick = (stepIndex) => setCurrentStep(stepIndex);
-  //   const handleStepClick = (stepIndex) => {
-  //   // Prevent clicking ahead without completing previous steps
-  //   for (let i = 0; i < stepIndex; i++) {
-  //     if (!completedSteps[i]) {
-  //       toast.error("Please complete previous steps before proceeding.");
-  //       return;
-  //     }
-  //   }
-  //   setCurrentStep(stepIndex);
-  // };
+
   const handleStepClick = (stepIndex) => {
     setCurrentStep(stepIndex);
   };
@@ -272,7 +249,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
     const newVa = {
       ipAddress: formData.ipAddress,
-      dbServer: formData.dbServer , // Optional field
+      dbServer: formData.dbServer, // Optional field
       purposeOfUse: formData.purposeOfUse || "Application Server",
       vaScore: formData.vaScore,
       dateOfVA: formData.dateOfVA,
@@ -308,7 +285,11 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       const form = new FormData();
       let employeeId = localStorage.getItem("employeeId");
       const employeeType = localStorage.getItem("employeeType");
-
+      const DEFAULT_VALUE = "N/A";
+const AuditStatus = {
+  EXPIRED: "Expired",
+  COMPLETED: "Completed",
+};
       // If PM, fetch HOD employeeId from API
       if (employeeType === "PM") {
         const empCode = formData.nicOfficerEmpCode;
@@ -345,43 +326,56 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
           email: formData.deptOfficerEmail,
         },
       };
+      // const SA = {
+      //   securityAudit: auditRecords.map((record, idx) => {
+      //     const expireDate = record.expireDate
+      //       ? new Date(record.expireDate).toISOString()
+      //       : null;
+      //     const auditDate = record.auditDate
+      //       ? new Date(record.auditDate).toISOString()
+      //       : null;
 
+      //     return {
+      //       slNo: idx + 1, // ✅ no spaces
+      //       typeOfAudit: record.typeOfAudit || "N/A",
+      //       auditingAgency: record.auditingAgency || "N/A",
+      //       auditDate,
+      //       expireDate,
+      //       certificate: record.certificate || "N/A",
+      //       auditStatus:
+      //         expireDate && new Date() > new Date(expireDate)
+      //           ? "Expired"
+      //           : "Completed",
+      //     };
+      //   }),
+      // };
+      
       const SA = {
-        securityAudit: auditRecords.map((record, idx) => {
-          const now = new Date();
-          const expireDate = record.expireDate
-            ? new Date(record.expireDate)
-            : null;
-          const tlsNextExpiry = record.tlsNextExpiry
-            ? new Date(record.tlsNextExpiry)
-            : null;
+  securityAudit: auditRecords.map((record, idx) => {
+    const expireDate = record.expireDate
+      ? new Date(record.expireDate).toISOString()
+      : null;
 
-          // Calculate statuses
-          let auditStatus = "Completed";
-          let sslStatus = "Valid";
+    const auditDate = record.auditDate
+      ? new Date(record.auditDate).toISOString()
+      : null;
 
-          if (expireDate && now > expireDate) {
-            auditStatus = "Expired";
-          }
-
-          if (tlsNextExpiry && now > tlsNextExpiry) {
-            sslStatus = "Expired";
-          }
-
-          return {
-            "Sl no": idx + 1,
-            typeOfAudit: record.typeOfAudit,
-            auditingAgency: record.auditingAgency,
-            auditDate: record.auditDate ? new Date(record.auditDate) : null,
-            expireDate,
-            tlsNextExpiry,
-            sslLabScore: record.sslLabScore,
-            certificate: record.certificate,
-            auditStatus,
-            sslStatus,
-          };
-        }),
-      };
+    return {
+      slNo: idx + 1,
+      typeOfAudit: record.typeOfAudit || DEFAULT_VALUE,
+      auditingAgency: record.auditingAgency || DEFAULT_VALUE,
+      auditDate,
+      expireDate,
+      certificate: record.certificate || DEFAULT_VALUE,
+      auditStatus:
+        expireDate && new Date() > new Date(expireDate)
+          ? AuditStatus.EXPIRED
+          : AuditStatus.COMPLETED,
+    };
+  }),
+};
+      
+      console.log("saaaaa", SA);
 
       const TS = {
         frontend: usedTech,
@@ -398,7 +392,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         dataCentre: formData.dataCentre,
         deployment: formData.deployment,
         location: formData.location,
-        antivirus: formData.antivirus ,// Optional field
+        antivirus: formData.antivirus, // Optional field
         // gitUrls: gitUrls,
         vaRecords: vaRecords.map((record) => ({
           ipAddress: record.ipAddress,
@@ -409,18 +403,18 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
           vaReport: record.vaReport,
         })),
       };
+      console.log("infra data", Infra);
 
       const TLS = {
         tlsInfo: tlsData.map((entry, idx) => ({
           slNo: idx + 1,
-          // domainName: entry.domainName || "", // <-- Add this
-          // certProvider: entry.certProvider || "", // <-- Add this
           issueDate: entry.issueDate,
           expiryDate: entry.expiryDate,
           score: entry.score,
           procuredFrom: entry.procuredFrom,
         })),
       };
+      console.log("the Tls Data", TLS);
 
       const DR = {
         serverType: drFormData.serverType || "",
@@ -549,7 +543,6 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         );
       case 5:
         return (
-        
           <DRForm
             formData={drFormData}
             setFormData={setDrFormData}

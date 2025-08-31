@@ -77,18 +77,7 @@ const LoginPage = ({ onLogin }) => {
   return (
     <div className="form-container login-page">
       {/* Logo */}
-      <img
-        src="/images/logo.png"
-        alt="AssetsIQ Logo"
-        style={{
-          width: "400px",
-          marginBottom: "80px",
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      />
-
+      
       {/* Login Form */}
       <div className="login-form">
         <h2 className="text-center">Login</h2>
@@ -132,7 +121,7 @@ const LoginPage = ({ onLogin }) => {
       </div>
 
       {/* Footer */}
-      <footer
+      {/* <footer
         style={{
           display: "flex",
           alignItems: "center",
@@ -149,7 +138,7 @@ const LoginPage = ({ onLogin }) => {
           style={{ height: "45px" }}
         />
         <span>© 2025 All Rights Reserved.</span>
-      </footer>
+      </footer> */}
     </div>
   );
 };
