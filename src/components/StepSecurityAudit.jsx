@@ -33,8 +33,7 @@ const StepSecurityAudit = ({
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
- 
-  
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file || file.type !== "application/pdf") {
@@ -296,30 +295,20 @@ const StepSecurityAudit = ({
             </select>
           </div>
 
-          {/* <div className="col-md-6">
+          <div className="col-md-6">
             <label className="form-label">Auditing Agency</label>
-            <select
-              className={`form-select ${errors.agency ? "is-invalid" : ""}`}
+            <input
+              type="text"
+              className={`form-control ${errors.agency ? "is-invalid" : ""}`}
               name="agency"
               value={formData.agency || ""}
               onChange={onChange}
-            >
-              <option value="">Select</option>
-              <option value="securely">securely</option>
-              <option value="pinaki">pinaki</option>
-            </select>
-          </div> */}
-          <div className="col-md-6">
-  <label className="form-label">Auditing Agency</label>
-  <input
-    type="text"
-    className={`form-control ${errors.agency ? "is-invalid" : ""}`}
-    name="agency"
-    value={formData.agency || ""}
-    onChange={onChange}
-    placeholder="Enter Auditing Agency"
-  />
-</div>
+              placeholder="Enter Auditing Agency"
+            />
+            {errors.agency && (
+              <div className="invalid-feedback">{errors.agency}</div>
+            )}
+          </div>
 
           <div className="col-md-6">
             <label className="form-label">Upload Security Audit</label>
@@ -498,8 +487,6 @@ const StepSecurityAudit = ({
         //     ? "Add at least one record to proceed"
         //     : "Next"
         // }
-        
-        
       />
     </fieldset>
   );

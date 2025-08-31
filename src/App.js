@@ -7,7 +7,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import LoginPage from "./components/LoginPage";
+// import LoginPage from "./components/LoginPage";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ChangePasswordPage from "./components/ChangePassword";
@@ -16,6 +16,7 @@ import RouteTracker from "./components/RouteTracker";
 import MultiStepFormWrapper from "./components/MultiStepFormWrapper";
 import ProjectDetailsView from "./components/ProjectDetailsView/ProjectTab";
 // import ProjectDetailsView from "./components/ProjectDetailsView/InfraStructure";
+import HomePage from "./components/HomePage";
 import "./css/bootstrap/dist/css/bootstrap.min.css";
 import "./css/bootstrap-icons/font/bootstrap-icons.css";
 import "./css/app.css";
@@ -36,7 +37,7 @@ function App() {
         <Route path="/" element={<Navigate to="/damLogin" />} />
 
         {/* Public Routes */}
-        <Route path="/damLogin" element={<LoginPage />} />
+        <Route path="/damLogin" element={<HomePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
         <Route path="/dashboard/addProjectByHOD" element={<StepHodPage />} />

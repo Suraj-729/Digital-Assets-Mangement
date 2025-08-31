@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../../css/mvpStyle.css";
+// import "../../css/mvpStyle.css";
 import api from "../../Api";
 import MultiStepForm from "../MultiStepForm";
 
