@@ -18,6 +18,36 @@ const StepBasicProfile = ({
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState([]);
+  const [projectHods, setProjectHods] = useState([]);
+
+  useEffect(() => {
+    // Fetch HODs from API when component mounts
+    const fetchHods = async () => {
+      try {
+        const response = await api.get("/allhods"); // your API endpoint
+        if (response.data && response.data.projectHods) {
+          setProjectHods(response.data.projectHods);
+        }
+      } catch (error) {
+        console.error("Error fetching HODs:", error);
+      }
+    };
+
+    fetchHods();
+  }, []);
+
+
+  useEffect(() => {
+  if (employeeType === "HOD") {
+    const empId = localStorage.getItem("employeeId");
+    onChange({ target: { name: "HOD", value: empId } });
+  }
+  if (employeeType === "PM") {
+    const empId = localStorage.getItem("employeeId");
+    onChange({ target: { name: "PM", value: empId } });
+  }
+}, []);
+
 
   useEffect(() => {
     if (employeeType === "PM") {
@@ -382,7 +412,7 @@ const StepBasicProfile = ({
             </div>
           </div>
 
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <div className="row align-items-center text-right">
               <div className="col-sm-4 text-center">
                 <label className="form-label">HOD Name:</label>
@@ -401,7 +431,33 @@ const StepBasicProfile = ({
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
+
+
+           <div className="col-md-6">
+      <div className="row align-items-center text-right">
+        <div className="col-sm-4 text-center">
+          <label className="form-label">HOD Name:</label>
+        </div>
+        <div className="col-sm-8">
+          <select
+            className={`form-control ${errors.HOD ? "is-invalid" : ""}`}
+            name="HOD"
+            value={formData.HOD || ""}
+            onChange={onChange}
+            disabled={employeeType !== "Admin"} // editable only for Admin
+          >
+            <option value="">Select HOD</option>
+            {projectHods.map((hod) => (
+              <option key={hod.employeeId} value={hod.employeeId}>
+                {hod.HOD}
+              </option>
+            ))}
+          </select>
+          {errors.HOD && <div className="invalid-feedback">{errors.HOD}</div>}
+        </div>
+      </div>
+    </div>
         </div>
 
         {/* NIC Officer Section */}

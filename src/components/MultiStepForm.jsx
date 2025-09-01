@@ -286,10 +286,10 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       let employeeId = localStorage.getItem("employeeId");
       const employeeType = localStorage.getItem("employeeType");
       const DEFAULT_VALUE = "N/A";
-const AuditStatus = {
-  EXPIRED: "Expired",
-  COMPLETED: "Completed",
-};
+      const AuditStatus = {
+        EXPIRED: "Expired",
+        COMPLETED: "Completed",
+      };
       // If PM, fetch HOD employeeId from API
       if (employeeType === "PM") {
         const empCode = formData.nicOfficerEmpCode;
@@ -349,7 +349,7 @@ const AuditStatus = {
       //     };
       //   }),
       // };
-      
+
       const SA = {
   securityAudit: auditRecords.map((record, idx) => {
     const expireDate = record.expireDate
@@ -360,6 +360,14 @@ const AuditStatus = {
       ? new Date(record.auditDate).toISOString()
       : null;
 
+    let auditStatus = AuditStatus.COMPLETED;
+
+    if (!expireDate || record.typeOfAudit === DEFAULT_VALUE) {
+      auditStatus = DEFAULT_VALUE; // or "N/A"
+    } else if (new Date() > new Date(expireDate)) {
+      auditStatus = AuditStatus.EXPIRED;
+    }
+
     return {
       slNo: idx + 1,
       typeOfAudit: record.typeOfAudit || DEFAULT_VALUE,
@@ -367,14 +375,12 @@ const AuditStatus = {
       auditDate,
       expireDate,
       certificate: record.certificate || DEFAULT_VALUE,
-      auditStatus:
-        expireDate && new Date() > new Date(expireDate)
-          ? AuditStatus.EXPIRED
-          : AuditStatus.COMPLETED,
+      auditStatus,
     };
   }),
 };
-      
+
+
       console.log("saaaaa", SA);
 
       const TS = {
