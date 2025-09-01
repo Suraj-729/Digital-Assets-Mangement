@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import api from "../Api";
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Bar, Line, Pie } from "react-chartjs-2";
@@ -21,11 +22,11 @@ import "../css/HomePage.css";
 // import "../css/mvpStyle.css";
 
 // Project stats
-const projectStats = [
-  { title: "Total Projects", value: 128, bg: "#e7f1ff", color: "#0b5ed7" },
-  { title: "Active", value: 95, bg: "#d1e7dd", color: "#0f5132" },
-  { title: "Inactive", value: 33, bg: "#f8d7da", color: "#842029" },
-];
+// const projectStats = [
+//   { title: "Total Projects", value: 128, bg: "#e7f1ff", color: "#0b5ed7" },
+//   { title: "Active", value: 95, bg: "#d1e7dd", color: "#0f5132" },
+//   { title: "Inactive", value: 33, bg: "#f8d7da", color: "#842029" },
+// ];
 
 ChartJS.register(
   CategoryScale,
@@ -41,45 +42,82 @@ ChartJS.register(
 
 const HomePage = () => {
   const [chartType, setChartType] = useState("bar");
+    const [stats, setStats] = useState([]);
+    
 
   useEffect(() => {
     document.title = "Digital Asset Management - Home Page";
   }, []);
 
-  const chartData = useMemo(
-    () => ({
-      labels: [
-        "Health",
-        "Education",
-        "Transport",
-        "Agriculture",
-        "Finance",
-        "Energy",
-        "Urban Dev.",
+  // const chartData = useMemo(
+  //   () => ({
+  //     labels: [
+  //       "Health",
+  //       "Education",
+  //       "Transport",
+  //       "Agriculture",
+  //       "Finance",
+  //       "Energy",
+  //       "Urban Dev.",
+  //     ],
+  //     datasets: [
+  //       {
+  //         label: "Projects",
+  //         data: [20, 35, 15, 25, 10, 18, 12],
+  //         backgroundColor: [
+  //           "#0b5ed7",
+  //           "#0dcaf0",
+  //           "#ffc107",
+  //           "#198754",
+  //           "#dc3545",
+  //           "#6610f2",
+  //           "#fd7e14",
+  //         ],
+  //         borderColor: "#0b5ed7",
+  //         borderWidth: 2,
+  //         borderRadius: 12,
+  //         fill: true,
+  //         tension: 0.3,
+  //       },
+  //     ],
+  //   }),
+  //   []
+  // );
+
+
+
+  // 👇 Replace useMemo with useState
+const [chartData, setChartData] = useState({
+  labels: [
+    "Health",
+    "Education",
+    "Transport",
+    "Agriculture",
+    "Finance",
+    "Energy",
+    "Urban Dev.",
+  ],
+  datasets: [
+    {
+      label: "Projects",
+      data: [20, 35, 15, 25, 10, 18, 12],
+      backgroundColor: [
+        "#0b5ed7",
+        "#0dcaf0",
+        "#ffc107",
+        "#198754",
+        "#dc3545",
+        "#6610f2",
+        "#fd7e14",
       ],
-      datasets: [
-        {
-          label: "Projects",
-          data: [20, 35, 15, 25, 10, 18, 12],
-          backgroundColor: [
-            "#0b5ed7",
-            "#0dcaf0",
-            "#ffc107",
-            "#198754",
-            "#dc3545",
-            "#6610f2",
-            "#fd7e14",
-          ],
-          borderColor: "#0b5ed7",
-          borderWidth: 2,
-          borderRadius: 12,
-          fill: true,
-          tension: 0.3,
-        },
-      ],
-    }),
-    []
-  );
+      borderColor: "#0b5ed7",
+      borderWidth: 2,
+      borderRadius: 12,
+      fill: true,
+      tension: 0.3,
+    },
+  ],
+});
 
   const chartOptions = useMemo(
     () => ({
@@ -105,6 +143,81 @@ const HomePage = () => {
     }),
     []
   );
+
+
+  //  useEffect(() => {
+  //   const fetchStats = async () => {
+  //     try {
+  //       const res = await api.get("http://localhost:5000/getallprojectstatus");
+  //       const data = res.data;
+
+  //       // Map API response into card format
+  //       const projectStats = [
+  //         { title: "Total Projects", value: data.totalProjects, bg: "#e7f1ff", color: "#0b5ed7" },
+  //         { title: "Active", value: data.activeProjects, bg: "#d1e7dd", color: "#0f5132" },
+  //         { title: "Inactive", value: data.totalProjects - data.activeProjects, bg: "#f8d7da", color: "#842029" },
+  //       ];
+
+  //         // ✅ Department-wise chart data
+  //     const labels = data.activeProjectsPerDept.map(d => d.deptName);
+  //     const values = data.activeProjectsPerDept.map(d => d.projectCount);
+
+  //       setStats(projectStats);
+  //     } catch (error) {
+  //       console.error("Error fetching project stats:", error);
+  //     }
+  //   };
+
+  //   fetchStats();
+  // }, []);
+
+
+
+
+  useEffect(() => {
+  const fetchStats = async () => {
+    try {
+      const res = await api.get("http://localhost:5000/getallprojectstatus");
+      const data = res.data;
+
+      // 🔹 Stats cards
+      const projectStats = [
+        { title: "Total Projects", value: data.totalProjects, bg: "#e7f1ff", color: "#0b5ed7" },
+        { title: "Active", value: data.activeProjects, bg: "#d1e7dd", color: "#0f5132" },
+        { title: "Inactive", value: data.totalProjects - data.activeProjects, bg: "#f8d7da", color: "#842029" },
+      ];
+      setStats(projectStats);
+
+      // 🔹 Department-wise chart
+      const labels = data.activeProjectsPerDept.map(d => d.deptName);
+      const values = data.activeProjectsPerDept.map(d => d.projectCount);
+
+      setChartData({
+        labels,
+        datasets: [
+          {
+            label: "Projects",
+            data: values,
+            backgroundColor: [
+              "#0b5ed7", "#0dcaf0", "#ffc107", "#198754",
+              "#dc3545", "#6610f2", "#fd7e14", "#20c997",
+              "#6f42c1", "#198754", "#fd7e14" // add more if many depts
+            ],
+            borderColor: "#0b5ed7",
+            borderWidth: 2,
+            borderRadius: 12,
+            fill: true,
+            tension: 0.3,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error("Error fetching project stats:", error);
+    }
+  };
+
+  fetchStats();
+}, []);
 
   return (
     <div className="d-flex flex-column min-vh-100 bg-light">
@@ -151,7 +264,7 @@ const HomePage = () => {
           </h4>
 
           <div className="d-flex flex-wrap gap-3 mb-4 flex-fill">
-            {projectStats.map((card, idx) => (
+            {stats.map((card, idx) => (
               <div
                 key={idx}
                 className="flex-fill p-3 rounded shadow-sm text-center"
