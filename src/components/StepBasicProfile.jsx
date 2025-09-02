@@ -36,18 +36,16 @@ const StepBasicProfile = ({
     fetchHods();
   }, []);
 
-
   useEffect(() => {
-  if (employeeType === "HOD") {
-    const empId = localStorage.getItem("employeeId");
-    onChange({ target: { name: "HOD", value: empId } });
-  }
-  if (employeeType === "PM") {
-    const empId = localStorage.getItem("employeeId");
-    onChange({ target: { name: "PM", value: empId } });
-  }
-}, []);
-
+    if (employeeType === "HOD") {
+      const empId = localStorage.getItem("employeeId");
+      onChange({ target: { name: "HOD", value: empId } });
+    }
+    if (employeeType === "PM") {
+      const empId = localStorage.getItem("employeeId");
+      onChange({ target: { name: "PM", value: empId } });
+    }
+  }, []);
 
   useEffect(() => {
     if (employeeType === "PM") {
@@ -433,31 +431,46 @@ const StepBasicProfile = ({
             </div>
           </div> */}
 
+          <div className="col-md-6">
+            <div className="row align-items-center text-right">
+              <div className="col-sm-4 text-center">
+                <label className="form-label">HOD Name:</label>
+              </div>
+              <div className="col-sm-8">
+                <select
+                  className={`form-control ${errors.HOD ? "is-invalid" : ""}`}
+                  name="HOD"
+                  value={formData.HOD || ""}
+                  onChange={(e) => {
+                    const selected = projectHods.find(
+                      (h) => h.HOD === e.target.value
+                    );
+                    onChange({
+                      target: { name: "HOD", value: selected?.HOD || "" },
+                    });
+                    onChange({
+                      target: {
+                        name: "hodId",
+                        value: selected?.employeeId || "",
+                      },
+                    });
+                  }}
+                  disabled={employeeType !== "Admin"}
+                >
+                  <option value="">Select HOD</option>
+                  {projectHods.map((hod) => (
+                    <option key={hod.employeeId} value={hod.HOD}>
+                      {hod.HOD}
+                    </option>
+                  ))}
+                </select>
 
-           <div className="col-md-6">
-      <div className="row align-items-center text-right">
-        <div className="col-sm-4 text-center">
-          <label className="form-label">HOD Name:</label>
-        </div>
-        <div className="col-sm-8">
-          <select
-            className={`form-control ${errors.HOD ? "is-invalid" : ""}`}
-            name="HOD"
-            value={formData.HOD || ""}
-            onChange={onChange}
-            disabled={employeeType !== "Admin"} // editable only for Admin
-          >
-            <option value="">Select HOD</option>
-            {projectHods.map((hod) => (
-              <option key={hod.employeeId} value={hod.employeeId}>
-                {hod.HOD}
-              </option>
-            ))}
-          </select>
-          {errors.HOD && <div className="invalid-feedback">{errors.HOD}</div>}
-        </div>
-      </div>
-    </div>
+                {errors.HOD && (
+                  <div className="invalid-feedback">{errors.HOD}</div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* NIC Officer Section */}
@@ -516,65 +529,73 @@ const StepBasicProfile = ({
           </div>
 
           {/* Department Officer Section */}
-       <div className="col-md-6">
-  <h5 className="sub-heading-1">Nodal Officer from Department:</h5>
-  <div className="p-3 border rounded box-1">
-    {[
-      "deptOfficerName",
-      "deptOfficerDesignation",
-      "deptOfficerMob",
-      "deptOfficerEmail",
-    ].map((field, i) => {
-      const labels = ["Name:", "Designation:", "Mob:", "Email:"];
-      const types = ["text", "text", "text", "email"];
-      return (
-        <div className="row align-items-center text-right" key={field}>
-          <div className="col-sm-4 mb-2">
-            <label className="form-label">{labels[i]}</label>
-          </div>
-          <div className="col-sm-8 mb-2">
-            <input
-              type={types[i]}
-              className={`form-control ${errors[field] ? "is-invalid" : ""}`}
-              name={field}
-              value={formData[field] || ""}
-              onChange={(e) => {
-                let value = e.target.value;
+          <div className="col-md-6">
+            <h5 className="sub-heading-1">Nodal Officer from Department:</h5>
+            <div className="p-3 border rounded box-1">
+              {[
+                "deptOfficerName",
+                "deptOfficerDesignation",
+                "deptOfficerMob",
+                "deptOfficerEmail",
+              ].map((field, i) => {
+                const labels = ["Name:", "Designation:", "Mob:", "Email:"];
+                const types = ["text", "text", "text", "email"];
+                return (
+                  <div
+                    className="row align-items-center text-right"
+                    key={field}
+                  >
+                    <div className="col-sm-4 mb-2">
+                      <label className="form-label">{labels[i]}</label>
+                    </div>
+                    <div className="col-sm-8 mb-2">
+                      <input
+                        type={types[i]}
+                        className={`form-control ${
+                          errors[field] ? "is-invalid" : ""
+                        }`}
+                        name={field}
+                        value={formData[field] || ""}
+                        onChange={(e) => {
+                          let value = e.target.value;
 
-                // Remove non-digit characters and validate if mobile number field
-                if (field === "nicOfficerMob" || field === "deptOfficerMob") {
-                  value = value.replace(/\D/g, "");
-                  e.target.value = value;
+                          // Remove non-digit characters and validate if mobile number field
+                          if (
+                            field === "nicOfficerMob" ||
+                            field === "deptOfficerMob"
+                          ) {
+                            value = value.replace(/\D/g, "");
+                            e.target.value = value;
 
-                  // Real-time validation: exactly 10 digits
-                  if (!/^\d{10}$/.test(value)) {
-                    setErrors((prev) => ({
-                      ...prev,
-                      [field]: "Invalid mobile number",
-                    }));
-                  } else {
-                    setErrors((prev) => ({ ...prev, [field]: null }));
-                  }
-                }
+                            // Real-time validation: exactly 10 digits
+                            if (!/^\d{10}$/.test(value)) {
+                              setErrors((prev) => ({
+                                ...prev,
+                                [field]: "Invalid mobile number",
+                              }));
+                            } else {
+                              setErrors((prev) => ({ ...prev, [field]: null }));
+                            }
+                          }
 
-                onChange(e); // update form state
-              }}
-              {...((field === "nicOfficerMob" || field === "deptOfficerMob") && {
-                maxLength: 10,
-                pattern: "[0-9]{10}",
-                inputMode: "numeric",
+                          onChange(e); // update form state
+                        }}
+                        {...((field === "nicOfficerMob" ||
+                          field === "deptOfficerMob") && {
+                          maxLength: 10,
+                          pattern: "[0-9]{10}",
+                          inputMode: "numeric",
+                        })}
+                      />
+                      {errors[field] && (
+                        <div className="invalid-feedback">{errors[field]}</div>
+                      )}
+                    </div>
+                  </div>
+                );
               })}
-            />
-            {errors[field] && (
-              <div className="invalid-feedback">{errors[field]}</div>
-            )}
+            </div>
           </div>
-        </div>
-      );
-    })}
-  </div>
-</div>
-
         </div>
       </div>
 

@@ -1,6 +1,5 @@
 import React from "react";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 
 const Header = () => {
   return (
@@ -82,21 +81,21 @@ const Header = () => {
                 name: "Shri Abhishek Singh",
                 title: "Director General",
                 desc: "National Informatics Centre",
-                size: 65,
+                size: 85,
               },
               {
                 img: "images/SC-Odisha.jpg",
                 name: "Shri Timothy Dkhar",
                 title: "DDG & State Coordinator",
                 desc: "NIC, Odisha",
-                size: 55,
+                size: 85,
               },
               {
                 img: "images/SIO-Odisha.jpg",
                 name: "Dr. Ashok Kumar Hota",
                 title: "DDG & State Informatics Officer",
                 desc: "NIC, Odisha",
-                size: 55,
+                size: 85,
               },
             ].map((person, index) => (
               <div
@@ -120,11 +119,11 @@ const Header = () => {
                 <div>
                   <p
                     className="fw-semibold mb-1"
-                    style={{ fontSize: "0.85rem" }}
+                    style={{ fontSize: "0.95rem" }}
                   >
                     {person.name}
                   </p>
-                  <small className="text-muted">
+                  <small className="text-bold">
                     {person.title}
                     <br />
                     {person.desc}
