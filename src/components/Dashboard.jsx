@@ -308,14 +308,7 @@ const inactiveProjects = 0; // No inactive projects
           <main id="main" className="main w-100 p-3">
             <div className="pagetitle">
               <h1>Welcome to the Dashboard</h1>
-              <nav>
-                <ol className="breadcrumb">
-                  <li className="breadcrumb-item">
-                    <a href="/">Home</a>
-                  </li>
-                  <li className="breadcrumb-item active">Dashboard</li>
-                </ol>
-              </nav>
+              
             </div>
 
             <section className="section dashboard">
@@ -389,14 +382,7 @@ const inactiveProjects = 0; // No inactive projects
             <>
               <div className="pagetitle">
                 <h1>Dashboard</h1>
-                <nav>
-                  <ol className="breadcrumb">
-                    <li className="breadcrumb-item">
-                      <a href="/">Home</a>
-                    </li>
-                    <li className="breadcrumb-item active">Dashboard</li>
-                  </ol>
-                </nav>
+                
               </div>
 
               <section className="section dashboard">
@@ -482,7 +468,7 @@ const inactiveProjects = 0; // No inactive projects
                               <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter Data Center"
+                                placeholder="Enter Prism Id"
                                 value={filterValue}
                                 onChange={async (e) => {
                                   const value = e.target.value;
@@ -615,7 +601,7 @@ const inactiveProjects = 0; // No inactive projects
                           >
                             <table className="table table-borderless datatable">
                               <thead>
-                                <tr>
+                                <tr style={{textAlign:"center"}}>
                                   <th>Assets ID</th>
                                   <th>Prism ID</th>
                                   <th>Project Name</th>
@@ -649,7 +635,7 @@ const inactiveProjects = 0; // No inactive projects
                                   };
 
                                   return (
-                                    <tr key={key}>
+                                    <tr key={key} style={{textAlign:"center"}}>
                                       <td>{project.assetsId || "N/A"}</td>
                                       <td>{project.prismId || "N/A"}</td>
                                       <td style={{ color: "#007bff" }}>

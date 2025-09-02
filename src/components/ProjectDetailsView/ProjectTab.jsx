@@ -108,7 +108,7 @@ const ProjectTabs = () => {
         </ul>
 
         {/* Tab Content */}
-        <div className="tab-content pt-3">
+        <div className="tab-content pt-3 cs-h">
           <AnimatePresence mode="wait">
             {activeTab === "basic" && (
               <motion.div

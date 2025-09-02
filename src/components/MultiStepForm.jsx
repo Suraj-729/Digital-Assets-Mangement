@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import ProgressBar from "./ProgressBar";
 import StepBasicProfile from "./StepBasicProfile";
@@ -574,7 +575,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
   return (
     <div
-      className={`form-container ${
+      className={`form-container min-vh-100 ${
         isSidebarOpen ? "compact-form" : "fullscreen-form"
       }`}
     >
