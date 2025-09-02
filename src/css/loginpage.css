@@ -22,7 +22,7 @@ body {
 /*Login Page ===============*/
 .form-container.login-page {
     display: flex;
-    align-items: center;
+    align-items: flex-top;
     justify-content: center;
 }
 

@@ -164,7 +164,9 @@ const StepInfrastructure = ({
             >
               <option value="">Select</option>
               <option value="NDC">NDC</option>
+
               <option value="SDC">SDC</option>
+              <option value="IT Centre">IT Centre</option>
               <option value="GCP">GCP</option>
               <option value="Azure">Azure</option>
               <option value="AWS">AWS</option>
@@ -202,10 +204,11 @@ const StepInfrastructure = ({
               onChange={onChange}
             >
               <option value="">Select</option>
-              <option value="BBSR">Bhubaneswar</option>
+              <option value="Bhubaneswar">Bhubaneswar</option>
               <option value="Delhi">Delhi</option>
               <option value="Pune">Pune</option>
               <option value="Hyderabad">Hyderabad</option>
+              <option value="Hyderabad">Secretariat</option>
             </select>
           </div>
           <div className="col-md-4">

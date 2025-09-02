@@ -351,35 +351,34 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       // };
 
       const SA = {
-  securityAudit: auditRecords.map((record, idx) => {
-    const expireDate = record.expireDate
-      ? new Date(record.expireDate).toISOString()
-      : null;
+        securityAudit: auditRecords.map((record, idx) => {
+          const expireDate = record.expireDate
+            ? new Date(record.expireDate).toISOString()
+            : null;
 
-    const auditDate = record.auditDate
-      ? new Date(record.auditDate).toISOString()
-      : null;
+          const auditDate = record.auditDate
+            ? new Date(record.auditDate).toISOString()
+            : null;
 
-    let auditStatus = AuditStatus.COMPLETED;
+          let auditStatus = AuditStatus.COMPLETED;
 
-    if (!expireDate || record.typeOfAudit === DEFAULT_VALUE) {
-      auditStatus = DEFAULT_VALUE; // or "N/A"
-    } else if (new Date() > new Date(expireDate)) {
-      auditStatus = AuditStatus.EXPIRED;
-    }
+          if (!expireDate || record.typeOfAudit === DEFAULT_VALUE) {
+            auditStatus = DEFAULT_VALUE; // or "N/A"
+          } else if (new Date() > new Date(expireDate)) {
+            auditStatus = AuditStatus.EXPIRED;
+          }
 
-    return {
-      slNo: idx + 1,
-      typeOfAudit: record.typeOfAudit || DEFAULT_VALUE,
-      auditingAgency: record.auditingAgency || DEFAULT_VALUE,
-      auditDate,
-      expireDate,
-      certificate: record.certificate || DEFAULT_VALUE,
-      auditStatus,
-    };
-  }),
-};
-
+          return {
+            slNo: idx + 1,
+            typeOfAudit: record.typeOfAudit || DEFAULT_VALUE,
+            auditingAgency: record.auditingAgency || DEFAULT_VALUE,
+            auditDate,
+            expireDate,
+            certificate: record.certificate || DEFAULT_VALUE,
+            auditStatus,
+          };
+        }),
+      };
 
       console.log("saaaaa", SA);
 
@@ -579,31 +578,60 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
         isSidebarOpen ? "compact-form" : "fullscreen-form"
       }`}
     >
-      <Header onSidebarToggle={setSidebarOpen} />
-      <Sidebar isSidebarOpen={isSidebarOpen} setFormToShow={setFormToShow} />
+      <div className="form-container">
+        <Header onSidebarToggle={setSidebarOpen} />
+        <Sidebar isSidebarOpen={isSidebarOpen} setFormToShow={setFormToShow} />
 
-      <div className="form-header">
-        <h2
+        {/* Wrap shifting content here */}
+        <div
           style={{
-            padding: "10px 20px",
-            fontWeight: "700",
-            fontSize: "1.7rem",
+            marginLeft: isSidebarOpen ? "250px" : "0", // adjust 250px to sidebar width
+            transition: "margin-left 0.3s ease",
           }}
         >
-          {editData ? "Edit Project" : "Add Project"}
-        </h2>
-      </div>
+          <div className="form-header">
+            <h2
+              style={{
+                padding: "10px 20px",
+                fontWeight: "700",
+                fontSize: "1.7rem",
+              }}
+            >
+              {editData ? "Edit Project" : "Add Project"}
+            </h2>
+          </div>
 
+          <form id="msform" onSubmit={handleSubmit}>
+            <ProgressBar
+              steps={steps}
+              currentStep={currentStep}
+              onStepClick={handleStepClick}
+            />
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, scale: 0.8, y: 40 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: -30 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                {renderStep()}
+              </motion.div>
+            </AnimatePresence>
+          </form>
+        </div>
+      </div>
       {/* There is a work of ramsis to do the ui dymaic level  */}
 
-      <form id="msform" onSubmit={handleSubmit}>
+      {/* <form id="msform" onSubmit={handleSubmit}>
         <ProgressBar
           steps={steps}
           currentStep={currentStep}
           onStepClick={handleStepClick}
         />
 
-        {/* ✅ Added: AnimatePresence and motion.div for pop-in animation */}
+
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -615,7 +643,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
             {renderStep()}
           </motion.div>
         </AnimatePresence>
-      </form>
+      </form> */}
     </div>
   );
 };
