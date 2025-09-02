@@ -268,7 +268,7 @@ const StepSecurityAudit = ({
           </div>
 
           <div className="col-md-6">
-            <label className="form-label">Expire Date</label>
+            <label className="form-label">Expiry Date</label>
             <input
               type="date"
               className={`form-control ${

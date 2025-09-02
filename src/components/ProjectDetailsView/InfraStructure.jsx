@@ -66,7 +66,7 @@ const TechnologyAndInfrastructure = ({
           <table className="table table-bordered">
             <thead className="table-light">
               <tr>
-                <th>Front End</th>
+                <th>Front End/Backend</th>
                 <th>Framework</th>
                 <th>Database</th>
                 <th>OS</th>
@@ -109,8 +109,8 @@ const TechnologyAndInfrastructure = ({
                 <th>Deployment</th>
                 <th>Location</th>
                 <th>Antivirus</th>
-                <th>APPLICATION IP Address</th>
-                <th>Database Server ip</th>
+                <th>Application IP Address</th>
+                <th>Database Server IP</th>
                 <th>Purpose</th>
                 <th>Date</th>
                 <th>VA Score</th>
