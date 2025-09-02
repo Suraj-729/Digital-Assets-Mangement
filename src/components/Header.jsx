@@ -10,7 +10,7 @@ const Header = () => {
         className="bg-white shadow-sm position-relative"
         style={{ minHeight: "80px" }}
       >
-        <div className="container d-flex justify-content-between align-items-center position-relative py-2">
+        <div className="container-fluid d-flex justify-content-between align-items-center position-relative py-2">
           <a
             href="https://odisha.nic.in"
             target="_blank"
@@ -71,7 +71,7 @@ const Header = () => {
 
       {/* Dignitaries */}
       <section className="bg-white py-3 shadow-sm">
-        <div className="container d-flex justify-content-center">
+        <div className="container-fluid d-flex justify-content-center">
           <div
             className="d-flex align-items-center justify-content-center text-start flex-wrap"
             style={{ gap: "2rem" }}
@@ -82,21 +82,21 @@ const Header = () => {
                 name: "Shri Abhishek Singh",
                 title: "Director General",
                 desc: "National Informatics Centre",
-                size: 65,
+                size: 95,
               },
               {
                 img: "images/SC-Odisha.jpg",
                 name: "Shri Timothy Dkhar",
                 title: "DDG & State Coordinator",
                 desc: "NIC, Odisha",
-                size: 55,
+                size: 95,
               },
               {
                 img: "images/SIO-Odisha.jpg",
                 name: "Dr. Ashok Kumar Hota",
                 title: "DDG & State Informatics Officer",
                 desc: "NIC, Odisha",
-                size: 55,
+                size: 95,
               },
             ].map((person, index) => (
               <div

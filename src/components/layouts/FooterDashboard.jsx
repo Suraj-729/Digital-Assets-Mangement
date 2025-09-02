@@ -8,9 +8,12 @@ const Footer = () => {
     alignItems: "center",
     justifyContent: "center",
     gap: "8px",
-    marginTop: "35px",
     fontSize: "20px",
     color: "#000",
+    position: "relative",   // 👈 sticks relative to viewport
+    bottom: "20px",      // distance from bottom
+    left: "50%",
+    transform: "translateX(-50%)", // center horizontally
   }}
 >
   <img
