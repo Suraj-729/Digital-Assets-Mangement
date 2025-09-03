@@ -460,7 +460,7 @@ const StepBasicProfile = ({
                   <option value="">Select HOD</option>
                   {projectHods.map((hod) => (
                     <option key={hod.employeeId} value={hod.HOD}>
-                      {hod.HOD}
+                      {hod.HOD}-{hod.employeeId} 
                     </option>
                   ))}
                 </select>
