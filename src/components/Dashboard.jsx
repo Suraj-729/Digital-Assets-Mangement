@@ -28,14 +28,10 @@ const Dashboard = () => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   // const employeeType = localStorage.getItem("employeeType") || "HOD";
 
-
-// const employeeType = localStorage.getItem("employeeType") || "HOD";
-
-
-
-
-
+  // const employeeType = localStorage.getItem("employeeType") || "HOD";
+  const Admin = localStorage.getItem("Admin") || "N/A";
   const HOD = localStorage.getItem("HOD") || "N/A";
+  const PM = localStorage.getItem("PM") || "N/A";
   // const location = useLocation();
   const employeeId =
     location.state?.employeeId || localStorage.getItem("employeeId");
@@ -59,6 +55,14 @@ const Dashboard = () => {
       );
     }
     return [];
+  };
+
+  const sslBadge = (tlsStatus) => {
+    if (tlsStatus === "Valid") return "badge bg-success"; // green
+    if (tlsStatus === "Expired" || tlsStatus === "Invalid")
+      return "badge bg-danger"; // red
+    if (tlsStatus === "Expiring Soon") return "badge bg-warning text-dark";
+    return "badge bg-secondary";
   };
 
   useEffect(() => {
@@ -140,15 +144,55 @@ const Dashboard = () => {
     }
   };
 
-  const handleEditProject = (projectName) => {
-    console.log("Edit clicked for", projectName);
-    if (!projectName) return;
-    navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`, {
-      //  state: { from: location.pathname, projectName },
-    });
+  const handleEditProject = async (projectName, BP) => {
+    try {
+      if (!projectName) {
+        toast.error("Project name is missing!");
+        return;
+      }
+
+      const employeeId = localStorage.getItem("employeeId");
+      const employeeType = localStorage.getItem("employeeType"); // PM, HOD, Admin
+
+      if (!employeeId || !employeeType) {
+        toast.error("User info not found!");
+        return;
+      }
+
+      // Base payload
+      let payload = { projectName, employeeType };
+
+      if (employeeType === "PM") {
+        payload.empCode = employeeId;
+      } else if (employeeType === "HOD") {
+        payload.employeeId = BP?.name || employeeId; // take BP.name, fallback to id
+      } else if (employeeType === "Admin") {
+        // No adminId anymore, only navigate
+        navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+        return; // skip API call
+      } else {
+        payload.employeeId = employeeId; // fallback
+      }
+
+      console.log("Marking project editable:", payload);
+
+      const res = await api.patch(
+        "/project-assignments/mark-for-edit",
+        payload
+      );
+
+      if (res.status >= 200 && res.status < 300) {
+        toast.success(res.data.message);
+        navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+      } else {
+        toast.error("Failed to prepare project for edit");
+      }
+    } catch (err) {
+      console.error("Error marking project for edit:", err);
+      toast.error("Something went wrong while editing the project");
+    }
   };
 
-  // Add this function to handle Add Project click
   const handleAddProject = () => {
     setEditProjectData(null); // Reset edit data
     setFormToShow("addProject");
@@ -156,16 +200,19 @@ const Dashboard = () => {
 
   // Calculate dashboard stats from the projects data
   // const totalProjects = projects.length;
-  const activeProjects = projects.filter((project) => {
-    if (!project.expireDate) return false;
-    const expireDate = new Date(project.expireDate);
-    return expireDate > new Date();
-  }).length;
-  const inactiveProjects = projects.filter((project) => {
-    if (!project.expireDate) return true;
-    const expireDate = new Date(project.expireDate);
-    return expireDate <= new Date();
-  }).length;
+  // const activeProjects = projects.filter((project) => {
+  //   if (!project.expireDate) return false;
+  //   const expireDate = new Date(project.expireDate);
+  //   return expireDate > new Date();
+  // }).length;
+  // const inactiveProjects = projects.filter((project) => {
+  //   if (!project.expireDate) return true;
+  //   const expireDate = new Date(project.expireDate);
+  //   return expireDate <= new Date();
+  // }).length;
+
+  const activeProjects = projects.length; // All projects are active
+const inactiveProjects = 0; // No inactive projects
 
   // Helper to get unique values for the selected filter type
 
@@ -200,14 +247,27 @@ const Dashboard = () => {
     if (status === "Expired") return "badge bg-danger";
     return "badge bg-secondary";
   };
-  const auditBadge = (auditStatus) => {
-    if (auditStatus && auditStatus !== "N/A") return "badge bg-success";
-    return "badge bg-secondary";
-  };
-  const sslBadge = (sslStatus) => {
-    if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
-    return "badge bg-secondary";
-  };
+  // const auditBadge = (auditStatus) => {
+  //   if (auditStatus && auditStatus !== "N/A") return "badge bg-success";
+  //   return "badge bg-secondary";
+  // };
+  const auditBadge = (auditStatus, expireDate) => {
+  if (!auditStatus || auditStatus === "N/A") return "badge bg-secondary";
+
+  if (expireDate) {
+    const expiry = new Date(expireDate);
+    if (expiry <= new Date()) {
+      return "badge bg-danger"; // expired → red
+    }
+  }
+
+  return "badge bg-success"; // active → green
+};
+
+  // const sslBadge = (sslStatus) => {
+  //   if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
+  //   return "badge bg-secondary";
+  // };
 
   if (loading) {
     return (
@@ -266,18 +326,16 @@ const Dashboard = () => {
                 <div className="card-body text-center">
                   <h4 className="card-title">No Projects Yet</h4>
                   <p className="text-muted">
-                    You haven't added any projects. Click below to get started.
+                    You haven't added any projects.Click On SideBar Projects
                   </p>
-                  <button
-                    className="btn btn-primary mt-3"
-                    onClick={handleAddProject}
-                  >
-                    Add Your First Project
-                  </button>
+
                   <hr />
                   <div className="text-start mt-3">
+                    {/* <p>
+                     <strong>EmployeeName:</strong> {HOD && HOD} {PM && !HOD && PM}
+                    </p> */}
                     <p>
-                      <strong>HOD:</strong> {HOD}
+                      <strong>EmployeeType:</strong> {employeeType}
                     </p>
                     <p>
                       <strong>Employee ID:</strong> {employeeId}
@@ -360,32 +418,34 @@ const Dashboard = () => {
                       </div>
 
                       <div className="col-md-4 col-sm-6">
-                        <div className="card info-card revenue-card">
-                          <div className="card-body d-flex align-items-center gap-3">
-                            <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                              <i className="bi bi-toggle-on"></i>
-                            </div>
-                            <div>
-                              <h6>{activeProjects}</h6>
-                            </div>
-                            <h5 className="card-title">Active Projects</h5>
-                          </div>
-                        </div>
-                      </div>
+  <div className="card info-card revenue-card">
+    <div className="card-body d-flex align-items-center gap-3">
+      <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
+        <i className="bi bi-toggle-on"></i>
+      </div>
+      <div>
+        <h6>{projects.length}</h6>
+      </div>
+      <h5 className="card-title">Active Projects</h5>
+    </div>
+  </div>
+</div>
+
 
                       <div className="col-md-4 col-sm-12">
-                        <div className="card info-card customers-card">
-                          <div className="card-body d-flex align-items-center gap-3">
-                            <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                              <i className="bi bi-toggle-off"></i>
-                            </div>
-                            <div>
-                              <h6>{inactiveProjects}</h6>
-                            </div>
-                            <h5 className="card-title">Inactive Projects</h5>
-                          </div>
-                        </div>
-                      </div>
+  <div className="card info-card customers-card">
+    <div className="card-body d-flex align-items-center gap-3">
+      <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
+        <i className="bi bi-toggle-off"></i>
+      </div>
+      <div>
+        <h6>0</h6>
+      </div>
+      <h5 className="card-title">Inactive Projects</h5>
+    </div>
+  </div>
+</div>
+
                     </div>
                   </div>
 
@@ -420,66 +480,81 @@ const Dashboard = () => {
 
                             {filterType === "prismid" ? (
                               <input
-    type="text"
-    className="form-control"
-    placeholder="Enter Data Center"
-    value={filterValue}
-    onChange={async (e) => {
-      const value = e.target.value;
-      setFilterValue(value);
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter Data Center"
+                                value={filterValue}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
 
-      if (!value) {
-        setFilteredProjects(projects);
-        return;
-      }
+                                  if (!value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
 
-      const employeeType = localStorage.getItem("employeeType") || "HOD";
-      const valueToSend = value.startsWith("/") ? value.slice(1) : value;
+                                  const employeeType =
+                                    localStorage.getItem("employeeType") ||
+                                    "HOD";
+                                  const valueToSend = value.startsWith("/")
+                                    ? value.slice(1)
+                                    : value;
 
-      try {
-        const res = await api.get(
-  `/dashboard/filter/prismid/${encodeURIComponent(valueToSend)}/employee/${employeeId}/employeeType/${employeeType}`
-        ); // ✅ Correct endpoint for prismid
-        setFilteredProjects(res.data);
-      } catch (err) {
-        setFilteredProjects([]);
-      }
-    }}
-  />
+                                  try {
+                                    const res = await api.get(
+                                      `/dashboard/filter/prismId/${encodeURIComponent(
+                                        valueToSend
+                                      )}/employee/${employeeId}/employeeType/${employeeType}`
+                                    );
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    setFilteredProjects([]);
+                                  }
+                                }}
+                              />
                             ) : (
                               <select
                                 className="form-select"
                                 value={filterValue}
-                              onChange={async (e) => {
-  const value = e.target.value;
-  setFilterValue(value);
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  setFilterValue(value);
 
-  if (!filterType || !value) {
-    setFilteredProjects(projects);
-    return;
-  }
+                                  if (!filterType || !value) {
+                                    setFilteredProjects(projects);
+                                    return;
+                                  }
 
-  const employeeType = localStorage.getItem("employeeType") || "HOD";
+                                  const employeeType =
+                                    localStorage.getItem("employeeType") ||
+                                    "HOD";
 
-  let url;
-  if (filterType === "department") {
-    url = `/dashboard/filter/department/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
-  } else if (filterType === "datacenter") {
-    url = `/dashboard/filter/datacenter/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
-  } else if (filterType === "prismid") {
-    url = `/dashboard/filter/prismid/${encodeURIComponent(value)}/employee/${employeeId}/employeeType/${employeeType}`;
-  } else {
-    url = `/dashboard/filter/${filterType}/${encodeURIComponent(value)}`;
-  }
+                                  let url;
+                                  if (filterType === "department") {
+                                    url = `/dashboard/filter/department/${encodeURIComponent(
+                                      value
+                                    )}/employee/${employeeId}/employeeType/${employeeType}`;
+                                  } else if (filterType === "datacenter") {
+                                    url = `/dashboard/filter/datacenter/${encodeURIComponent(
+                                      value
+                                    )}/employee/${employeeId}/employeeType/${employeeType}`;
+                                  } else if (filterType === "prismid") {
+                                    url = `/dashboard/filter/prismid/${encodeURIComponent(
+                                      value
+                                    )}/employee/${employeeId}/employeeType/${employeeType}`;
+                                  } else {
+                                    url = `/dashboard/filter/${filterType}/${encodeURIComponent(
+                                      value
+                                    )}`;
+                                  }
 
-  try {
-    const res = await api.get(url);
-    setFilteredProjects(res.data);
-  } catch (err) {
-    setFilteredProjects([]);
-  }
-}}
-
+                                  try {
+                                    const res = await api.get(url);
+                                    setFilteredProjects(res.data);
+                                  } catch (err) {
+                                    setFilteredProjects([]);
+                                  }
+                                }}
                                 disabled={!filterType}
                               >
                                 <option value="">-- Select Value --</option>
@@ -554,16 +629,24 @@ const Dashboard = () => {
                                   <th>Edit</th>
                                 </tr>
                               </thead>
+                    
                               <tbody>
                                 {filteredProjects.map((project, index) => {
                                   const key =
                                     project.assetsId ||
                                     `${project.projectName}-${index}`;
-                                  const statusValue = project.expireDate
-                                    ? new Date(project.expireDate) > new Date()
-                                      ? "ACTIVE"
-                                      : "Expired"
-                                    : "N/A";
+                                  const statusValue = "ACTIVE";
+
+                                  const formatDateSafe = (dateInput) => {
+                                    if (!dateInput) return "N/A";
+                                    const date = new Date(dateInput);
+                                    return isNaN(date.getTime())
+                                      ? "N/A"
+                                      : `${date.getDate()} / ${date.toLocaleString(
+                                          "en-GB",
+                                          { month: "long" }
+                                        )} / ${date.getFullYear()}`;
+                                  };
 
                                   return (
                                     <tr key={key}>
@@ -597,33 +680,32 @@ const Dashboard = () => {
                                       </td>
                                       <td>
                                         <span
-                                          className={auditBadge(
-                                            project.auditStatus
-                                          )}
+                                         className={auditBadge(project.auditStatus, project.expireDate)}
                                         >
                                           {project.auditStatus || "N/A"}
                                         </span>
                                       </td>
                                       <td>
-                                        <span>
-                                          {project.expireDate
-                                            ? formatDate(project.expireDate)
-                                            : "N/A"}
-                                        </span>
+                                        {formatDateSafe(project.expireDate)}
                                       </td>
                                       <td>
                                         <span
                                           className={sslBadge(
-                                            project.sslStatus
+                                            project.tlsStatus
                                           )}
                                         >
-                                          {project.sslStatus || "N/A"}
+                                          {project.tlsStatus || "N/A"}
                                         </span>
                                       </td>
-
-                                      <td>{formatDate(project.tlsNextExpiry)}</td>
-                                      
-
+                                      <td>
+                                        {Array.isArray(project.tlsNextExpiry)
+                                          ? formatDateSafe(
+                                              project.tlsNextExpiry.slice(-1)[0]
+                                            )
+                                          : formatDateSafe(
+                                              project.tlsNextExpiry
+                                            )}
+                                      </td>
                                       <td>
                                         <button
                                           className="btn btn-sm btn-outline-primary"

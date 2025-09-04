@@ -1,27 +1,51 @@
-
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 
 const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
+  // const [tlsDomainName, setTlsDomainName] = useState("");
+  const [tlsCertProvider, setTlsCertProvider] = useState("");
   const [tlsIssueDate, setTlsIssueDate] = useState("");
   const [tlsNextExpiry, setTlsExpiryDate] = useState("");
   const [tlsScore, setTlsScore] = useState("");
   const [tlsProcuredFrom, setTlsProcuredFrom] = useState("");
 
-  // ✅ Pre-fill form if editing an existing record (first one as default)
-  useEffect(() => {
-    if (tlsData?.length > 0) {
-      const first = tlsData[0];
-      setTlsIssueDate(first.issueDate?.slice(0, 10) || "");
-      setTlsExpiryDate(first.expiryDate?.slice(0, 10) || "");
-      setTlsScore(first.score || "");
-      setTlsProcuredFrom(first.procuredFrom || "");
-    }
-  }, [tlsData]);
+  // ✅ Add new record
+  // const handleAddRecord = () => {
+  //   if (
+  //     // !tlsDomainName ||
+  //     // !tlsCertProvider ||
+  //     !tlsIssueDate ||
+  //     !tlsNextExpiry ||
+  //     !tlsScore ||
+  //     !tlsProcuredFrom
+  //   ) {
+  //     alert("Please fill all fields");
+  //     return;
+  //   }
 
+  //   const newRecord = {
+
+  //     issueDate: tlsIssueDate,
+  //     expiryDate: tlsNextExpiry,
+  //     score: tlsScore,
+  //     procuredFrom: tlsProcuredFrom,
+  //   };
+
+  //   console.log("✅ Adding TLS Record:", newRecord);
+
+  //   setTlsData([...tlsData, newRecord]);
+
+  //   // // Reset form
+  //   // setTlsDomainName("");
+  //   // setTlsCertProvider("");
+  //   setTlsIssueDate("");
+  //   setTlsExpiryDate("");
+  //   setTlsScore("");
+  //   setTlsProcuredFrom("");
+  // };
+  // ✅ Add new record
   const handleAddRecord = () => {
-    if (!tlsIssueDate || !setTlsExpiryDate || !tlsScore || !tlsProcuredFrom) {
+    if (!tlsIssueDate || !tlsNextExpiry || !tlsScore || !tlsProcuredFrom) {
       alert("Please fill all fields");
       return;
     }
@@ -33,42 +57,60 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
       procuredFrom: tlsProcuredFrom,
     };
 
+    console.log("✅ Adding TLS Record:", newRecord);
+
     setTlsData([...tlsData, newRecord]);
 
     // Reset form
+
     setTlsIssueDate("");
     setTlsExpiryDate("");
     setTlsScore("");
     setTlsProcuredFrom("");
   };
 
+  // ✅ Delete record
+  const handleDeleteRecord = (index) => {
+    console.log("🗑️ Deleting TLS record at index:", index);
+    const updatedData = tlsData.filter((_, i) => i !== index);
+    setTlsData(updatedData);
+  };
+
+  // ✅ Safe Date Formatter
+  const formatDate = (date) => {
+    if (!date) return "N/A"; // null/empty check
+    const parsed = new Date(date);
+    return isNaN(parsed) ? "N/A" : parsed.toISOString().split("T")[0];
+  };
+
   return (
     <div className="container mt-4">
-      <h3 className="text-center mb-4">TLS Information</h3>
-
-  {/* First Row */}
-  <div className="row mb-3 align-items-center">
-    <div className="col-md-2 text-end ">Certificate Issue Date:</div>
-    <div className="col-md-4">
-      <input
-        type="date"
-        className="form-control"
-        value={tlsIssueDate}
-        onChange={(e) => setTlsIssueDate(e.target.value)}
-      />
-    </div>
-    <div className="col-md-2 text-end ">TLS Expiry Date:</div>
-    <div className="col-md-4">
-      <input
-        type="date"
-        className="form-control"
-        value={setTlsExpiryDate}
-        onChange={(e) => setTlsExpiryDate(e.target.value)}
-      />
-    </div>
-  </div>
+      {/* First Row */}
 
       {/* Second Row */}
+      <div className="row mb-3 align-items-center">
+        <div className="col-md-2 text-end">Certificate Issue Date:</div>
+        <div className="col-md-4">
+          <input
+            type="date"
+            className="form-control"
+            value={tlsIssueDate}
+            onChange={(e) => setTlsIssueDate(e.target.value)}
+          />
+        </div>
+        <div className="col-md-2 text-end">TLS Expiry Date:</div>
+        <div className="col-md-4">
+          <input
+            type="date"
+            className="form-control"
+            value={tlsNextExpiry}
+            onChange={(e) => setTlsExpiryDate(e.target.value)}
+            min={tlsIssueDate || ""} // <-- disables previous dates
+          />
+        </div>
+      </div>
+
+      {/* Third Row */}
       <div className="row mb-3 align-items-center">
         <div className="col-md-2 text-end">TLS Lab Score:</div>
         <div className="col-md-4">
@@ -114,36 +156,47 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
           <thead className="table-light">
             <tr>
               <th>S.No.</th>
+              
               <th>Issue Date</th>
               <th>Expiry Date</th>
               <th>Score</th>
-              <th>Certificate Procured From</th>
+         
+             <th> Certificate Procured From:</th>
+          
+              
               <th>Delete</th>
             </tr>
           </thead>
+     
+
           <tbody>
-            {tlsData?.map((record, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{record.issueDate?.slice(0, 10)}</td>
-                <td>{record.expiryDate?.slice(0, 10)}</td>
-                <td>{record.score}</td>
-                <td>{record.procuredFrom}</td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger"
-                    onClick={() => {
-                      const updatedData = [...tlsData];
-                      updatedData.splice(index, 1);
-                      setTlsData(updatedData);
-                    }}
-                  >
-                    <FaTrash />
-                  </button>
+            {tlsData?.length > 0 ? (
+              tlsData.map((record, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+               
+                  <td>{formatDate(record.issueDate)}</td>
+                  <td>{formatDate(record.expiryDate)}</td>
+                  <td>{record.score || "N/A"}</td>
+                  <td>{record.procuredFrom || "N/A"}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger"
+                      onClick={() => handleDeleteRecord(index)}
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center">
+                  No TLS records found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -196,4 +249,3 @@ const StepTLSInfo = ({ onPrevious, onNext, tlsData, setTlsData }) => {
 };
 
 export default StepTLSInfo;
-

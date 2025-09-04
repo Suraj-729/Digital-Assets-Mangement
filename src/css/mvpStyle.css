@@ -2413,4 +2413,16 @@ select {
 
 
 
+/* Default expanded sidebar */
+.main-content {
+  margin-left: 250px; /* width of expanded sidebar */
+  transition: margin-left 0.3s ease;
+}
+
+/* Collapsed sidebar */
+body.sidebar-collapsed .main-content {
+  margin-left: 60px; /* width of collapsed sidebar */
+}
+
+
 
