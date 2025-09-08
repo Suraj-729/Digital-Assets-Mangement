@@ -402,6 +402,8 @@ import "../css/mvpStyle.css";
 import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2"; // ✅ import SweetAlert2
 import { toast } from "react-toastify";
+import api from "../Api";
+import { useParams } from "react-router-dom";
 
 const DRForm = ({
   formData,
@@ -419,11 +421,10 @@ const DRForm = ({
     dateOfVA: "",
     vaReport: null,
   });
-
-  // 🧠 Track whether user has DR info
-  const [hasDrInfo, setHasDrInfo] = useState(formData.hasDrInfo || "No");
-
-  // Sync records when editing
+  const [hasDrInfo, setHasDrInfo] = useState(formData?.hasDrInfo || "No");
+  const { projectName: urlProjectName } = useParams();
+  const [errors, setErrors] = useState({});
+  // 🧠 Sync records from parent if editing
   useEffect(() => {
     if (formData?.vaRecords?.length) {
       setRecords(formData.vaRecords);
@@ -447,8 +448,8 @@ const DRForm = ({
       [name]: files ? files[0] : value,
     }));
   };
-
-  // Add VA record
+  const { projectName: projectNameFromUrl } = useParams(); // 🚀 get projectName from URL
+  const empCode = localStorage.getItem("employeeId") || "";
   const handleAddRecord = () => {
     if (!vaForm.ipAddress || !vaForm.dbServerIp) return;
 
@@ -479,39 +480,145 @@ const DRForm = ({
     }));
   };
 
-  // Submit handler
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
-    Swal.fire({
+
+
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const employeeId = localStorage.getItem("employeeId"); // actual ID of the logged-in user
+  //   const employeeType = localStorage.getItem("employeeType"); // "PM" | "HOD" | "Admin"
+  //   let projectName = "";
+
+  //   try {
+  //     if (employeeType === "Admin") {
+  //       projectName = urlProjectName || "";
+  //     } else if (employeeType === "PM") {
+  //       const res = await api.get(`/project-assignments/${employeeId}`);
+  //       const pmProject = res.data.find((it) => it.empCode === employeeId);
+  //       if (pmProject) projectName = pmProject.projectName;
+  //     } else if (employeeType === "HOD") {
+  //       const res = await api.get(`/project-assignments/hod/${employeeId}`);
+  //       const hodProject = res.data.find((it) => it.employeeId === employeeId);
+  //       if (hodProject) projectName = hodProject.projectName;
+  //     }
+
+  //     if (!projectName) {
+  //       toast.error("Project name is missing!");
+  //       return;
+  //     }
+
+  //     const confirm = await Swal.fire({
+  //       title: "Do you want to submit this form?",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "Yes, submit it!",
+  //       cancelButtonText: "Cancel",
+  //     });
+  //     if (!confirm.isConfirmed) return;
+
+  //     if (typeof onSubmit === "function") await onSubmit(e);
+
+  //     // Build payload expected by backend:
+  //     const payload = { projectName, userType: employeeType };
+  //     if (employeeType === "PM") payload.empCode = employeeId; // PM id goes in empCode
+  //     if (employeeType === "HOD") payload.employeeId = employeeId; // HOD id goes in employeeId
+  //     // Admin: projectName + userType is enough
+
+  //     await api.put("/project/update-status", payload);
+
+  //     Swal.fire({
+  //       title: "Submitted!",
+  //       text: "Your data has been submitted.",
+  //       icon: "success",
+  //       timer: 2000,
+  //       showConfirmButton: false,
+  //     });
+  //   } catch (err) {
+  //     console.error("Submission error:", err);
+  //     toast.error("Something went wrong. Please try again.");
+  //   }
+  // };
+
+
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const employeeId = localStorage.getItem("employeeId"); // only for PM/HOD
+  const employeeType = localStorage.getItem("employeeType"); // "PM" | "HOD" | "Admin"
+
+  try {
+    // 1️⃣ Determine projectName based on role
+    let projectName = "";
+    switch (employeeType) {
+      case "Admin":
+        projectName = urlProjectName || "";
+        break;
+      case "PM": {
+        const res = await api.get(`/project-assignments/${employeeId}`);
+        const pmProject = res.data.find((it) => it.empCode === employeeId);
+        if (pmProject) projectName = pmProject.projectName;
+        break;
+      }
+      case "HOD": {
+        const res = await api.get(`/project-assignments/hod/${employeeId}`);
+        const hodProject = res.data.find((it) => it.employeeId === employeeId);
+        if (hodProject) projectName = hodProject.projectName;
+        break;
+      }
+      default:
+        projectName = "";
+    }
+
+    if (!projectName) {
+      toast.error("Project name is missing!");
+      return;
+    }
+
+    // 2️⃣ Confirm submission
+    const confirm = await Swal.fire({
       title: "Do you want to submit this form?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
       confirmButtonText: "Yes, submit it!",
       cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        if (typeof onSubmit === "function") {
-          onSubmit(e);
-        } else {
-          toast.error("onSubmit is not defined or not a function.");
-        }
-        Swal.fire({
-          title: "Submitted!",
-          text: "Your data has been submitted.",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      }
     });
-  };
+    if (!confirm.isConfirmed) return;
+
+    // 3️⃣ Submit the multi-step form first
+    if (typeof onSubmit === "function") await onSubmit(e);
+
+    // 4️⃣ Build role-aware payload for backend
+    const payload = { projectName, userType: employeeType };
+
+    if (employeeType === "PM") {
+      payload.empCode = employeeId;
+    } else if (employeeType === "HOD") {
+      payload.employeeId = employeeId;
+    }
+    // ✅ Admin: do NOT include any employeeId
+
+    // 5️⃣ Update project status in backend
+    await api.put("/project/update-status", payload);
+
+    // 6️⃣ Notify success
+    Swal.fire({
+      title: "Submitted!",
+      text: "Your data has been submitted.",
+      icon: "success",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  } catch (err) {
+    console.error("Submission error:", err);
+    toast.error("Something went wrong. Please try again.");
+  }
+};
 
   return (
     <div className="container p-4" style={{ backgroundColor: "#f5f8ff" }}>
-      {/* ✅ Ask if DR Info available */}
       <div className="row mb-3">
         <div className="col-md-4">
           <label>Do you have DR Info?</label>
@@ -532,10 +639,8 @@ const DRForm = ({
         </div>
       </div>
 
-      {/* ✅ Show DR Form only if Yes */}
       {hasDrInfo === "Yes" && (
         <>
-          {/* DR Fields */}
           <div className="row mb-3">
             <div className="col-md-4">
               <label>Type of Server Deployment:</label>
@@ -547,10 +652,10 @@ const DRForm = ({
               >
                 <option value="">Select</option>
                 <option value="Cloud">Cloud</option>
-                <option value="Co-location">Co-location</option>
+                <option value="On-Prem">On-Prem</option>
+                <option value="Hybrid">Hybrid</option>
               </select>
             </div>
-
             <div className="col-md-4">
               <label>Data Centre:</label>
               <select
@@ -562,12 +667,9 @@ const DRForm = ({
                 <option value="">Select</option>
                 <option value="NDC">NDC</option>
                 <option value="CDC">CDC</option>
-                <option value="AZURE">AZURE</option>
-                <option value="AWS">AWS</option>
-                <option value="GCP">GCP</option>
+                <option value="WDC">WDC</option>
               </select>
             </div>
-
             <div className="col-md-4">
               <label>Type of Application Deployment:</label>
               <select
@@ -576,15 +678,16 @@ const DRForm = ({
                 value={formData.deployment || ""}
                 onChange={handleChange}
               >
-                <option value="">-- Select --</option>
+                <option value="">Select</option>
                 <option value="Physical Machine">Physical Machine</option>
                 <option value="VM">VM</option>
-                <option value="Container as Service">Container as Service</option>
+                <option value="Container as Service">
+                  Container as Service
+                </option>
                 <option value="K8S as Service">K8S as Service</option>
               </select>
             </div>
           </div>
-
           <div className="row mb-3">
             <div className="col-md-4">
               <label>Location:</label>
@@ -594,14 +697,13 @@ const DRForm = ({
                 value={formData.location || ""}
                 onChange={handleChange}
               >
-                <option value="">-- Select --</option>
-                <option value="Bhubaneswar">Bhubaneswar</option>
-                <option value="Pune">Pune</option>
+                <option value="">Select</option>
+                <option value="BBSR">Bhubaneswar</option>
                 <option value="Delhi">Delhi</option>
+                <option value="Pune">Pune</option>
                 <option value="Hyderabad">Hyderabad</option>
               </select>
             </div>
-
             <div className="col-md-4">
               <label className="form-label">Antivirus:</label>
               <select
@@ -616,38 +718,76 @@ const DRForm = ({
               </select>
             </div>
           </div>
-
-          {/* ✅ VA Records */}
           <div className="row g-3">
             <div className="col-md-4">
               <label className="form-label">Application IP Address:</label>
               <input
                 type="text"
-                className="form-control"
+                className={`form-control ${
+                  errors.ipAddress ? "is-invalid" : ""
+                }`}
                 name="ipAddress"
                 placeholder="Application server IP"
-                value={vaForm.ipAddress}
-                onChange={handleVaFormChange}
+                value={vaForm.ipAddress || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  handleVaFormChange(e); // update vaForm state
+
+                  // Real-time IPv4 validation
+                  const ipRegex =
+                    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
+                  if (!ipRegex.test(value)) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      ipAddress: "Invalid IP address",
+                    }));
+                  } else {
+                    setErrors((prev) => ({ ...prev, ipAddress: null }));
+                  }
+                }}
                 disabled={
                   formData.deployment === "Container as Service" ||
                   formData.deployment === "K8S as Service"
                 }
               />
+              {errors.ipAddress && (
+                <div className="invalid-feedback">{errors.ipAddress}</div>
+              )}
             </div>
 
             <div className="col-md-4">
               <label>DB Server IP:</label>
               <input
                 type="text"
-                className="form-control"
+                className={`form-control ${
+                  errors.dbServerIp ? "is-invalid" : ""
+                }`}
                 name="dbServerIp"
-                value={vaForm.dbServerIp}
-                onChange={handleVaFormChange}
+                value={vaForm.dbServerIp || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  handleVaFormChange(e); // update vaForm state
+
+                  // Real-time IPv4 validation
+                  const ipRegex =
+                    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
+                  if (!ipRegex.test(value)) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      dbServerIp: "Invalid IP address",
+                    }));
+                  } else {
+                    setErrors((prev) => ({ ...prev, dbServerIp: null }));
+                  }
+                }}
                 disabled={
                   formData.deployment === "Container as Service" ||
                   formData.deployment === "K8S as Service"
                 }
               />
+              {errors.dbServerIp && (
+                <div className="invalid-feedback">{errors.dbServerIp}</div>
+              )}
             </div>
 
             <div className="col-md-4">
@@ -664,7 +804,6 @@ const DRForm = ({
                 }
               />
             </div>
-
             <div className="col-md-4">
               <label className="form-label">Date of VA:</label>
               <input
@@ -679,7 +818,6 @@ const DRForm = ({
                 }
               />
             </div>
-
             <div className="col-md-4">
               <label className="form-label">VA Score:</label>
               <input
@@ -694,7 +832,6 @@ const DRForm = ({
                 }
               />
             </div>
-
             <div className="col-md-4">
               <label className="form-label">Upload VA Report:</label>
               <input
@@ -709,7 +846,6 @@ const DRForm = ({
                 }
               />
             </div>
-
             <div className="col-md-12 d-flex justify-content-center mt-3">
               <button
                 className="btn btn-info"
@@ -729,9 +865,7 @@ const DRForm = ({
               </button>
             </div>
           </div>
-
-          {/* VA Table */}
-          <table className="table table-bordered text-center mt-3">
+          <table className="table table-bordered text-center">
             <thead className="table-light">
               <tr>
                 <th>S.No.</th>
@@ -773,7 +907,6 @@ const DRForm = ({
         </>
       )}
 
-      {/* Navigation Buttons */}
       <div
         style={{
           display: "flex",
@@ -800,7 +933,6 @@ const DRForm = ({
         >
           Previous
         </button>
-
         <button
           type="button"
           className="btn btn-success"
@@ -824,5 +956,3 @@ const DRForm = ({
 };
 
 export default DRForm;
-
-

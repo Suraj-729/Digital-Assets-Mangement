@@ -1,0 +1,18 @@
+.dignitary-img {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dignitary-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.dignitaries-section {
+  padding-top: 0.5rem;
+  padding-bottom: 0.25rem;
+}
+
+/* .main-login {
+  padding-top: 0.75rem;
+  padding-bottom: 1.5rem;
+} */
