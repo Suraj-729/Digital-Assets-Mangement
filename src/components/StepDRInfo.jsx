@@ -78,142 +78,99 @@ const DRForm = ({
     }));
   };
 
-
-
-
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const employeeId = localStorage.getItem("employeeId"); // actual ID of the logged-in user
-  //   const employeeType = localStorage.getItem("employeeType"); // "PM" | "HOD" | "Admin"
-  //   let projectName = "";
-
-  //   try {
-  //     if (employeeType === "Admin") {
-  //       projectName = urlProjectName || "";
-  //     } else if (employeeType === "PM") {
-  //       const res = await api.get(`/project-assignments/${employeeId}`);
-  //       const pmProject = res.data.find((it) => it.empCode === employeeId);
-  //       if (pmProject) projectName = pmProject.projectName;
-  //     } else if (employeeType === "HOD") {
-  //       const res = await api.get(`/project-assignments/hod/${employeeId}`);
-  //       const hodProject = res.data.find((it) => it.employeeId === employeeId);
-  //       if (hodProject) projectName = hodProject.projectName;
-  //     }
-
-  //     if (!projectName) {
-  //       toast.error("Project name is missing!");
-  //       return;
-  //     }
-
-  //     const confirm = await Swal.fire({
-  //       title: "Do you want to submit this form?",
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonText: "Yes, submit it!",
-  //       cancelButtonText: "Cancel",
-  //     });
-  //     if (!confirm.isConfirmed) return;
-
-  //     if (typeof onSubmit === "function") await onSubmit(e);
-
-  //     // Build payload expected by backend:
-  //     const payload = { projectName, userType: employeeType };
-  //     if (employeeType === "PM") payload.empCode = employeeId; // PM id goes in empCode
-  //     if (employeeType === "HOD") payload.employeeId = employeeId; // HOD id goes in employeeId
-  //     // Admin: projectName + userType is enough
-
-  //     await api.put("/project/update-status", payload);
-
-  //     Swal.fire({
-  //       title: "Submitted!",
-  //       text: "Your data has been submitted.",
-  //       icon: "success",
-  //       timer: 2000,
-  //       showConfirmButton: false,
-  //     });
-  //   } catch (err) {
-  //     console.error("Submission error:", err);
-  //     toast.error("Something went wrong. Please try again.");
-  //   }
-  // };
-
-
-
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const employeeId = localStorage.getItem("employeeId"); // only for PM/HOD
-  const employeeType = localStorage.getItem("employeeType"); // "PM" | "HOD" | "Admin"
+    const employeeId = localStorage.getItem("employeeId"); // only for PM/HOD
+    const employeeType = localStorage.getItem("employeeType"); // "PM" | "HOD" | "Admin"
 
-  try {
-    // 1️⃣ Determine projectName based on role
-    let projectName = "";
-    switch (employeeType) {
-      case "Admin":
-        projectName = urlProjectName || "";
-        break;
-      case "PM": {
-        const res = await api.get(`/project-assignments/${employeeId}`);
-        const pmProject = res.data.find((it) => it.empCode === employeeId);
-        if (pmProject) projectName = pmProject.projectName;
-        break;
+    try {
+      // 1️⃣ Determine projectName based on role
+      let projectName = "";
+      switch (employeeType) {
+        case "Admin":
+          projectName = urlProjectName || "";
+          break;
+        case "PM": {
+          const res = await api.get(`/project-assignments/${employeeId}`);
+          const pmProject = res.data.find((it) => it.empCode === employeeId);
+          if (pmProject) projectName = pmProject.projectName;
+          break;
+        }
+        case "HOD": {
+          const res = await api.get(`/project-assignments/hod/${employeeId}`);
+          const hodProject = res.data.find(
+            (it) => it.employeeId === employeeId
+          );
+          if (hodProject) projectName = hodProject.projectName;
+          break;
+        }
+        default:
+          projectName = "";
       }
-      case "HOD": {
-        const res = await api.get(`/project-assignments/hod/${employeeId}`);
-        const hodProject = res.data.find((it) => it.employeeId === employeeId);
-        if (hodProject) projectName = hodProject.projectName;
-        break;
+
+      if (!projectName) {
+        toast.error("Project name is missing!");
+        return;
       }
-      default:
-        projectName = "";
-    }
 
-    if (!projectName) {
-      toast.error("Project name is missing!");
-      return;
-    }
+      // 2️⃣ Confirm submission
+      const confirm = await Swal.fire({
+        title: "Do you want to submit this form?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, submit it!",
+        cancelButtonText: "Cancel",
+      });
+      if (!confirm.isConfirmed) return;
 
-    // 2️⃣ Confirm submission
-    const confirm = await Swal.fire({
-      title: "Do you want to submit this form?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, submit it!",
-      cancelButtonText: "Cancel",
-    });
-    if (!confirm.isConfirmed) return;
+      // 3️⃣ Submit the multi-step form first
+      if (typeof onSubmit === "function") await onSubmit(e);
 
-    // 3️⃣ Submit the multi-step form first
-    if (typeof onSubmit === "function") await onSubmit(e);
+      
 
-    // 4️⃣ Build role-aware payload for backend
+      // 4️⃣ Build role-aware payload for backend
+      // const payload = { projectName, userType: employeeType };
+
+      // if (employeeType === "PM") {
+      //   payload.empCode = employeeId; // ✅ only for PM
+      // } else if (employeeType === "HOD") {
+      //   payload.employeeId = employeeId; // ✅ only for HOD
+      // }
+
+      // Build the payload based on role
     const payload = { projectName, userType: employeeType };
 
     if (employeeType === "PM") {
       payload.empCode = employeeId;
     } else if (employeeType === "HOD") {
       payload.employeeId = employeeId;
+    } else if (employeeType === "Admin") {
+      // Admin case → take from formData dropdown selection
+      payload.employeeId = formData.hodId;  // this is the selected employeeId
+      payload.HOD = formData.HOD;          // this is the selected HOD name
     }
-    // ✅ Admin: do NOT include any employeeId
+    console.log("Final payload:", payload);
+      // ❌ Admin → do NOT include employeeId at all
 
-    // 5️⃣ Update project status in backend
-    await api.put("/project/update-status", payload);
+      // 5️⃣ Update project status in backend
+      await api.put("/project/update-status", payload);
+      console.log("the payload of the pay");
+      
 
-    // 6️⃣ Notify success
-    Swal.fire({
-      title: "Submitted!",
-      text: "Your data has been submitted.",
-      icon: "success",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-  } catch (err) {
-    console.error("Submission error:", err);
-    toast.error("Something went wrong. Please try again.");
-  }
-};
+      // 6️⃣ Notify success
+      Swal.fire({
+        title: "Submitted!",
+        text: "Your data has been submitted.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (err) {
+      console.error("Submission error:", err);
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <div className="container p-4" style={{ backgroundColor: "#f5f8ff" }}>

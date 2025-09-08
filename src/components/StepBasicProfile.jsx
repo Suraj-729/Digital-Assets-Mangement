@@ -20,11 +20,29 @@ const StepBasicProfile = ({
   const [projects, setProjects] = useState([]);
   const [projectHods, setProjectHods] = useState([]);
 
+  const [selectedHodId, setSelectedHodId] = useState("");
+  const [selectedHodName, setSelectedHodName] = useState("");
+
+  // useEffect(() => {
+  //   // Fetch HODs from API when component mounts
+  //   const fetchHods = async () => {
+  //     try {
+  //       const response = await api.get("/allhods"); // your API endpoint
+  //       if (response.data && response.data.projectHods) {
+  //         setProjectHods(response.data.projectHods);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching HODs:", error);
+  //     }
+  //   };
+
+  //   fetchHods();
+  // }, []);
+
   useEffect(() => {
-    // Fetch HODs from API when component mounts
     const fetchHods = async () => {
       try {
-        const response = await api.get("/allhods"); // your API endpoint
+        const response = await api.get("/allhods");
         if (response.data && response.data.projectHods) {
           setProjectHods(response.data.projectHods);
         }
@@ -32,7 +50,6 @@ const StepBasicProfile = ({
         console.error("Error fetching HODs:", error);
       }
     };
-
     fetchHods();
   }, []);
 
@@ -437,7 +454,7 @@ const StepBasicProfile = ({
                 <label className="form-label">HOD Name:</label>
               </div>
               <div className="col-sm-8">
-                <select
+                {/* <select
                   className={`form-control ${errors.HOD ? "is-invalid" : ""}`}
                   name="HOD"
                   value={formData.HOD || ""}
@@ -461,6 +478,36 @@ const StepBasicProfile = ({
                   {projectHods.map((hod) => (
                     <option key={hod.employeeId} value={hod.HOD}>
                       {hod.HOD}-{hod.employeeId} 
+                    </option>
+                  ))}
+                </select> */}
+
+                <select
+                  className="form-control"
+                  name="HOD"
+                  value={selectedHodId}
+                  onChange={(e) => {
+                    const hod = projectHods.find(
+                      (h) => h.employeeId === e.target.value
+                    );
+                    if (hod) {
+                      setSelectedHodId(hod.employeeId);
+                      setSelectedHodName(hod.HOD);
+                      // ✅ Update both HOD name and employeeId
+                      onChange({
+                        target: { name: "HOD", value: hod.HOD },
+                      });
+                      onChange({
+                        target: { name: "employeeId", value: hod.employeeId },
+                      });
+                    }
+                  }}
+                  disabled={employeeType !== "Admin"}
+                >
+                  <option value="">Select HOD</option>
+                  {projectHods.map((hod) => (
+                    <option key={hod.employeeId} value={hod.employeeId}>
+                      {hod.HOD} ({hod.employeeId})
                     </option>
                   ))}
                 </select>

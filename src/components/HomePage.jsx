@@ -175,10 +175,12 @@ const HomePage = () => {
 
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await api.get("http://localhost:5000/getallprojectstatus");
-        const data = res.data;
+
+  const fetchStats = async () => {
+    try {
+      const res = await api.get("/getallprojectstatus");
+      const data = res.data;
+
 
         // 🔹 Stats cards
         const projectStats = [

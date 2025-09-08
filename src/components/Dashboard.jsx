@@ -144,6 +144,55 @@ const Dashboard = () => {
     }
   };
 
+  // const handleEditProject = async (projectName, BP) => {
+  //   try {
+  //     if (!projectName) {
+  //       toast.error("Project name is missing!");
+  //       return;
+  //     }
+
+  //     const employeeId = localStorage.getItem("employeeId");
+  //     const employeeType = localStorage.getItem("employeeType"); // PM, HOD, Admin
+
+  //     if (!employeeId || !employeeType) {
+  //       toast.error("User info not found!");
+  //       return;
+  //     }
+
+  //     // Base payload
+  //     let payload = { projectName, employeeType };
+
+  //     if (employeeType === "PM") {
+  //       payload.empCode = employeeId;
+  //     } else if (employeeType === "HOD") {
+  //       payload.employeeId = BP?.name || employeeId; // take BP.name, fallback to id
+  //     } else if (employeeType === "Admin") {
+  //       // No adminId anymore, only navigate
+  //       navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+  //       return; // skip API call
+  //     } else {
+  //       payload.employeeId = employeeId; // fallback
+  //     }
+
+  //     console.log("Marking project editable:", payload);
+
+  //     const res = await api.patch(
+  //       "/project-assignments/mark-for-edit",
+  //       payload
+  //     );
+
+  //     if (res.status >= 200 && res.status < 300) {
+  //       toast.success(res.data.message);
+  //       navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+  //     } else {
+  //       toast.error("Failed to prepare project for edit");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error marking project for edit:", err);
+  //     toast.error("Something went wrong while editing the project");
+  //   }
+  // };
+
   const handleEditProject = async (projectName, BP) => {
     try {
       if (!projectName) {
@@ -159,36 +208,22 @@ const Dashboard = () => {
         return;
       }
 
-      // Base payload
-      let payload = { projectName, employeeType };
-
-      if (employeeType === "PM") {
-        payload.empCode = employeeId;
-      } else if (employeeType === "HOD") {
-        payload.employeeId = BP?.name || employeeId; // take BP.name, fallback to id
-      } else if (employeeType === "Admin") {
-        // No adminId anymore, only navigate
+      // For Admin → direct navigation
+      if (employeeType === "Admin") {
         navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
-        return; // skip API call
-      } else {
-        payload.employeeId = employeeId; // fallback
+        return;
       }
 
-      console.log("Marking project editable:", payload);
+      // For PM or HOD → still check user info, but no API call
+      console.log("Navigating to edit project:", {
+        projectName,
+        employeeType,
+        employeeId,
+      });
 
-      const res = await api.patch(
-        "/project-assignments/mark-for-edit",
-        payload
-      );
-
-      if (res.status >= 200 && res.status < 300) {
-        toast.success(res.data.message);
-        navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
-      } else {
-        toast.error("Failed to prepare project for edit");
-      }
+      navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
     } catch (err) {
-      console.error("Error marking project for edit:", err);
+      console.error("Error preparing project edit:", err);
       toast.error("Something went wrong while editing the project");
     }
   };
@@ -212,7 +247,7 @@ const Dashboard = () => {
   // }).length;
 
   const activeProjects = projects.length; // All projects are active
-const inactiveProjects = 0; // No inactive projects
+  const inactiveProjects = 0; // No inactive projects
 
   // Helper to get unique values for the selected filter type
 
@@ -252,17 +287,17 @@ const inactiveProjects = 0; // No inactive projects
   //   return "badge bg-secondary";
   // };
   const auditBadge = (auditStatus, expireDate) => {
-  if (!auditStatus || auditStatus === "N/A") return "badge bg-secondary";
+    if (!auditStatus || auditStatus === "N/A") return "badge bg-secondary";
 
-  if (expireDate) {
-    const expiry = new Date(expireDate);
-    if (expiry <= new Date()) {
-      return "badge bg-danger"; // expired → red
+    if (expireDate) {
+      const expiry = new Date(expireDate);
+      if (expiry <= new Date()) {
+        return "badge bg-danger"; // expired → red
+      }
     }
-  }
 
-  return "badge bg-success"; // active → green
-};
+    return "badge bg-success"; // active → green
+  };
 
   // const sslBadge = (sslStatus) => {
   //   if (sslStatus && sslStatus !== "N/A") return "badge bg-success";
@@ -308,7 +343,6 @@ const inactiveProjects = 0; // No inactive projects
           <main id="main" className="main w-100 p-3">
             <div className="pagetitle">
               <h1>Welcome to the Dashboard</h1>
-              
             </div>
 
             <section className="section dashboard">
@@ -382,7 +416,6 @@ const inactiveProjects = 0; // No inactive projects
             <>
               <div className="pagetitle">
                 <h1>Dashboard</h1>
-                
               </div>
 
               <section className="section dashboard">
@@ -404,34 +437,32 @@ const inactiveProjects = 0; // No inactive projects
                       </div>
 
                       <div className="col-md-4 col-sm-6">
-  <div className="card info-card revenue-card">
-    <div className="card-body d-flex align-items-center gap-3">
-      <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-        <i className="bi bi-toggle-on"></i>
-      </div>
-      <div>
-        <h6>{projects.length}</h6>
-      </div>
-      <h5 className="card-title">Active Projects</h5>
-    </div>
-  </div>
-</div>
-
+                        <div className="card info-card revenue-card">
+                          <div className="card-body d-flex align-items-center gap-3">
+                            <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                              <i className="bi bi-toggle-on"></i>
+                            </div>
+                            <div>
+                              <h6>{projects.length}</h6>
+                            </div>
+                            <h5 className="card-title">Active Projects</h5>
+                          </div>
+                        </div>
+                      </div>
 
                       <div className="col-md-4 col-sm-12">
-  <div className="card info-card customers-card">
-    <div className="card-body d-flex align-items-center gap-3">
-      <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-        <i className="bi bi-toggle-off"></i>
-      </div>
-      <div>
-        <h6>0</h6>
-      </div>
-      <h5 className="card-title">Inactive Projects</h5>
-    </div>
-  </div>
-</div>
-
+                        <div className="card info-card customers-card">
+                          <div className="card-body d-flex align-items-center gap-3">
+                            <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                              <i className="bi bi-toggle-off"></i>
+                            </div>
+                            <div>
+                              <h6>0</h6>
+                            </div>
+                            <h5 className="card-title">Inactive Projects</h5>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -575,7 +606,7 @@ const inactiveProjects = 0; // No inactive projects
                             style={{ padding: "40px 0" }}
                           >
                             <h4>No projects found.</h4>
-                            <div className="mt-4">
+                            {/* <div className="mt-4">
                               <div
                                 className="card mx-auto"
                                 style={{ maxWidth: 400 }}
@@ -592,7 +623,7 @@ const inactiveProjects = 0; // No inactive projects
                                   </p>
                                 </div>
                               </div>
-                            </div>
+                            </div> */}
                           </div>
                         ) : (
                           <div
@@ -601,7 +632,7 @@ const inactiveProjects = 0; // No inactive projects
                           >
                             <table className="table table-borderless datatable">
                               <thead>
-                                <tr style={{textAlign:"center"}}>
+                                <tr style={{ textAlign: "center" }}>
                                   <th>Assets ID</th>
                                   <th>Prism ID</th>
                                   <th>Project Name</th>
@@ -615,7 +646,7 @@ const inactiveProjects = 0; // No inactive projects
                                   <th>Edit</th>
                                 </tr>
                               </thead>
-                    
+
                               <tbody>
                                 {filteredProjects.map((project, index) => {
                                   const key =
@@ -635,7 +666,10 @@ const inactiveProjects = 0; // No inactive projects
                                   };
 
                                   return (
-                                    <tr key={key} style={{textAlign:"center"}}>
+                                    <tr
+                                      key={key}
+                                      style={{ textAlign: "center" }}
+                                    >
                                       <td>{project.assetsId || "N/A"}</td>
                                       <td>{project.prismId || "N/A"}</td>
                                       <td style={{ color: "#007bff" }}>
@@ -666,7 +700,10 @@ const inactiveProjects = 0; // No inactive projects
                                       </td>
                                       <td>
                                         <span
-                                         className={auditBadge(project.auditStatus, project.expireDate)}
+                                          className={auditBadge(
+                                            project.auditStatus,
+                                            project.expireDate
+                                          )}
                                         >
                                           {project.auditStatus || "N/A"}
                                         </span>
