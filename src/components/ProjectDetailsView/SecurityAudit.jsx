@@ -15,12 +15,20 @@ const SecurityAudit = ({ securityAudits }) => {
     : securityAudits?.securityAudit || [];
   
   // No data fallback
-  if (!auditsArray.length) {
+  // if (!auditsArray||auditsArray.length==0) {
+  //   return (
+  //     <div className="tab-pane fade profile-edit pt-3">
+  //       <div className="alert alert-info">
+  //         No security audit records found for this project.
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  if (!auditsArray || auditsArray.length === 0) {
     return (
-      <div className="tab-pane fade profile-edit pt-3">
-        <div className="alert alert-info">
-          No security audit records found for this project.
-        </div>
+      <div className="tab-pane fade show active profile-overview">
+        <div className="alert alert-info">No security audit records found for this project.</div>
       </div>
     );
   }
@@ -30,7 +38,7 @@ const SecurityAudit = ({ securityAudits }) => {
     const rawDate = dateInput?.$date || dateInput;
     const date = new Date(rawDate);
     return isNaN(date.getTime())
-      ? "Invalid date"
+      ? "N/A"
       : date.toLocaleDateString("en-GB", {
           day: "2-digit",
           month: "short",

@@ -11,7 +11,7 @@ const TlsInfo = ({ tlsRecords }) => {
 
   return (
     <div className="tab-pane fade show active profile-overview">
-      <h4>TLS Information</h4>
+      {/* <h4>TLS Information</h4> */}
       <div className="table-responsive">
         <table className="table table-bordered text-center">
           <thead className="table-light">
