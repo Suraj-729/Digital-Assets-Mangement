@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from "react";
 import ProgressBar from "./ProgressBar";
 import StepBasicProfile from "./StepBasicProfile";
@@ -275,16 +276,12 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   const form = new FormData();
-    //   const employeeId = localStorage.getItem("employeeId");
-    // const confirmSubmit = window.confirm("Are you sure you want to submit this project?");
-    // if (!confirmSubmit) {
-    //   return; // ❌ Stop submission
-    // }
+
     try {
       const form = new FormData();
-      let employeeId = localStorage.getItem("employeeId");
+      // let employeeId = localStorage.getItem("employeeId");
+      let employeeId = formData.employeeId || localStorage.getItem("employeeId");
+
       const employeeType = localStorage.getItem("employeeType");
       const DEFAULT_VALUE = "N/A";
       const AuditStatus = {
@@ -294,7 +291,8 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       // If PM, fetch HOD employeeId from API
       if (employeeType === "PM") {
         const empCode = formData.nicOfficerEmpCode;
-        const response = await api.get(`/project-assignments/${empCode}`);
+        //i edited this part for the today
+        const response = await api.get(`/project-assignments/by-pm/${empCode}`);
         // Use employeeId from the first item in the array
         if (
           response.data &&
@@ -327,30 +325,7 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
           email: formData.deptOfficerEmail,
         },
       };
-      // const SA = {
-      //   securityAudit: auditRecords.map((record, idx) => {
-      //     const expireDate = record.expireDate
-      //       ? new Date(record.expireDate).toISOString()
-      //       : null;
-      //     const auditDate = record.auditDate
-      //       ? new Date(record.auditDate).toISOString()
-      //       : null;
-
-      //     return {
-      //       slNo: idx + 1, // ✅ no spaces
-      //       typeOfAudit: record.typeOfAudit || "N/A",
-      //       auditingAgency: record.auditingAgency || "N/A",
-      //       auditDate,
-      //       expireDate,
-      //       certificate: record.certificate || "N/A",
-      //       auditStatus:
-      //         expireDate && new Date() > new Date(expireDate)
-      //           ? "Expired"
-      //           : "Completed",
-      //     };
-      //   }),
-      // };
-
+   
       const SA = {
         securityAudit: auditRecords.map((record, idx) => {
           const expireDate = record.expireDate

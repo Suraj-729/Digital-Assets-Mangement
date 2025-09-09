@@ -1,7 +1,4 @@
-// import React, { useState, useEffect } from "react";
-// import "../css/mvpStyle.css";
-// import { toast } from "react-toastify";
-// import api from "../Api";
+
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
@@ -20,11 +17,43 @@ const StepBasicProfile = ({
   const [projects, setProjects] = useState([]);
   const [projectHods, setProjectHods] = useState([]);
 
+  const [selectedHodId, setSelectedHodId] = useState("");
+  const [selectedHodName, setSelectedHodName] = useState("");
+  const [noProjects, setNoProjects] = useState(false);
+
+  // useEffect(() => {
+  //   // Fetch HODs from API when component mounts
+  //   const fetchHods = async () => {
+  //     try {
+  //       const response = await api.get("/allhods"); // your API endpoint
+  //       if (response.data && response.data.projectHods) {
+  //         setProjectHods(response.data.projectHods);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching HODs:", error);
+  //     }
+  //   };
+
+  //   fetchHods();
+  // }, []);
+
   useEffect(() => {
-    // Fetch HODs from API when component mounts
+  if (formData.HOD && projectHods.length > 0) {
+    const hod = projectHods.find(
+      (h) => h.HOD === formData.HOD || h.employeeId === formData.employeeId
+    );
+    if (hod) {
+      setSelectedHodId(hod.employeeId);
+      setSelectedHodName(hod.HOD);
+    }
+  }
+}, [formData.HOD, formData.employeeId, projectHods]);
+
+
+  useEffect(() => {
     const fetchHods = async () => {
       try {
-        const response = await api.get("/allhods"); // your API endpoint
+        const response = await api.get("/allhods");
         if (response.data && response.data.projectHods) {
           setProjectHods(response.data.projectHods);
         }
@@ -32,7 +61,6 @@ const StepBasicProfile = ({
         console.error("Error fetching HODs:", error);
       }
     };
-
     fetchHods();
   }, []);
 
@@ -47,49 +75,126 @@ const StepBasicProfile = ({
     }
   }, []);
 
+  // useEffect(() => {
+  //   if (employeeType === "PM") {
+  //     const empCode = formData.empCode || localStorage.getItem("employeeId");
+  //     if (!empCode) return;
+
+  //     setLoading(true);
+  //     api
+  //       .get(`/project-assignments/${empCode}`)
+  //       .then((res) => {
+  //         const data = res.data;
+
+  //         if (data && data.length > 0) {
+  //           const project = data[0];
+  //           onChange({
+  //             target: { name: "projectName", value: project.projectName || "" },
+  //           });
+  //           onChange({
+  //             target: { name: "departmentName", value: project.deptName || "" },
+  //           });
+  //           onChange({ target: { name: "HOD", value: project.HOD || "" } });
+  //           onChange({
+  //             target: {
+  //               name: "nicOfficerName",
+  //               value: project.projectManagerName || "",
+  //             },
+  //           });
+  //           onChange({
+  //             target: {
+  //               name: "nicOfficerEmpCode",
+  //               value: project.empCode || "",
+  //             },
+  //           });
+  //         } else {
+  //           // toast.warning("No project data found for your empCode.");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.error("Error fetching project assignment data:", err);
+  //         // toast.error("Failed to fetch project assignment data.");
+  //       })
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [employeeType]);
+
   useEffect(() => {
-    if (employeeType === "PM") {
-      const empCode = formData.empCode || localStorage.getItem("employeeId");
-      if (!empCode) return;
+  console.log("useEffect triggered for fetching PM project details");
 
-      setLoading(true);
-      api
-        .get(`/project-assignments/${empCode}`)
-        .then((res) => {
-          const data = res.data;
+  if (employeeType === "PM") {
+    console.log("Employee type is PM");
 
-          if (data && data.length > 0) {
-            const project = data[0];
-            onChange({
-              target: { name: "projectName", value: project.projectName || "" },
-            });
-            onChange({
-              target: { name: "departmentName", value: project.deptName || "" },
-            });
-            onChange({ target: { name: "HOD", value: project.HOD || "" } });
-            onChange({
-              target: {
-                name: "nicOfficerName",
-                value: project.projectManagerName || "",
-              },
-            });
-            onChange({
-              target: {
-                name: "nicOfficerEmpCode",
-                value: project.empCode || "",
-              },
-            });
-          } else {
-            // toast.warning("No project data found for your empCode.");
-          }
-        })
-        .catch((err) => {
-          console.error("Error fetching project assignment data:", err);
-          // toast.error("Failed to fetch project assignment data.");
-        })
-        .finally(() => setLoading(false));
+    const empCode = formData.empCode || localStorage.getItem("employeeId");
+    console.log("empCode:", empCode);
+
+    if (!empCode) {
+      console.warn("empCode is missing, skipping API call");
+      return;
     }
-  }, [employeeType]);
+
+    setLoading(true);
+    console.log("Fetching project assignments for empCode:", empCode);
+
+    api
+      .get(`/project-assignments/${empCode}`)
+      .then((res) => {
+        console.log("API response received:", res.data);
+
+        const data = res.data;
+         if (!data.length) {
+            // ❌ Popup when no projects assigned
+            Swal.fire({
+              title: "No Projects Assigned",
+              text: "There are no projects assigned to you by HOD.",
+              icon: "info",
+              confirmButtonText: "OK",
+            });
+            return;
+          }
+
+
+        if (data && data.length > 0) {
+          const project = data[0];
+          console.log("Project found:", project);
+
+          onChange({
+            target: { name: "projectName", value: project.projectName || "" },
+          });
+          onChange({
+            target: { name: "departmentName", value: project.deptName || "" },
+          });
+          onChange({ target: { name: "HOD", value: project.HOD || "" } });
+          onChange({
+            target: {
+              name: "nicOfficerName",
+              value: project.projectManagerName || "",
+            },
+          });
+          onChange({
+            target: {
+              name: "nicOfficerEmpCode",
+              value: project.empCode || "",
+            },
+          });
+          console.log("Form data updated with project details");
+        } else {
+          console.warn("No project data found for this empCode");
+          // toast.warning("No project data found for your empCode.");
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching project assignment data:", err);
+        // toast.error("Failed to fetch project assignment data.");
+      })
+      .finally(() => {
+        setLoading(false);
+        console.log("Finished loading project data");
+      });
+  } else {
+    console.log("Employee type is not PM, skipping API call");
+  }
+}, [employeeType]);
 
   useEffect(() => {
     if (employeeType === "PM") {
@@ -157,6 +262,10 @@ const StepBasicProfile = ({
         .finally(() => setLoading(false));
     }
   }, [employeeType, formData.empCode, formData.projectName]);
+
+
+
+
 
   const handleProjectSelect = (e) => {
     const selectedProject = projects.find(
@@ -437,7 +546,7 @@ const StepBasicProfile = ({
                 <label className="form-label">HOD Name:</label>
               </div>
               <div className="col-sm-8">
-                <select
+                {/* <select
                   className={`form-control ${errors.HOD ? "is-invalid" : ""}`}
                   name="HOD"
                   value={formData.HOD || ""}
@@ -463,7 +572,39 @@ const StepBasicProfile = ({
                       {hod.HOD}-{hod.employeeId} 
                     </option>
                   ))}
+                </select> */}
+
+                <select
+                  className="form-control"
+                  name="HOD"
+                  value={selectedHodId}
+                  onChange={(e) => {
+                    const hod = projectHods.find(
+                      (h) => h.employeeId === e.target.value
+                    );
+                    if (hod) {
+                      setSelectedHodId(hod.employeeId);
+                      setSelectedHodName(hod.HOD);
+                      // ✅ Update both HOD name and employeeId
+                      onChange({
+                        target: { name: "HOD", value: hod.HOD },
+                      });
+                      onChange({
+                        target: { name: "employeeId", value: hod.employeeId },
+                      });
+                    }
+                  }}
+                  disabled={employeeType !== "Admin"}
+                >
+                  <option value="">Select HOD</option>
+                  {projectHods.map((hod) => (
+                    <option key={hod.employeeId} value={hod.employeeId}>
+                      {hod.HOD} ({hod.employeeId})
+                    </option>
+                  ))}
                 </select>
+
+                
 
                 {errors.HOD && (
                   <div className="invalid-feedback">{errors.HOD}</div>
