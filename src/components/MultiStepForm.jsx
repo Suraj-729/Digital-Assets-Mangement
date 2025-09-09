@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from "react";
 import ProgressBar from "./ProgressBar";
 import StepBasicProfile from "./StepBasicProfile";
@@ -290,7 +291,8 @@ const MultiStepForm = ({ editData, onEditComplete }) => {
       // If PM, fetch HOD employeeId from API
       if (employeeType === "PM") {
         const empCode = formData.nicOfficerEmpCode;
-        const response = await api.get(`/project-assignments/${empCode}`);
+        //i edited this part for the today
+        const response = await api.get(`/project-assignments/by-pm/${empCode}`);
         // Use employeeId from the first item in the array
         if (
           response.data &&

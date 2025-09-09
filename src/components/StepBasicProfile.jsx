@@ -1,7 +1,4 @@
-// import React, { useState, useEffect } from "react";
-// import "../css/mvpStyle.css";
-// import { toast } from "react-toastify";
-// import api from "../Api";
+
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
@@ -22,6 +19,7 @@ const StepBasicProfile = ({
 
   const [selectedHodId, setSelectedHodId] = useState("");
   const [selectedHodName, setSelectedHodName] = useState("");
+  const [noProjects, setNoProjects] = useState(false);
 
   // useEffect(() => {
   //   // Fetch HODs from API when component mounts
@@ -38,6 +36,19 @@ const StepBasicProfile = ({
 
   //   fetchHods();
   // }, []);
+
+  useEffect(() => {
+  if (formData.HOD && projectHods.length > 0) {
+    const hod = projectHods.find(
+      (h) => h.HOD === formData.HOD || h.employeeId === formData.employeeId
+    );
+    if (hod) {
+      setSelectedHodId(hod.employeeId);
+      setSelectedHodName(hod.HOD);
+    }
+  }
+}, [formData.HOD, formData.employeeId, projectHods]);
+
 
   useEffect(() => {
     const fetchHods = async () => {
@@ -64,49 +75,126 @@ const StepBasicProfile = ({
     }
   }, []);
 
+  // useEffect(() => {
+  //   if (employeeType === "PM") {
+  //     const empCode = formData.empCode || localStorage.getItem("employeeId");
+  //     if (!empCode) return;
+
+  //     setLoading(true);
+  //     api
+  //       .get(`/project-assignments/${empCode}`)
+  //       .then((res) => {
+  //         const data = res.data;
+
+  //         if (data && data.length > 0) {
+  //           const project = data[0];
+  //           onChange({
+  //             target: { name: "projectName", value: project.projectName || "" },
+  //           });
+  //           onChange({
+  //             target: { name: "departmentName", value: project.deptName || "" },
+  //           });
+  //           onChange({ target: { name: "HOD", value: project.HOD || "" } });
+  //           onChange({
+  //             target: {
+  //               name: "nicOfficerName",
+  //               value: project.projectManagerName || "",
+  //             },
+  //           });
+  //           onChange({
+  //             target: {
+  //               name: "nicOfficerEmpCode",
+  //               value: project.empCode || "",
+  //             },
+  //           });
+  //         } else {
+  //           // toast.warning("No project data found for your empCode.");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.error("Error fetching project assignment data:", err);
+  //         // toast.error("Failed to fetch project assignment data.");
+  //       })
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [employeeType]);
+
   useEffect(() => {
-    if (employeeType === "PM") {
-      const empCode = formData.empCode || localStorage.getItem("employeeId");
-      if (!empCode) return;
+  console.log("useEffect triggered for fetching PM project details");
 
-      setLoading(true);
-      api
-        .get(`/project-assignments/${empCode}`)
-        .then((res) => {
-          const data = res.data;
+  if (employeeType === "PM") {
+    console.log("Employee type is PM");
 
-          if (data && data.length > 0) {
-            const project = data[0];
-            onChange({
-              target: { name: "projectName", value: project.projectName || "" },
-            });
-            onChange({
-              target: { name: "departmentName", value: project.deptName || "" },
-            });
-            onChange({ target: { name: "HOD", value: project.HOD || "" } });
-            onChange({
-              target: {
-                name: "nicOfficerName",
-                value: project.projectManagerName || "",
-              },
-            });
-            onChange({
-              target: {
-                name: "nicOfficerEmpCode",
-                value: project.empCode || "",
-              },
-            });
-          } else {
-            // toast.warning("No project data found for your empCode.");
-          }
-        })
-        .catch((err) => {
-          console.error("Error fetching project assignment data:", err);
-          // toast.error("Failed to fetch project assignment data.");
-        })
-        .finally(() => setLoading(false));
+    const empCode = formData.empCode || localStorage.getItem("employeeId");
+    console.log("empCode:", empCode);
+
+    if (!empCode) {
+      console.warn("empCode is missing, skipping API call");
+      return;
     }
-  }, [employeeType]);
+
+    setLoading(true);
+    console.log("Fetching project assignments for empCode:", empCode);
+
+    api
+      .get(`/project-assignments/${empCode}`)
+      .then((res) => {
+        console.log("API response received:", res.data);
+
+        const data = res.data;
+         if (!data.length) {
+            // ❌ Popup when no projects assigned
+            Swal.fire({
+              title: "No Projects Assigned",
+              text: "There are no projects assigned to you by HOD.",
+              icon: "info",
+              confirmButtonText: "OK",
+            });
+            return;
+          }
+
+
+        if (data && data.length > 0) {
+          const project = data[0];
+          console.log("Project found:", project);
+
+          onChange({
+            target: { name: "projectName", value: project.projectName || "" },
+          });
+          onChange({
+            target: { name: "departmentName", value: project.deptName || "" },
+          });
+          onChange({ target: { name: "HOD", value: project.HOD || "" } });
+          onChange({
+            target: {
+              name: "nicOfficerName",
+              value: project.projectManagerName || "",
+            },
+          });
+          onChange({
+            target: {
+              name: "nicOfficerEmpCode",
+              value: project.empCode || "",
+            },
+          });
+          console.log("Form data updated with project details");
+        } else {
+          console.warn("No project data found for this empCode");
+          // toast.warning("No project data found for your empCode.");
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching project assignment data:", err);
+        // toast.error("Failed to fetch project assignment data.");
+      })
+      .finally(() => {
+        setLoading(false);
+        console.log("Finished loading project data");
+      });
+  } else {
+    console.log("Employee type is not PM, skipping API call");
+  }
+}, [employeeType]);
 
   useEffect(() => {
     if (employeeType === "PM") {
@@ -174,6 +262,10 @@ const StepBasicProfile = ({
         .finally(() => setLoading(false));
     }
   }, [employeeType, formData.empCode, formData.projectName]);
+
+
+
+
 
   const handleProjectSelect = (e) => {
     const selectedProject = projects.find(
@@ -511,6 +603,8 @@ const StepBasicProfile = ({
                     </option>
                   ))}
                 </select>
+
+                
 
                 {errors.HOD && (
                   <div className="invalid-feedback">{errors.HOD}</div>

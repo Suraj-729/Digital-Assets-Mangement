@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { FaTrash } from "react-icons/fa";
@@ -78,99 +79,214 @@ const DRForm = ({
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    const employeeId = localStorage.getItem("employeeId"); // only for PM/HOD
-    const employeeType = localStorage.getItem("employeeType"); // "PM" | "HOD" | "Admin"
+  //   const employeeId = localStorage.getItem("employeeId"); // only for PM/HOD
+  //   const employeeType = localStorage.getItem("employeeType"); // "PM" | "HOD" | "Admin"
 
-    try {
-      // 1️⃣ Determine projectName based on role
-      let projectName = "";
-      switch (employeeType) {
-        case "Admin":
-          projectName = urlProjectName || "";
-          break;
-        case "PM": {
-          const res = await api.get(`/project-assignments/${employeeId}`);
-          const pmProject = res.data.find((it) => it.empCode === employeeId);
-          if (pmProject) projectName = pmProject.projectName;
-          break;
-        }
-        case "HOD": {
-          const res = await api.get(`/project-assignments/hod/${employeeId}`);
-          const hodProject = res.data.find(
-            (it) => it.employeeId === employeeId
-          );
-          if (hodProject) projectName = hodProject.projectName;
-          break;
-        }
-        default:
-          projectName = "";
-      }
+  //   try {
+  //     // 1️⃣ Determine projectName based on role
+  //     let projectName = "";
+  //     switch (employeeType) {
+  //       case "Admin":
+  //         projectName = urlProjectName || "";
+  //         break;
+  //       case "PM": {
+  //         const res = await api.get(`/project-assignments/${employeeId}`);
+  //         const pmProject = res.data.find((it) => it.empCode === employeeId);
+  //         if (pmProject) projectName = pmProject.projectName;
+  //         break;
+  //       }
+  //       case "HOD": {
+  //         const res = await api.get(`/project-assignments/hod/${employeeId}`);
+  //         const hodProject = res.data.find(
+  //           (it) => it.employeeId === employeeId
+  //         );
+  //         if (hodProject) projectName = hodProject.projectName;
+  //         break;
+  //       }
+  //       default:
+  //         projectName = "";
+  //     }
 
-      if (!projectName) {
-        toast.error("Project name is missing!");
-        return;
-      }
+  //     if (!projectName) {
+  //       toast.error("Project name is missing!");
+  //       return;
+  //     }
 
-      // 2️⃣ Confirm submission
-      const confirm = await Swal.fire({
-        title: "Do you want to submit this form?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, submit it!",
-        cancelButtonText: "Cancel",
-      });
-      if (!confirm.isConfirmed) return;
+  //     // 2️⃣ Confirm submission
+  //     const confirm = await Swal.fire({
+  //       title: "Do you want to submit this form?",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "Yes, submit it!",
+  //       cancelButtonText: "Cancel",
+  //     });
+  //     if (!confirm.isConfirmed) return;
 
-      // 3️⃣ Submit the multi-step form first
-      if (typeof onSubmit === "function") await onSubmit(e);
+  //     // 3️⃣ Submit the multi-step form first
+  //     if (typeof onSubmit === "function") await onSubmit(e);
 
       
 
-      // 4️⃣ Build role-aware payload for backend
-      // const payload = { projectName, userType: employeeType };
+  //     // 4️⃣ Build role-aware payload for backend
+  //     // const payload = { projectName, userType: employeeType };
 
-      // if (employeeType === "PM") {
-      //   payload.empCode = employeeId; // ✅ only for PM
-      // } else if (employeeType === "HOD") {
-      //   payload.employeeId = employeeId; // ✅ only for HOD
-      // }
+  //     // if (employeeType === "PM") {
+  //     //   payload.empCode = employeeId; // ✅ only for PM
+  //     // } else if (employeeType === "HOD") {
+  //     //   payload.employeeId = employeeId; // ✅ only for HOD
+  //     // }
 
-      // Build the payload based on role
+  //     // Build the payload based on role
+  //   const payload = { projectName, userType: employeeType };
+
+  //   if (employeeType === "PM") {
+  //     payload.empCode = employeeId;
+  //   } else if (employeeType === "HOD") {
+  //     payload.employeeId = employeeId;
+  //   } else if (employeeType === "Admin") {
+  //     // Admin case → take from formData dropdown selection
+  //     payload.employeeId = formData.hodId;  // this is the selected employeeId
+  //     payload.HOD = formData.HOD;          // this is the selected HOD name
+  //   }
+  //   console.log("Final payload:", payload);
+  //     // ❌ Admin → do NOT include employeeId at all
+
+  //     // 5️⃣ Update project status in backend
+  //     await api.put("/project/update-status", payload);
+  //     console.log("the payload of the pay");
+      
+
+  //     // 6️⃣ Notify success
+  //     Swal.fire({
+  //       title: "Submitted!",
+  //       text: "Your data has been submitted.",
+  //       icon: "success",
+  //       timer: 2000,
+  //       showConfirmButton: false,
+  //     });
+  //   } catch (err) {
+  //     console.error("Submission error:", err);
+  //     toast.error("Something went wrong. Please try again.");
+  //   }
+  // };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const employeeId = localStorage.getItem("employeeId"); // for PM/HOD
+  const employeeType = localStorage.getItem("employeeType"); // "PM" | "HOD" | "Admin"
+
+  console.log("handleSubmit called");
+  console.log("Employee ID:", employeeId);
+  console.log("Employee Type:", employeeType);
+
+  try {
+    // ✅ Determine projectName based on role
+    let projectName = "";
+    console.log("Determining project name...");
+
+    switch (employeeType) {
+      case "Admin":
+        projectName = urlProjectName || "";
+        console.log("Admin selected. Using projectName:", projectName);
+        break;
+      case "PM": {
+        console.log("Fetching project assignments for PM...");
+        const res = await api.get(`/project-assignments/by-pm/${employeeId}`);
+        const pmProject = res.data.find((it) => it.empCode === employeeId);
+        if (pmProject) {
+          projectName = pmProject.projectName;
+          console.log("PM project found:", projectName);
+        } else {
+          console.log("No PM project found.");
+        }
+        break;
+      }
+      case "HOD": {
+        console.log("Fetching project assignments for HOD...");
+        const res = await api.get(`/project-assignments/hod/${employeeId}`);
+        const hodProject = res.data.find((it) => it.employeeId === employeeId);
+        if (hodProject) {
+          projectName = hodProject.projectName;
+          console.log("HOD project found:", projectName);
+        } else {
+          console.log("No HOD project found.");
+        }
+        break;
+      }
+      default:
+        console.log("Unknown employee type.");
+        projectName = "";
+    }
+
+    if (!projectName) {
+      console.error("Project name is missing!");
+      toast.error("Project name is missing!");
+      return;
+    }
+
+    // ✅ Ask for user confirmation
+    console.log("Asking for submission confirmation...");
+    const confirm = await Swal.fire({
+      title: "Do you want to submit this form?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, submit it!",
+      cancelButtonText: "Cancel",
+    });
+    if (!confirm.isConfirmed) {
+      console.log("Submission cancelled by user.");
+      return;
+    }
+    console.log("User confirmed submission.");
+
+    // ✅ Call form submission handler if provided
+    if (typeof onSubmit === "function") {
+      console.log("Calling onSubmit handler...");
+      await onSubmit(e);
+      console.log("onSubmit handler completed.");
+    }
+
+    // ✅ Build role-based payload
+    console.log("Building payload...");
     const payload = { projectName, userType: employeeType };
 
     if (employeeType === "PM") {
       payload.empCode = employeeId;
+      console.log("Payload for PM:", payload);
     } else if (employeeType === "HOD") {
       payload.employeeId = employeeId;
+      console.log("Payload for HOD:", payload);
     } else if (employeeType === "Admin") {
-      // Admin case → take from formData dropdown selection
-      payload.employeeId = formData.hodId;  // this is the selected employeeId
-      payload.HOD = formData.HOD;          // this is the selected HOD name
+      payload.employeeId = formData.hodId;
+      payload.HOD = formData.HOD;
+      console.log("Payload for Admin:", payload);
     }
-    console.log("Final payload:", payload);
-      // ❌ Admin → do NOT include employeeId at all
 
-      // 5️⃣ Update project status in backend
-      await api.put("/project/update-status", payload);
-      console.log("the payload of the pay");
-      
+    console.log("Final payload being sent:", payload);
 
-      // 6️⃣ Notify success
-      Swal.fire({
-        title: "Submitted!",
-        text: "Your data has been submitted.",
-        icon: "success",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-    } catch (err) {
-      console.error("Submission error:", err);
-      toast.error("Something went wrong. Please try again.");
-    }
-  };
+    // ✅ Send update to backend
+    console.log("Sending update to backend...");
+    await api.put("/project/update-status", payload);
+    console.log("Update sent successfully.");
+
+    // ✅ Notify success
+    Swal.fire({
+      title: "Submitted!",
+      text: "Your data has been submitted.",
+      icon: "success",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+    console.log("Submission successful.");
+
+  } catch (err) {
+    console.error("Submission error:", err);
+    toast.error("Something went wrong. Please try again.");
+  }
+};
 
   return (
     <div className="container p-4" style={{ backgroundColor: "#f5f8ff" }}>
