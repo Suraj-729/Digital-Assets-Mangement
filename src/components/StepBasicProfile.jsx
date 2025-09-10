@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import api from "../Api";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { useNavigate } from "react-router-dom";
+
 
 const StepBasicProfile = ({
   formData = {},
@@ -20,6 +22,7 @@ const StepBasicProfile = ({
   const [selectedHodId, setSelectedHodId] = useState("");
   const [selectedHodName, setSelectedHodName] = useState("");
   const [noProjects, setNoProjects] = useState(false);
+const navigate = useNavigate();
 
   // useEffect(() => {
   //   // Fetch HODs from API when component mounts
@@ -119,45 +122,115 @@ const StepBasicProfile = ({
   //   }
   // }, [employeeType]);
 
-  useEffect(() => {
-  console.log("useEffect triggered for fetching PM project details");
+//   useEffect(() => {
+//   console.log("useEffect triggered for fetching PM project details");
 
+//   if (employeeType === "PM") {
+//     console.log("Employee type is PM");
+
+//     const empCode = formData.empCode || localStorage.getItem("employeeId");
+//     console.log("empCode:", empCode);
+
+//     if (!empCode) {
+//       console.warn("empCode is missing, skipping API call");
+//       return;
+//     }
+
+//     setLoading(true);
+//     console.log("Fetching project assignments for empCode:", empCode);
+
+//     api
+//       .get(`/project-assignments/${empCode}`)
+//       .then((res) => {
+//         console.log("API response received:", res.data);
+
+//         const data = res.data;
+//          if (!data.length) {
+//             // ❌ Popup when no projects assigned
+//             Swal.fire({
+//               title: "No Projects Assigned",
+//               text: "There are no projects assigned to you by HOD.",
+//               icon: "info",
+//               confirmButtonText: "OK",
+//             });
+//             return;
+//           }
+
+
+//         if (data && data.length > 0) {
+//           const project = data[0];
+//           console.log("Project found:", project);
+
+//           onChange({
+//             target: { name: "projectName", value: project.projectName || "" },
+//           });
+//           onChange({
+//             target: { name: "departmentName", value: project.deptName || "" },
+//           });
+//           onChange({ target: { name: "HOD", value: project.HOD || "" } });
+//           onChange({
+//             target: {
+//               name: "nicOfficerName",
+//               value: project.projectManagerName || "",
+//             },
+//           });
+//           onChange({
+//             target: {
+//               name: "nicOfficerEmpCode",
+//               value: project.empCode || "",
+//             },
+//           });
+//           console.log("Form data updated with project details");
+//         } else {
+//           console.warn("No project data found for this empCode");
+//           // toast.warning("No project data found for your empCode.");
+//         }
+//       })
+//       .catch((err) => {
+//         console.error("Error fetching project assignment data:", err);
+//         // toast.error("Failed to fetch project assignment data.");
+//       })
+//       .finally(() => {
+//         setLoading(false);
+//         console.log("Finished loading project data");
+//       });
+//   } else {
+//     console.log("Employee type is not PM, skipping API call");
+//   }
+// }, [employeeType]);
+
+
+useEffect(() => {
   if (employeeType === "PM") {
-    console.log("Employee type is PM");
-
     const empCode = formData.empCode || localStorage.getItem("employeeId");
-    console.log("empCode:", empCode);
-
-    if (!empCode) {
-      console.warn("empCode is missing, skipping API call");
-      return;
-    }
+    if (!empCode) return;
 
     setLoading(true);
-    console.log("Fetching project assignments for empCode:", empCode);
 
     api
       .get(`/project-assignments/${empCode}`)
       .then((res) => {
-        console.log("API response received:", res.data);
+        const data = res.data || [];
 
-        const data = res.data;
-         if (!data.length) {
-            // ❌ Popup when no projects assigned
-            Swal.fire({
-              title: "No Projects Assigned",
-              text: "There are no projects assigned to you by HOD.",
-              icon: "info",
-              confirmButtonText: "OK",
-            });
-            return;
-          }
+        // ✅ Detect if we are in EDIT mode
+        const isEditMode = window.location.pathname.includes("/dashboard/EDITProject");
 
+        if (!data.length && !isEditMode) {
+          // ❌ Popup only if NOT in edit mode
+          Swal.fire({
+            title: "Oops!",
+            text: "No projects are assigned to you by HOD.",
+            icon: "info",
+            confirmButtonText: "OK",
+          }).then(() => {
+             navigate(`/dashboard/by-type/${empCode}?employeeType=${employeeType}`); // Redirect to dashboard
+          });
+          return;
+        }
 
-        if (data && data.length > 0) {
+        // If projects exist, prefill the first one
+        if (data.length > 0) {
           const project = data[0];
-          console.log("Project found:", project);
-
           onChange({
             target: { name: "projectName", value: project.projectName || "" },
           });
@@ -166,35 +239,26 @@ const StepBasicProfile = ({
           });
           onChange({ target: { name: "HOD", value: project.HOD || "" } });
           onChange({
-            target: {
-              name: "nicOfficerName",
-              value: project.projectManagerName || "",
-            },
+            target: { name: "nicOfficerName", value: project.projectManagerName || "" },
           });
-          onChange({
-            target: {
-              name: "nicOfficerEmpCode",
-              value: project.empCode || "",
-            },
-          });
-          console.log("Form data updated with project details");
-        } else {
-          console.warn("No project data found for this empCode");
-          // toast.warning("No project data found for your empCode.");
+          onChange({ target: { name: "nicOfficerEmpCode", value: project.empCode || "" } });
         }
       })
       .catch((err) => {
         console.error("Error fetching project assignment data:", err);
-        // toast.error("Failed to fetch project assignment data.");
+        if (!window.location.pathname.includes("/dashboard/EDITProject")) {
+          Swal.fire({
+            title: "Error",
+            text: "Failed to fetch project data.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        }
       })
-      .finally(() => {
-        setLoading(false);
-        console.log("Finished loading project data");
-      });
-  } else {
-    console.log("Employee type is not PM, skipping API call");
+      .finally(() => setLoading(false));
   }
-}, [employeeType]);
+}, [employeeType, formData.empCode]);
+
 
   useEffect(() => {
     if (employeeType === "PM") {
@@ -208,16 +272,7 @@ const StepBasicProfile = ({
           const data = res.data || [];
           setProjects(data);
 
-          if (!data.length) {
-            // ❌ Popup when no projects assigned
-            Swal.fire({
-              title: "No Projects Assigned",
-              text: "There are no projects assigned to you by HOD.",
-              icon: "info",
-              confirmButtonText: "OK",
-            });
-            return;
-          }
+         
 
           // ✅ Only prefill if we are in EDIT mode (formData.projectName already exists)
           if (formData.projectName) {
@@ -753,3 +808,7 @@ const StepBasicProfile = ({
 };
 
 export default StepBasicProfile;
+
+
+
+
