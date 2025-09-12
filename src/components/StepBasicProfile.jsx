@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import "../css/mvpStyle.css";
 import { toast } from "react-toastify";
 import api from "../Api";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useParams } from "react-router-dom";
 
 
 const StepBasicProfile = ({
@@ -22,36 +21,20 @@ const StepBasicProfile = ({
   const [selectedHodId, setSelectedHodId] = useState("");
   const [selectedHodName, setSelectedHodName] = useState("");
   const [noProjects, setNoProjects] = useState(false);
-const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   // Fetch HODs from API when component mounts
-  //   const fetchHods = async () => {
-  //     try {
-  //       const response = await api.get("/allhods"); // your API endpoint
-  //       if (response.data && response.data.projectHods) {
-  //         setProjectHods(response.data.projectHods);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching HODs:", error);
-  //     }
-  //   };
-
-  //   fetchHods();
-  // }, []);
+  const navigate = useNavigate();
+  const { projectName: projectNameFromUrl } = useParams();
 
   useEffect(() => {
-  if (formData.HOD && projectHods.length > 0) {
-    const hod = projectHods.find(
-      (h) => h.HOD === formData.HOD || h.employeeId === formData.employeeId
-    );
-    if (hod) {
-      setSelectedHodId(hod.employeeId);
-      setSelectedHodName(hod.HOD);
+    if (formData.HOD && projectHods.length > 0) {
+      const hod = projectHods.find(
+        (h) => h.HOD === formData.HOD || h.employeeId === formData.employeeId
+      );
+      if (hod) {
+        setSelectedHodId(hod.employeeId);
+        setSelectedHodName(hod.HOD);
+      }
     }
-  }
-}, [formData.HOD, formData.employeeId, projectHods]);
-
+  }, [formData.HOD, formData.employeeId, projectHods]);
 
   useEffect(() => {
     const fetchHods = async () => {
@@ -78,247 +61,96 @@ const navigate = useNavigate();
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (employeeType === "PM") {
-  //     const empCode = formData.empCode || localStorage.getItem("employeeId");
-  //     if (!empCode) return;
-
-  //     setLoading(true);
-  //     api
-  //       .get(`/project-assignments/${empCode}`)
-  //       .then((res) => {
-  //         const data = res.data;
-
-  //         if (data && data.length > 0) {
-  //           const project = data[0];
-  //           onChange({
-  //             target: { name: "projectName", value: project.projectName || "" },
-  //           });
-  //           onChange({
-  //             target: { name: "departmentName", value: project.deptName || "" },
-  //           });
-  //           onChange({ target: { name: "HOD", value: project.HOD || "" } });
-  //           onChange({
-  //             target: {
-  //               name: "nicOfficerName",
-  //               value: project.projectManagerName || "",
-  //             },
-  //           });
-  //           onChange({
-  //             target: {
-  //               name: "nicOfficerEmpCode",
-  //               value: project.empCode || "",
-  //             },
-  //           });
-  //         } else {
-  //           // toast.warning("No project data found for your empCode.");
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         console.error("Error fetching project assignment data:", err);
-  //         // toast.error("Failed to fetch project assignment data.");
-  //       })
-  //       .finally(() => setLoading(false));
-  //   }
-  // }, [employeeType]);
-
-//   useEffect(() => {
-//   console.log("useEffect triggered for fetching PM project details");
-
-//   if (employeeType === "PM") {
-//     console.log("Employee type is PM");
-
-//     const empCode = formData.empCode || localStorage.getItem("employeeId");
-//     console.log("empCode:", empCode);
-
-//     if (!empCode) {
-//       console.warn("empCode is missing, skipping API call");
-//       return;
-//     }
-
-//     setLoading(true);
-//     console.log("Fetching project assignments for empCode:", empCode);
-
-//     api
-//       .get(`/project-assignments/${empCode}`)
-//       .then((res) => {
-//         console.log("API response received:", res.data);
-
-//         const data = res.data;
-//          if (!data.length) {
-//             // ❌ Popup when no projects assigned
-//             Swal.fire({
-//               title: "No Projects Assigned",
-//               text: "There are no projects assigned to you by HOD.",
-//               icon: "info",
-//               confirmButtonText: "OK",
-//             });
-//             return;
-//           }
-
-
-//         if (data && data.length > 0) {
-//           const project = data[0];
-//           console.log("Project found:", project);
-
-//           onChange({
-//             target: { name: "projectName", value: project.projectName || "" },
-//           });
-//           onChange({
-//             target: { name: "departmentName", value: project.deptName || "" },
-//           });
-//           onChange({ target: { name: "HOD", value: project.HOD || "" } });
-//           onChange({
-//             target: {
-//               name: "nicOfficerName",
-//               value: project.projectManagerName || "",
-//             },
-//           });
-//           onChange({
-//             target: {
-//               name: "nicOfficerEmpCode",
-//               value: project.empCode || "",
-//             },
-//           });
-//           console.log("Form data updated with project details");
-//         } else {
-//           console.warn("No project data found for this empCode");
-//           // toast.warning("No project data found for your empCode.");
-//         }
-//       })
-//       .catch((err) => {
-//         console.error("Error fetching project assignment data:", err);
-//         // toast.error("Failed to fetch project assignment data.");
-//       })
-//       .finally(() => {
-//         setLoading(false);
-//         console.log("Finished loading project data");
-//       });
-//   } else {
-//     console.log("Employee type is not PM, skipping API call");
-//   }
-// }, [employeeType]);
-
 
 useEffect(() => {
-  if (employeeType === "PM") {
-    const empCode = formData.empCode || localStorage.getItem("employeeId");
-    if (!empCode) return;
+  const isEditMode = !!projectNameFromUrl;
+  console.log("Is edit mode?", isEditMode);
 
+  if (employeeType !== "PM") return;
+
+  const empCode = formData.empCode || localStorage.getItem("employeeId");
+  console.log("Resolved empCode:", empCode);
+  if (!empCode) {
+    console.log("No empCode found, exiting useEffect");
+    return;
+  }
+
+  const fetchProjectDetails = async (projectName) => {
+    try {
+      const res = await api.get(`/project-details/${encodeURIComponent(projectName)}`);
+      const data = res.data;
+      if (data) {
+        console.log("Prefilling dependent fields from project details:", data);
+        onChange({ target: { name: "departmentName", value: data.departmentName || "" } });
+        onChange({ target: { name: "HOD", value: data.HOD || "" } });
+        onChange({ target: { name: "nicOfficerName", value: data.nicOfficerName || "" } });
+        onChange({ target: { name: "nicOfficerEmpCode", value: data.nicOfficerEmpCode || "" } });
+      }
+    } catch (err) {
+      console.error("Error fetching project details:", err);
+    }
+  };
+
+  const fetchProjectAssignments = async () => {
     setLoading(true);
+    try {
+      const res = await api.get(`/project-assignments/${empCode}`);
+      const data = Array.isArray(res.data) ? res.data : [];
+      console.log("Projects fetched:", data);
 
-    api
-      .get(`/project-assignments/${empCode}`)
-      .then((res) => {
-        const data = res.data || [];
-
-        // ✅ Detect if we are in EDIT mode
-        const isEditMode = window.location.pathname.includes("/dashboard/EDITProject");
-
-        if (!data.length && !isEditMode) {
-          // ❌ Popup only if NOT in edit mode
+      // ✅ Show popup if no projects
+      if (!data.length) {
+        console.log("No projects found, showing popup");
+        setTimeout(() => {
           Swal.fire({
             title: "Oops!",
-            text: "No projects are assigned to you by HOD.",
+            text: "No projects are assigned to you by HOD Reach out to the Hod.",
             icon: "info",
             confirmButtonText: "OK",
-          }).then(() => {
-             navigate(`/dashboard/by-type/${empCode}?employeeType=${employeeType}`); // Redirect to dashboard
-          });
-          return;
-        }
+          }).then(() => handleDashboardClick());
+        }, 50);
+        return;
+      }
 
-        // If projects exist, prefill the first one
-        if (data.length > 0) {
-          const project = data[0];
-          onChange({
-            target: { name: "projectName", value: project.projectName || "" },
-          });
-          onChange({
-            target: { name: "departmentName", value: project.deptName || "" },
-          });
-          onChange({ target: { name: "HOD", value: project.HOD || "" } });
-          onChange({
-            target: { name: "nicOfficerName", value: project.projectManagerName || "" },
-          });
-          onChange({ target: { name: "nicOfficerEmpCode", value: project.empCode || "" } });
-        }
-      })
-      .catch((err) => {
-        console.error("Error fetching project assignment data:", err);
-        if (!window.location.pathname.includes("/dashboard/EDITProject")) {
-          Swal.fire({
-            title: "Error",
-            text: "Failed to fetch project data.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        }
-      })
-      .finally(() => setLoading(false));
-  }
-}, [employeeType, formData.empCode]);
+      setProjects(data);
+      console.log("Projects found, pre-filling with first project:", data[0]);
+      onChange({ target: { name: "projectName", value: data[0].projectName || "" } });
+      onChange({ target: { name: "departmentName", value: data[0].deptName || "" } });
+      onChange({ target: { name: "HOD", value: data[0].HOD || "" } });
+      onChange({ target: { name: "nicOfficerName", value: data[0].projectManagerName || "" } });
+      onChange({ target: { name: "nicOfficerEmpCode", value: data[0].empCode || "" } });
 
-
-  useEffect(() => {
-    if (employeeType === "PM") {
-      const empCode = formData.empCode || localStorage.getItem("employeeId");
-      if (!empCode) return;
-
-      setLoading(true);
-      api
-        .get(`/project-assignments/by-pm/${empCode}`)
-        .then((res) => {
-          const data = res.data || [];
-          setProjects(data);
-
-         
-
-          // ✅ Only prefill if we are in EDIT mode (formData.projectName already exists)
-          if (formData.projectName) {
-            const project = data.find(
-              (p) => p.projectName === formData.projectName
-            );
-            if (project) {
-              onChange({
-                target: { name: "projectName", value: project.projectName },
-              });
-              onChange({
-                target: {
-                  name: "departmentName",
-                  value: project.deptName || "",
-                },
-              });
-              onChange({ target: { name: "HOD", value: project.HOD || "" } });
-              onChange({
-                target: {
-                  name: "nicOfficerName",
-                  value: project.projectManagerName || "",
-                },
-              });
-              onChange({
-                target: {
-                  name: "nicOfficerEmpCode",
-                  value: project.empCode || "",
-                },
-              });
-            }
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          Swal.fire({
-            title: "Error",
-            text: "Oops! You don’t have any projects assigned yet. Please reach out to your HOD.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        })
-        .finally(() => setLoading(false));
+    } catch (err) {
+      console.error("Error fetching project assignment data:", err);
+      setTimeout(() => {
+        Swal.fire({
+          title: "Error",
+          text: "Failed to fetch projects. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }, 50);
+    } finally {
+      setLoading(false);
     }
-  }, [employeeType, formData.empCode, formData.projectName]);
+  };
 
+  if (isEditMode && projectNameFromUrl) {
+    console.log("Edit mode: Prefilling fields from formData or URL");
+    setProjects([{ projectName: formData.projectName || projectNameFromUrl || "" }]);
+    onChange({ target: { name: "projectName", value: formData.projectName || projectNameFromUrl || "" } });
+    onChange({ target: { name: "departmentName", value: formData.departmentName || "" } });
+    onChange({ target: { name: "HOD", value: formData.HOD || "" } });
+    onChange({ target: { name: "nicOfficerName", value: formData.nicOfficerName || "" } });
+    onChange({ target: { name: "nicOfficerEmpCode", value: formData.nicOfficerEmpCode || "" } });
 
+    fetchProjectDetails(projectNameFromUrl);
+
+  } else {
+    console.log("Non-edit mode: Fetching project assignments...");
+    fetchProjectAssignments();
+  }
+}, [employeeType, formData.empCode, projectNameFromUrl]);
 
 
 
@@ -351,6 +183,31 @@ useEffect(() => {
       });
     } else {
       onChange({ target: { name: "projectName", value: "" } });
+    }
+  };
+
+  const handleDashboardClick = async () => {
+    setLoading(true);
+    try {
+      const empCode = formData.empCode || localStorage.getItem("employeeId");
+      const url = `/dashboard/by-type/${empCode}?employeeType=${employeeType}`;
+      const response = await api.get(url, { withCredentials: true });
+
+      if (response.status >= 200 && response.status < 300) {
+        navigate("/dashboard", {
+          state: {
+            fetchedProjects: response.data,
+            employeeId: empCode,
+            employeeType,
+          },
+        });
+      } else {
+        toast.error(`Failed to fetch projects. Status: ${response.status}`);
+      }
+    } catch (err) {
+      toast.error(`Error fetching projects: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -428,7 +285,7 @@ useEffect(() => {
               <div className="col-sm-4 text-center">
                 <label className="form-label">Project Name:</label>
               </div>
-              <div className="col-sm-8">
+              {/* <div className="col-sm-8">
                 {employeeType === "PM" ? (
                   <select
                     className={`form-control ${
@@ -463,7 +320,38 @@ useEffect(() => {
                 {errors.projectName && (
                   <div className="invalid-feedback">{errors.projectName}</div>
                 )}
-              </div>
+              </div> */}
+
+              <div className="col-sm-8">
+  {employeeType === "PM" ? (
+    <select
+      className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
+      name="projectName"
+      value={formData.projectName || ""}
+      onChange={handleProjectSelect}
+      disabled={loading}
+    >
+      <option value="">Select Project</option>
+      {projects.map((project) => (
+        <option key={project.projectName} value={project.projectName}>
+          {project.projectName}
+        </option>
+      ))}
+    </select>
+  ) : (
+    <input
+      type="text"
+      className={`form-control ${errors.projectName ? "is-invalid" : ""}`}
+      name="projectName"
+      value={formData.projectName || ""}
+      onChange={onChange}
+    />
+  )}
+  {errors.projectName && (
+    <div className="invalid-feedback">{errors.projectName}</div>
+  )}
+</div>
+
             </div>
           </div>
 
@@ -659,8 +547,6 @@ useEffect(() => {
                   ))}
                 </select>
 
-                
-
                 {errors.HOD && (
                   <div className="invalid-feedback">{errors.HOD}</div>
                 )}
@@ -808,7 +694,3 @@ useEffect(() => {
 };
 
 export default StepBasicProfile;
-
-
-
-
