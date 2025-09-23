@@ -91,49 +91,127 @@ useEffect(() => {
     }
   };
 
+  // const fetchProjectAssignments = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await api.get(`/project-assignments/${empCode}`);
+  //     const data = Array.isArray(res.data) ? res.data : [];
+  //     console.log("Projects fetched:", data);
+
+  //     // ✅ Show popup if no projects
+  //     if (!data.length) {
+  //       console.log("No projects found, showing popup");
+  //       setTimeout(() => {
+  //         Swal.fire({
+  //           title: "Oops!",
+  //           text: "No projects are assigned to you by HOD Reach out to the Hod.",
+  //           icon: "info",
+  //           confirmButtonText: "OK",
+  //         }).then(() => handleDashboardClick());
+  //       }, 50);
+  //       return;
+  //     }
+
+  //     setProjects(data);
+  //     console.log("Projects found, pre-filling with first project:", data[0]);
+  //     onChange({ target: { name: "projectName", value: data[0].projectName || "" } });
+  //     onChange({ target: { name: "departmentName", value: data[0].deptName || "" } });
+  //     onChange({ target: { name: "HOD", value: data[0].HOD || "" } });
+  //     onChange({ target: { name: "nicOfficerName", value: data[0].projectManagerName || "" } });
+  //     onChange({ target: { name: "nicOfficerEmpCode", value: data[0].empCode || "" } });
+
+  //   } catch (err) {
+  //     console.error("Error fetching project assignment data:", err);
+  //     setTimeout(() => {
+  //       Swal.fire({
+  //         title: "Error",
+  //         text: "No project assigned yet , try to reach out HOD ",
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       });
+  //     }, 50);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+  const handleDashboardClick = async () => {
+  // setFormToShow(null);
+  setLoading(true);
+  
+  try {
+    // ✅ Get the current user's data from localStorage (set during login)
+    const currentEmployeeId = localStorage.getItem("employeeId");
+    const currentEmployeeType = localStorage.getItem("employeeType");
+    
+    // Create roles array based on current user's employeeType
+    const currentRoles = [currentEmployeeType]; // or however you determine roles
+    
+    const url = `/dashboard/by-type/${currentEmployeeId}?employeeType=${currentRoles.join(",")}`;
+    const response = await api.get(url, { withCredentials: true });
+    
+    if (response.status >= 200 && response.status < 300) {
+      navigate("/dashboard", {
+        state: {
+          fetchedProjects: response.data,
+          employeeId: currentEmployeeId,        // Use current user's data
+          employeeType: currentRoles,           // Use current user's roles
+        },
+      });
+    } else {
+      toast.error(`Failed to fetch projects. Status: ${response.status}`);
+    }
+  } catch (err) {
+    toast.error(`Error fetching projects: ${err.message}`);
+  } finally {
+    setLoading(false);
+  }
+};
+
   const fetchProjectAssignments = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get(`/project-assignments/${empCode}`);
-      const data = Array.isArray(res.data) ? res.data : [];
-      console.log("Projects fetched:", data);
+  setLoading(true);
+  try {
+    const res = await api.get(`/project-assignments/${empCode}`);
+    const data = Array.isArray(res.data) ? res.data : [];
+    console.log("Projects fetched:", data);
 
-      // ✅ Show popup if no projects
-      if (!data.length) {
-        console.log("No projects found, showing popup");
-        setTimeout(() => {
-          Swal.fire({
-            title: "Oops!",
-            text: "No projects are assigned to you by HOD Reach out to the Hod.",
-            icon: "info",
-            confirmButtonText: "OK",
-          }).then(() => handleDashboardClick());
-        }, 50);
-        return;
-      }
-
-      setProjects(data);
-      console.log("Projects found, pre-filling with first project:", data[0]);
-      onChange({ target: { name: "projectName", value: data[0].projectName || "" } });
-      onChange({ target: { name: "departmentName", value: data[0].deptName || "" } });
-      onChange({ target: { name: "HOD", value: data[0].HOD || "" } });
-      onChange({ target: { name: "nicOfficerName", value: data[0].projectManagerName || "" } });
-      onChange({ target: { name: "nicOfficerEmpCode", value: data[0].empCode || "" } });
-
-    } catch (err) {
-      console.error("Error fetching project assignment data:", err);
+    // ✅ Show popup if no projects
+    if (!data.length) {
+      console.log("No projects found, showing popup");
       setTimeout(() => {
         Swal.fire({
-          title: "Error",
-          text: "Failed to fetch projects. Please try again later.",
-          icon: "error",
+          title: "Oops!",
+          text: "No projects are assigned to you by HOD Reach out to the Hod.",
+          icon: "info",
           confirmButtonText: "OK",
-        });
+        }).then(() => handleDashboardClick());
       }, 50);
-    } finally {
-      setLoading(false);
+      return;
     }
-  };
+
+    setProjects(data);
+    console.log("Projects found, pre-filling with first project:", data[0]);
+    onChange({ target: { name: "projectName", value: data[0].projectName || "" } });
+    onChange({ target: { name: "departmentName", value: data[0].deptName || "" } });
+    onChange({ target: { name: "HOD", value: data[0].HOD || "" } });
+    onChange({ target: { name: "nicOfficerName", value: data[0].projectManagerName || "" } });
+    onChange({ target: { name: "nicOfficerEmpCode", value: data[0].empCode || "" } });
+
+  } catch (err) {
+    console.error("Error fetching project assignment data:", err);
+    setTimeout(() => {
+      Swal.fire({
+        title: "Error",
+        text: "No project assigned yet , try to reach out HOD ",
+        icon: "error",
+        confirmButtonText: "OK",
+      }).then(() => handleDashboardClick()); // ✅ Added navigation after clicking OK
+    }, 50);
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (isEditMode && projectNameFromUrl) {
     console.log("Edit mode: Prefilling fields from formData or URL");
