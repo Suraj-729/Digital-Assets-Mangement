@@ -148,42 +148,51 @@ const Dashboard = () => {
 
 
 
-  // const handleEditProject = async (projectName, BP) => {
-  //   try {
-  //     if (!projectName) {
-  //       toast.error("Project name is missing!");
-  //       return;
-  //     }
 
-  //     const employeeId = localStorage.getItem("employeeId");
-  //     const employeeType = localStorage.getItem("employeeType"); // PM, HOD, Admin
 
-  //     if (!employeeId || !employeeType) {
-  //       toast.error("User info not found!");
-  //       return;
-  //     }
+// const handleEditProject = async (projectName) => {
+//   try {
+//     if (!projectName) {
+//       toast.error("Project name is missing!");
+//       return;
+//     }
 
-  //     // For Admin → direct navigation
-  //     if (employeeType === "Admin") {
-  //       navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
-  //       return;
-  //     }
+//     const employeeId = localStorage.getItem("employeeId");
+//     const employeeType = localStorage.getItem("employeeType");
 
-  //     // For PM or HOD → still check user info, but no API call
-  //     console.log("Navigating to edit project:", {
-  //       projectName,
-  //       employeeType,
-  //       employeeId,
-  //     });
+//     if (!employeeId || !employeeType) {
+//       toast.error("User info not found!");
+//       return;
+//     }
 
-  //     navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
-  //   } catch (err) {
-  //     console.error("Error preparing project edit:", err);
-  //     toast.error("Something went wrong while editing the project");
-  //   }
-  // };
+//     setLoading(true);
 
-  const handleEditProject = async (projectName, BP) => {
+//     const response = await api.get(
+//       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
+//     );
+
+//     if (response.status >= 200 && response.status < 300) {
+//       console.log("Project details fetched for edit:", response.data);
+
+//       // ✅ Store this data before navigation
+//       setEditProjectData(response.data);
+
+//       // ✅ Now navigate to the edit page
+//       navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
+//     } else {
+//       throw new Error(`Request failed with status ${response.status}`);
+//     }
+//   } catch (err) {
+//     console.error("Error preparing project edit:", err);
+//     toast.error(err.message || "Something went wrong while editing the project");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+
+
+const handleEditProject = async (projectName) => {
   try {
     if (!projectName) {
       toast.error("Project name is missing!");
@@ -191,29 +200,29 @@ const Dashboard = () => {
     }
 
     const employeeId = localStorage.getItem("employeeId");
-    const employeeType = localStorage.getItem("employeeType"); // PM, HOD, Admin
+    const employeeType = localStorage.getItem("employeeType");
 
     if (!employeeId || !employeeType) {
       toast.error("User info not found!");
       return;
     }
 
-    setLoading(true); // optional, if you want a loader
+    setLoading(true);
 
-    // Fetch project details before navigating
     const response = await api.get(
       `/dashboard/projectDetails/${encodeURIComponent(projectName)}`
     );
 
     if (response.status >= 200 && response.status < 300) {
       console.log("Project details fetched for edit:", response.data);
-      // Optionally, you can store this in context, state, or pass via navigation state
+
+      // ✅ Navigate with state
+      navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`, {
+        state: { projectData: response.data }
+      });
     } else {
       throw new Error(`Request failed with status ${response.status}`);
     }
-
-    // Navigate based on employeeType
-    navigate(`/dashboard/EDITProject/${encodeURIComponent(projectName)}`);
   } catch (err) {
     console.error("Error preparing project edit:", err);
     toast.error(err.message || "Something went wrong while editing the project");
